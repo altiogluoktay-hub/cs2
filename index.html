@@ -3,16 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WebStrike FPS</title>
+
+<title>WebStrike FPS V2</title>
 
 <style>
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -21,47 +24,55 @@ html, body {
 }
 
 #game {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: block;
 }
 
 #menu {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.88);
+    z-index: 100;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 20;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(40,60,90,.5),
+            rgba(0,0,0,.96)
+        );
 }
 
 .menu-box {
-    width: 420px;
+    width: 430px;
     max-width: 90%;
     padding: 35px;
-    background: rgba(20, 20, 20, 0.95);
-    border: 1px solid #555;
-    border-radius: 15px;
     text-align: center;
     color: white;
-    box-shadow: 0 0 40px rgba(0,0,0,.7);
+    background: rgba(15,18,25,.96);
+    border: 1px solid #444;
+    border-radius: 15px;
+    box-shadow: 0 20px 80px rgba(0,0,0,.8);
 }
 
 .menu-box h1 {
     font-size: 42px;
-    margin-bottom: 10px;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
 }
 
 .menu-box p {
-    color: #bbb;
-    margin-bottom: 25px;
+    color: #aaa;
+    line-height: 1.7;
+    margin-bottom: 20px;
 }
 
-button {
+.menu-box button {
     width: 100%;
     padding: 15px;
-    border: none;
+    margin-top: 8px;
+    border: 0;
     border-radius: 8px;
     background: #e63946;
     color: white;
@@ -70,16 +81,26 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.menu-box button:hover {
     background: #ff4d5a;
+}
+
+#quality {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #222;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 7px;
 }
 
 #hud {
     display: none;
     position: fixed;
     inset: 0;
-    pointer-events: none;
     z-index: 10;
+    pointer-events: none;
     color: white;
 }
 
@@ -92,10 +113,12 @@ button:hover {
     transform: translate(-50%, -50%);
 }
 
+#crosshair span,
 #crosshair::before,
 #crosshair::after {
-    content: "";
     position: absolute;
+    content: "";
+    display: block;
     background: white;
 }
 
@@ -113,29 +136,50 @@ button:hover {
     top: 10px;
 }
 
+#fps {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 7px 10px;
+    background: rgba(0,0,0,.55);
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+#score {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 10px 15px;
+    background: rgba(0,0,0,.55);
+    border-radius: 7px;
+    font-size: 18px;
+}
+
 #stats {
     position: absolute;
     left: 20px;
     bottom: 20px;
-    background: rgba(0,0,0,.65);
+    width: 220px;
     padding: 15px;
+    background: rgba(0,0,0,.65);
     border-radius: 10px;
-    min-width: 190px;
 }
 
 #health-bar {
-    width: 160px;
+    width: 100%;
     height: 12px;
-    background: #333;
     margin-top: 8px;
-    border-radius: 6px;
+    background: #333;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 #health-fill {
-    height: 100%;
     width: 100%;
-    background: #36d16d;
+    height: 100%;
+    background: #29d66d;
+    transition: width .15s;
 }
 
 #ammo {
@@ -144,95 +188,113 @@ button:hover {
     bottom: 25px;
     font-size: 28px;
     font-weight: bold;
-}
-
-#score {
-    position: absolute;
-    right: 25px;
-    top: 25px;
-    font-size: 20px;
+    text-shadow: 0 2px 5px black;
 }
 
 #message {
     position: absolute;
     left: 50%;
-    top: 20%;
+    top: 18%;
     transform: translateX(-50%);
-    font-size: 28px;
+    font-size: 26px;
     font-weight: bold;
-    text-shadow: 0 2px 5px black;
+    text-shadow: 0 3px 10px black;
+}
+
+#help {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 12px;
+    background: rgba(0,0,0,.45);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+#damage {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    pointer-events: none;
+    background: rgba(255,0,0,.25);
 }
 
 #weapon {
     position: absolute;
-    width: 300px;
-    height: 100px;
-    right: 10%;
-    bottom: 0;
+    right: 7%;
+    bottom: -5px;
+    width: 330px;
+    height: 170px;
     transform: rotate(-5deg);
 }
 
-.weapon-body {
+.weapon-main {
     position: absolute;
-    width: 230px;
-    height: 55px;
     right: 20px;
-    bottom: 15px;
-    background: #222;
-    border-radius: 10px;
+    bottom: 50px;
+    width: 240px;
+    height: 50px;
+    background: #1c1c1c;
+    border-radius: 8px;
+    box-shadow: inset 0 -5px 0 #090909;
 }
 
 .weapon-barrel {
     position: absolute;
+    right: 250px;
+    bottom: 67px;
     width: 100px;
-    height: 18px;
-    right: 220px;
-    bottom: 40px;
+    height: 15px;
     background: #111;
+    border-radius: 5px;
 }
 
 .weapon-handle {
     position: absolute;
+    right: 80px;
+    bottom: -5px;
     width: 55px;
-    height: 80px;
-    right: 70px;
-    bottom: -20px;
-    background: #333;
-    transform: rotate(15deg);
+    height: 85px;
+    background: #252525;
+    border-radius: 5px;
+    transform: rotate(12deg);
+}
+
+.weapon-mag {
+    position: absolute;
+    right: 160px;
+    bottom: 5px;
+    width: 35px;
+    height: 75px;
+    background: #171717;
+    transform: rotate(12deg);
     border-radius: 5px;
 }
 
 #muzzle {
     display: none;
     position: absolute;
-    right: calc(10% + 310px);
-    bottom: 65px;
-    width: 30px;
-    height: 30px;
-    background: orange;
+    right: calc(7% + 345px);
+    bottom: 75px;
+    width: 35px;
+    height: 35px;
+    background: #ffb000;
     border-radius: 50%;
-    box-shadow: 0 0 30px orange;
+    box-shadow:
+        0 0 15px #ff6600,
+        0 0 40px #ff9900;
 }
 
-#damage {
-    position: fixed;
-    inset: 0;
-    background: rgba(255,0,0,.25);
+#reloadText {
     display: none;
-    z-index: 9;
+    position: absolute;
+    right: 25px;
+    bottom: 70px;
+    font-size: 18px;
 }
 
-#instructions {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ddd;
-    background: rgba(0,0,0,.5);
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 14px;
-}
 </style>
 </head>
 
@@ -241,28 +303,58 @@ button:hover {
 <canvas id="game"></canvas>
 
 <div id="menu">
+
     <div class="menu-box">
+
         <h1>WEBSTRIKE</h1>
-        <p>3D FPS Tarayıcı Oyunu</p>
+
+        <p>
+            3D FPS V2<br>
+            Botlara karşı savaş ve skorunu yükselt.
+        </p>
+
+        <select id="quality">
+
+            <option value="low">
+                Düşük Grafik - Performans
+            </option>
+
+            <option value="medium" selected>
+                Orta Grafik
+            </option>
+
+            <option value="high">
+                Yüksek Grafik
+            </option>
+
+        </select>
 
         <p>
             WASD: Hareket<br>
             Mouse: Bakış<br>
-            Sol tık: Ateş<br>
-            R: Şarjör değiştir
+            Sol Tık: Ateş<br>
+            R: Şarjör
         </p>
 
-        <button id="startButton">OYUNA BAŞLA</button>
+        <button id="startButton">
+            OYUNA BAŞLA
+        </button>
+
     </div>
+
 </div>
 
 <div id="hud">
 
-    <div id="crosshair"></div>
-
-    <div id="instructions">
-        WASD Hareket • Mouse Bakış • Sol Tık Ateş • R Yenile
+    <div id="fps">
+        FPS: 0
     </div>
+
+    <div id="help">
+        WASD • Mouse • Sol Tık • R
+    </div>
+
+    <div id="crosshair"></div>
 
     <div id="score">
         Skor: <span id="scoreValue">0</span>
@@ -271,20 +363,46 @@ button:hover {
     <div id="message"></div>
 
     <div id="stats">
-        <div>CAN: <span id="healthText">100</span></div>
-        <div id="health-bar">
-            <div id="health-fill"></div>
+
+        <div>
+            CAN:
+            <span id="healthText">
+                100
+            </span>
         </div>
+
+        <div id="health-bar">
+
+            <div id="health-fill"></div>
+
+        </div>
+
     </div>
 
     <div id="ammo">
-        <span id="ammoValue">30</span> / 120
+
+        <span id="ammoValue">
+            30
+        </span>
+
+        / 120
+
+    </div>
+
+    <div id="reloadText">
+        ŞARJÖR DEĞİŞTİRİLİYOR...
     </div>
 
     <div id="weapon">
+
         <div class="weapon-barrel"></div>
-        <div class="weapon-body"></div>
+
+        <div class="weapon-main"></div>
+
+        <div class="weapon-mag"></div>
+
         <div class="weapon-handle"></div>
+
     </div>
 
     <div id="muzzle"></div>
@@ -293,64 +411,108 @@ button:hover {
 
 <div id="damage"></div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
 let scene;
+
 let camera;
+
 let renderer;
+
 let clock;
 
 let player;
+
 let bots = [];
-let bullets = [];
 
 let keys = {};
 
 let health = 100;
+
 let score = 0;
 
 let ammo = 30;
+
 let reserveAmmo = 120;
 
-let canShoot = true;
 let reloading = false;
+
+let canShoot = true;
 
 let gameStarted = false;
 
 let yaw = 0;
+
 let pitch = 0;
 
-const canvas = document.getElementById("game");
+let fpsFrames = 0;
 
-const menu = document.getElementById("menu");
-const hud = document.getElementById("hud");
+let fpsTime = 0;
 
-const startButton = document.getElementById("startButton");
+let quality = "medium";
 
-const healthText = document.getElementById("healthText");
-const healthFill = document.getElementById("health-fill");
+const menu =
+    document.getElementById("menu");
 
-const ammoValue = document.getElementById("ammoValue");
-const scoreValue = document.getElementById("scoreValue");
+const hud =
+    document.getElementById("hud");
 
-const message = document.getElementById("message");
-const damage = document.getElementById("damage");
+const canvas =
+    document.getElementById("game");
 
-const muzzle = document.getElementById("muzzle");
+const startButton =
+    document.getElementById("startButton");
+
+const qualitySelect =
+    document.getElementById("quality");
+
+const fpsElement =
+    document.getElementById("fps");
+
+const healthText =
+    document.getElementById("healthText");
+
+const healthFill =
+    document.getElementById("health-fill");
+
+const ammoValue =
+    document.getElementById("ammoValue");
+
+const scoreValue =
+    document.getElementById("scoreValue");
+
+const message =
+    document.getElementById("message");
+
+const damage =
+    document.getElementById("damage");
+
+const muzzle =
+    document.getElementById("muzzle");
+
+const reloadText =
+    document.getElementById("reloadText");
 
 
 /* =========================
-   OYUNU BAŞLAT
+   OYUN BAŞLAT
 ========================= */
 
 function startGame() {
 
+    quality =
+        qualitySelect.value;
+
     gameStarted = true;
 
-    menu.style.display = "none";
-    hud.style.display = "block";
+    menu.style.display =
+        "none";
+
+    hud.style.display =
+        "block";
 
     init();
 
@@ -365,72 +527,171 @@ function startGame() {
 
 function init() {
 
-    scene = new THREE.Scene();
+    scene =
+        new THREE.Scene();
 
-    scene.background = new THREE.Color(0x87ceeb);
+    scene.background =
+        new THREE.Color(
+            0x87a9c7
+        );
 
-    scene.fog = new THREE.Fog(0x87ceeb, 20, 100);
+    scene.fog =
+        new THREE.Fog(
+            0x87a9c7,
+            30,
+            120
+        );
 
 
-    camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-    );
+    camera =
+        new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth /
+            window.innerHeight,
+            0.1,
+            300
+        );
 
 
-    renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true
-    });
+    let pixelRatio =
+        window.devicePixelRatio;
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
+
+    if (
+        quality === "low"
+    ) {
+
+        pixelRatio =
+            Math.min(
+                pixelRatio,
+                1
+            );
+
+    }
+
+    else if (
+        quality === "medium"
+    ) {
+
+        pixelRatio =
+            Math.min(
+                pixelRatio,
+                1.5
+            );
+
+    }
+
+    else {
+
+        pixelRatio =
+            Math.min(
+                pixelRatio,
+                2
+            );
+
+    }
+
+
+    renderer =
+        new THREE.WebGLRenderer({
+
+            canvas:
+                canvas,
+
+            antialias:
+                quality !== "low",
+
+            powerPreference:
+                "high-performance"
+
+        });
+
 
     renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, 2)
+        pixelRatio
     );
 
 
-    clock = new THREE.Clock();
+    renderer.setSize(
+
+        window.innerWidth,
+
+        window.innerHeight
+
+    );
+
+
+    if (
+        quality !== "low"
+    ) {
+
+        renderer.shadowMap.enabled =
+            true;
+
+        renderer.shadowMap.type =
+            THREE.PCFSoftShadowMap;
+
+    }
+
+
+    clock =
+        new THREE.Clock();
 
 
     /* IŞIK */
 
-    const ambient = new THREE.AmbientLight(
-        0xffffff,
-        0.6
+    const ambient =
+        new THREE.HemisphereLight(
+            0xffffff,
+            0x444444,
+            1
+        );
+
+    scene.add(
+        ambient
     );
 
-    scene.add(ambient);
 
-
-    const sun = new THREE.DirectionalLight(
-        0xffffff,
-        1
-    );
+    const sun =
+        new THREE.DirectionalLight(
+            0xffffff,
+            1.5
+        );
 
     sun.position.set(
-        20,
-        40,
+        30,
+        50,
         20
     );
 
-    scene.add(sun);
+
+    if (
+        quality !== "low"
+    ) {
+
+        sun.castShadow =
+            true;
+
+    }
 
 
-    /* OYUNCU */
+    scene.add(
+        sun
+    );
+
 
     player = {
-        position: new THREE.Vector3(
-            0,
-            1.6,
-            15
-        ),
-        speed: 6
+
+        position:
+            new THREE.Vector3(
+                0,
+                1.6,
+                25
+            ),
+
+        speed:
+            7
+
     };
 
 
@@ -439,22 +700,34 @@ function init() {
     );
 
 
-    /* HARİTA */
-
     createMap();
-
-
-    /* BOTLAR */
 
     createBots();
 
-
-    /* KONTROLLER */
-
     setupControls();
 
-
     animate();
+
+}
+
+
+/* =========================
+   MALZEME
+========================= */
+
+function material(
+    color
+) {
+
+    return new THREE.MeshStandardMaterial({
+
+        color:
+            color,
+
+        roughness:
+            0.8
+
+    });
 
 }
 
@@ -467,144 +740,143 @@ function createMap() {
 
     /* ZEMİN */
 
-    const floorGeometry =
-        new THREE.PlaneGeometry(
-            100,
-            100
-        );
-
-    const floorMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x555555
-        });
-
     const floor =
         new THREE.Mesh(
-            floorGeometry,
-            floorMaterial
+
+            new THREE.PlaneGeometry(
+                100,
+                100
+            ),
+
+            material(
+                0x555b60
+            )
+
         );
+
 
     floor.rotation.x =
         -Math.PI / 2;
 
-    scene.add(floor);
 
-
-    /* DUVAR OLUŞTURUCU */
-
-    function wall(
-        x,
-        y,
-        z,
-        width,
-        height,
-        depth
+    if (
+        quality !== "low"
     ) {
 
-        const geometry =
-            new THREE.BoxGeometry(
-                width,
-                height,
-                depth
-            );
-
-        const material =
-            new THREE.MeshStandardMaterial({
-                color: 0x777777
-            });
-
-        const mesh =
-            new THREE.Mesh(
-                geometry,
-                material
-            );
-
-        mesh.position.set(
-            x,
-            y,
-            z
-        );
-
-        scene.add(mesh);
+        floor.receiveShadow =
+            true;
 
     }
 
 
-    /* DIŞ DUVARLAR */
+    scene.add(
+        floor
+    );
 
-    wall(
+
+    /* BÖLGE RENKLERİ */
+
+    createZone(
+        -25,
+        0,
+        20,
+        25,
+        0x456d8c,
+        "ALFA"
+    );
+
+
+    createZone(
+        25,
+        0,
+        20,
+        25,
+        0x8c6245,
+        "BRAVO"
+    );
+
+
+    createZone(
+        0,
+        -25,
+        35,
+        20,
+        0x4d8c5b,
+        "CHARLIE"
+    );
+
+
+    /* DUVARLAR */
+
+    createWall(
         0,
         2,
-        -40,
-        80,
+        -45,
+        90,
         4,
         2
     );
 
-    wall(
+
+    createWall(
         0,
         2,
-        40,
-        80,
+        45,
+        90,
         4,
         2
     );
 
-    wall(
-        -40,
+
+    createWall(
+        -45,
         2,
         0,
         2,
         4,
-        80
+        90
     );
 
-    wall(
-        40,
+
+    createWall(
+        45,
         2,
         0,
         2,
         4,
-        80
+        90
     );
 
 
     /* İÇ DUVARLAR */
 
-    wall(
-        -15,
-        2,
-        -10,
-        20,
-        4,
-        2
-    );
-
-    wall(
-        15,
-        2,
-        5,
-        20,
-        4,
-        2
-    );
-
-    wall(
-        -10,
-        2,
-        20,
-        2,
-        4,
-        20
-    );
-
-    wall(
-        20,
-        2,
+    createWall(
         -20,
         2,
+        -10,
+        25,
         4,
-        20
+        2
+    );
+
+
+    createWall(
+        20,
+        2,
+        -5,
+        25,
+        4,
+        2
+    );
+
+
+    createWall(
+        0,
+        2,
+        10,
+        2,
+        4,
+        25
     );
 
 
@@ -612,39 +884,42 @@ function createMap() {
 
     for (
         let i = 0;
-        i < 15;
+        i < 20;
         i++
     ) {
 
-        const geometry =
-            new THREE.BoxGeometry(
-                2,
-                2,
-                2
-            );
-
-        const material =
-            new THREE.MeshStandardMaterial({
-                color: 0x8b5a2b
-            });
-
         const box =
             new THREE.Mesh(
-                geometry,
-                material
+
+                new THREE.BoxGeometry(
+                    2,
+                    2,
+                    2
+                ),
+
+                material(
+                    0x8b5a2b
+                )
+
             );
+
 
         box.position.set(
 
-            Math.random() * 60 - 30,
+            Math.random() *
+            70 - 35,
 
             1,
 
-            Math.random() * 60 - 30
+            Math.random() *
+            70 - 35
 
         );
 
-        scene.add(box);
+
+        scene.add(
+            box
+        );
 
     }
 
@@ -652,7 +927,122 @@ function createMap() {
 
 
 /* =========================
-   BOTLAR
+   BÖLGE
+========================= */
+
+function createZone(
+    x,
+    z,
+    width,
+    depth,
+    color,
+    name
+) {
+
+    const zone =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                width,
+                depth
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color:
+                    color,
+
+                transparent:
+                    true,
+
+                opacity:
+                    0.25
+
+            })
+
+        );
+
+
+    zone.rotation.x =
+        -Math.PI / 2;
+
+
+    zone.position.set(
+        x,
+        0.01,
+        z
+    );
+
+
+    scene.add(
+        zone
+    );
+
+}
+
+
+/* =========================
+   DUVAR
+========================= */
+
+function createWall(
+    x,
+    y,
+    z,
+    width,
+    height,
+    depth
+) {
+
+    const wall =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                width,
+
+                height,
+
+                depth
+
+            ),
+
+            material(
+                0x777b80
+            )
+
+        );
+
+
+    wall.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    if (
+        quality !== "low"
+    ) {
+
+        wall.castShadow =
+            true;
+
+        wall.receiveShadow =
+            true;
+
+    }
+
+
+    scene.add(
+        wall
+    );
+
+}
+
+
+/* =========================
+   BOT OLUŞTUR
 ========================= */
 
 function createBots() {
@@ -672,81 +1062,162 @@ function createBots() {
 
 function createBot() {
 
-    const group =
+    const bot =
         new THREE.Group();
 
 
     /* GÖVDE */
 
-    const bodyGeometry =
-        new THREE.BoxGeometry(
-            0.8,
-            1.2,
-            0.5
-        );
-
-    const bodyMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x2222aa
-        });
-
     const body =
         new THREE.Mesh(
-            bodyGeometry,
-            bodyMaterial
+
+            new THREE.BoxGeometry(
+                0.8,
+                1.2,
+                0.5
+            ),
+
+            material(
+                0x263d9c
+            )
+
         );
+
 
     body.position.y =
         0.8;
 
-    group.add(body);
+
+    bot.add(
+        body
+    );
 
 
     /* KAFA */
 
-    const headGeometry =
-        new THREE.SphereGeometry(
-            0.3,
-            16,
-            16
-        );
-
-    const headMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xffc49b
-        });
-
     const head =
         new THREE.Mesh(
-            headGeometry,
-            headMaterial
+
+            new THREE.SphereGeometry(
+                0.3,
+                12,
+                12
+            ),
+
+            material(
+                0xffc49b
+            )
+
         );
+
 
     head.position.y =
         1.65;
 
-    group.add(head);
+
+    bot.add(
+        head
+    );
 
 
-    /* POZİSYON */
+    /* DÜŞMAN SİLAHI */
 
-    group.position.set(
+    const gun =
+        new THREE.Group();
 
-        Math.random() * 60 - 30,
 
-        0,
+    const gunBody =
+        new THREE.Mesh(
 
-        Math.random() * 50 - 20
+            new THREE.BoxGeometry(
+                0.12,
+                0.12,
+                0.8
+            ),
+
+            material(
+                0x171717
+            )
+
+        );
+
+
+    gunBody.position.z =
+        -0.45;
+
+
+    gun.add(
+        gunBody
+    );
+
+
+    const barrel =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                0.07,
+                0.07,
+                0.35
+            ),
+
+            material(
+                0x050505
+            )
+
+        );
+
+
+    barrel.position.z =
+        -0.95;
+
+
+    gun.add(
+        barrel
+    );
+
+
+    gun.position.set(
+
+        0.55,
+
+        1,
+
+        -0.2
 
     );
 
 
-    group.userData = {
+    gun.rotation.x =
+        -0.1;
 
-        health: 100,
+
+    bot.add(
+        gun
+    );
+
+
+    /* BOT KONUMU */
+
+    bot.position.set(
+
+        Math.random() *
+        65 - 32,
+
+        0,
+
+        Math.random() *
+        65 - 25
+
+    );
+
+
+    bot.userData = {
+
+        health:
+            100,
 
         speed:
-            1 +
+            1.2 +
             Math.random(),
 
         shootTimer:
@@ -755,9 +1226,14 @@ function createBot() {
     };
 
 
-    scene.add(group);
+    scene.add(
+        bot
+    );
 
-    bots.push(group);
+
+    bots.push(
+        bot
+    );
 
 }
 
@@ -768,12 +1244,13 @@ function createBot() {
 
 function setupControls() {
 
-
     document.addEventListener(
         "keydown",
         function(e) {
 
-            keys[e.code] = true;
+            keys[
+                e.code
+            ] = true;
 
 
             if (
@@ -792,7 +1269,9 @@ function setupControls() {
         "keyup",
         function(e) {
 
-            keys[e.code] = false;
+            keys[
+                e.code
+            ] = false;
 
         }
     );
@@ -803,7 +1282,8 @@ function setupControls() {
         function(e) {
 
             if (
-                document.pointerLockElement !== canvas
+                document.pointerLockElement !==
+                canvas
             ) {
 
                 return;
@@ -815,6 +1295,7 @@ function setupControls() {
                 e.movementX *
                 0.002;
 
+
             pitch -=
                 e.movementY *
                 0.002;
@@ -822,11 +1303,14 @@ function setupControls() {
 
             pitch =
                 Math.max(
+
                     -1.4,
+
                     Math.min(
                         1.4,
                         pitch
                     )
+
                 );
 
         }
@@ -872,7 +1356,9 @@ function setupControls() {
    OYUNCU HAREKET
 ========================= */
 
-function updatePlayer(delta) {
+function updatePlayer(
+    delta
+) {
 
     const direction =
         new THREE.Vector3();
@@ -886,6 +1372,7 @@ function updatePlayer(delta) {
 
     }
 
+
     if (
         keys["KeyS"]
     ) {
@@ -894,6 +1381,7 @@ function updatePlayer(delta) {
 
     }
 
+
     if (
         keys["KeyA"]
     ) {
@@ -901,6 +1389,7 @@ function updatePlayer(delta) {
         direction.x -= 1;
 
     }
+
 
     if (
         keys["KeyD"]
@@ -911,36 +1400,49 @@ function updatePlayer(delta) {
     }
 
 
-    direction.normalize();
+    if (
+        direction.lengthSq() > 0
+    ) {
 
+        direction.normalize();
 
-    const speed =
-        player.speed *
-        delta;
+    }
 
 
     const forward =
         new THREE.Vector3(
+
             Math.sin(yaw),
+
             0,
+
             Math.cos(yaw)
+
         );
 
 
     const right =
         new THREE.Vector3(
+
             Math.cos(yaw),
+
             0,
+
             -Math.sin(yaw)
+
         );
 
 
     player.position.add(
 
-        forward
-        .multiplyScalar(
+        forward.multiplyScalar(
+
             -direction.z *
-            speed
+
+            player.speed *
+
+            delta
+
         )
 
     );
@@ -948,34 +1450,42 @@ function updatePlayer(delta) {
 
     player.position.add(
 
-        right
-        .multiplyScalar(
+        right.multiplyScalar(
+
             direction.x *
-            speed
+
+            player.speed *
+
+            delta
+
         )
 
     );
 
 
-    /* SINIR */
-
     player.position.x =
         Math.max(
-            -37,
+
+            -42,
+
             Math.min(
-                37,
+                42,
                 player.position.x
             )
+
         );
 
 
     player.position.z =
         Math.max(
-            -37,
+
+            -42,
+
             Math.min(
-                37,
+                42,
                 player.position.z
             )
+
         );
 
 
@@ -999,16 +1509,26 @@ function updatePlayer(delta) {
 
 
 /* =========================
-   ATEŞ ET
+   ATEŞ
 ========================= */
 
 function shoot() {
 
     if (
         !canShoot ||
-        reloading ||
+        reloading
+    ) {
+
+        return;
+
+    }
+
+
+    if (
         ammo <= 0
     ) {
+
+        reload();
 
         return;
 
@@ -1020,16 +1540,18 @@ function shoot() {
     updateHUD();
 
 
-    canShoot = false;
+    canShoot =
+        false;
 
 
     setTimeout(
         function() {
 
-            canShoot = true;
+            canShoot =
+                true;
 
         },
-        120
+        110
     );
 
 
@@ -1048,15 +1570,19 @@ function shoot() {
     );
 
 
-    /* RAYCAST */
-
     const raycaster =
         new THREE.Raycaster();
 
 
     raycaster.setFromCamera(
-        new THREE.Vector2(0, 0),
+
+        new THREE.Vector2(
+            0,
+            0
+        ),
+
         camera
+
     );
 
 
@@ -1100,13 +1626,24 @@ function shoot() {
             hits[0].object;
 
 
-        const bot =
-            hit.parent;
+        let bot =
+            hit;
+
+
+        while (
+            bot.parent &&
+            !bot.userData.health
+        ) {
+
+            bot =
+                bot.parent;
+
+        }
 
 
         if (
-            bot &&
-            bot.userData
+            bot.userData &&
+            bot.userData.health
         ) {
 
             bot.userData.health -=
@@ -1131,42 +1668,12 @@ function shoot() {
 
 
 /* =========================
-   BOT ÖLDÜR
+   BOT AI
 ========================= */
 
-function killBot(bot) {
-
-    scene.remove(
-        bot
-    );
-
-
-    bots =
-        bots.filter(
-            b => b !== bot
-        );
-
-
-    score += 100;
-
-
-    scoreValue.textContent =
-        score;
-
-
-    setTimeout(
-        createBot,
-        2000
-    );
-
-}
-
-
-/* =========================
-   BOT YAPAY ZEKA
-========================= */
-
-function updateBots(delta) {
+function updateBots(
+    delta
+) {
 
     bots.forEach(
         function(bot) {
@@ -1177,8 +1684,6 @@ function updateBots(delta) {
                 );
 
 
-            /* OYUNCUYA DOĞRU GEL */
-
             if (
                 distance > 5
             ) {
@@ -1186,8 +1691,11 @@ function updateBots(delta) {
                 const direction =
                     new THREE.Vector3()
                     .subVectors(
+
                         player.position,
+
                         bot.position
+
                     )
                     .normalize();
 
@@ -1197,6 +1705,7 @@ function updateBots(delta) {
                     direction.multiplyScalar(
 
                         bot.userData.speed *
+
                         delta
 
                     )
@@ -1206,23 +1715,23 @@ function updateBots(delta) {
             }
 
 
-            /* OYUNCUYA BAK */
-
             bot.lookAt(
+
                 player.position.x,
+
                 1,
+
                 player.position.z
+
             );
 
-
-            /* SALDIR */
 
             bot.userData.shootTimer -=
                 delta;
 
 
             if (
-                distance < 20 &&
+                distance < 25 &&
                 bot.userData.shootTimer <= 0
             ) {
 
@@ -1232,8 +1741,11 @@ function updateBots(delta) {
 
 
                 bot.userData.shootTimer =
+
                     1 +
-                    Math.random() * 2;
+
+                    Math.random() *
+                    2;
 
             }
 
@@ -1247,7 +1759,9 @@ function updateBots(delta) {
    BOT ATEŞ
 ========================= */
 
-function botShoot(bot) {
+function botShoot(
+    bot
+) {
 
     const distance =
         bot.position.distanceTo(
@@ -1264,12 +1778,8 @@ function botShoot(bot) {
     }
 
 
-    const accuracy =
-        Math.random();
-
-
     if (
-        accuracy > 0.35
+        Math.random() > 0.4
     ) {
 
         damagePlayer(
@@ -1282,10 +1792,60 @@ function botShoot(bot) {
 
 
 /* =========================
-   HASAR
+   BOT ÖLÜMÜ
 ========================= */
 
-function damagePlayer(amount) {
+function killBot(
+    bot
+) {
+
+    scene.remove(
+        bot
+    );
+
+
+    bots =
+        bots.filter(
+            function(b) {
+
+                return b !== bot;
+
+            }
+        );
+
+
+    score +=
+        100;
+
+
+    updateHUD();
+
+
+    setTimeout(
+        function() {
+
+            if (
+                gameStarted
+            ) {
+
+                createBot();
+
+            }
+
+        },
+        2000
+    );
+
+}
+
+
+/* =========================
+   OYUNCU HASAR
+========================= */
+
+function damagePlayer(
+    amount
+) {
 
     health -=
         amount;
@@ -1309,7 +1869,7 @@ function damagePlayer(amount) {
                 "none";
 
         },
-        100
+        120
     );
 
 
@@ -1335,7 +1895,7 @@ function reload() {
 
     if (
         reloading ||
-        ammo === 30 ||
+        ammo >= 30 ||
         reserveAmmo <= 0
     ) {
 
@@ -1344,10 +1904,12 @@ function reload() {
     }
 
 
-    reloading = true;
+    reloading =
+        true;
 
-    message.textContent =
-        "ŞARJÖR DEĞİŞTİRİLİYOR...";
+
+    reloadText.style.display =
+        "block";
 
 
     setTimeout(
@@ -1359,8 +1921,11 @@ function reload() {
 
             const amount =
                 Math.min(
+
                     needed,
+
                     reserveAmmo
+
                 );
 
 
@@ -1376,14 +1941,14 @@ function reload() {
                 false;
 
 
-            message.textContent =
-                "";
+            reloadText.style.display =
+                "none";
 
 
             updateHUD();
 
         },
-        1500
+        1400
     );
 
 }
@@ -1414,6 +1979,52 @@ function updateHUD() {
 
 
 /* =========================
+   FPS
+========================= */
+
+function updateFPS(
+    delta
+) {
+
+    fpsFrames++;
+
+    fpsTime +=
+        delta;
+
+
+    if (
+        fpsTime >= 0.5
+    ) {
+
+        const fps =
+            Math.round(
+
+                fpsFrames /
+                fpsTime
+
+            );
+
+
+        fpsElement.textContent =
+
+            "FPS: " +
+
+            fps;
+
+
+        fpsFrames =
+            0;
+
+
+        fpsTime =
+            0;
+
+    }
+
+}
+
+
+/* =========================
    OYUN BİTTİ
 ========================= */
 
@@ -1436,7 +2047,7 @@ function gameOver() {
             location.reload();
 
         },
-        2000
+        2500
     );
 
 }
@@ -1464,9 +2075,17 @@ function animate() {
 
     const delta =
         Math.min(
+
             clock.getDelta(),
+
             0.05
+
         );
+
+
+    updateFPS(
+        delta
+    );
 
 
     updatePlayer(
@@ -1488,7 +2107,7 @@ function animate() {
 
 
 /* =========================
-   PENCERE BOYUTU
+   EKRAN BOYUTU
 ========================= */
 
 window.addEventListener(
@@ -1506,7 +2125,9 @@ window.addEventListener(
 
 
         camera.aspect =
+
             window.innerWidth /
+
             window.innerHeight;
 
 
