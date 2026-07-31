@@ -10,43 +10,29 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>
-    WebStrike FPS Multiplayer
-</title>
+<title>WebStrike FPS</title>
 
 <style>
 
-/* =================================
+/* =========================================
    GENEL
-================================= */
+========================================= */
 
 * {
-
-    box-sizing:
-        border-box;
-
-    margin:
-        0;
-
-    padding:
-        0;
-
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html,
 body {
 
-    width:
-        100%;
+    width: 100%;
+    height: 100%;
 
-    height:
-        100%;
+    overflow: hidden;
 
-    overflow:
-        hidden;
-
-    background:
-        #080b0f;
+    background: #080b0f;
 
     font-family:
         Arial,
@@ -54,46 +40,41 @@ body {
 
 }
 
+
+/* =========================================
+   CANVAS
+========================================= */
+
 #game {
 
-    position:
-        fixed;
+    position: fixed;
 
-    inset:
-        0;
+    inset: 0;
 
-    width:
-        100%;
+    width: 100%;
 
-    height:
-        100%;
+    height: 100%;
 
 }
 
 
-/* =================================
-   ODA MENÜSÜ
-================================= */
+/* =========================================
+   TÜM MENÜLER
+========================================= */
 
-#roomMenu {
+.menu {
 
-    position:
-        fixed;
+    position: fixed;
 
-    inset:
-        0;
+    inset: 0;
 
-    z-index:
-        9999;
+    z-index: 100;
 
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    justify-content: center;
 
-    justify-content:
-        center;
+    align-items: center;
 
     background:
 
@@ -101,7 +82,7 @@ body {
 
             circle,
 
-            #263e59,
+            #243c55,
 
             #05070a 75%
 
@@ -109,639 +90,669 @@ body {
 
 }
 
-.roomBox {
 
-    width:
-        430px;
+.menuBox {
 
-    max-width:
-        90%;
+    width: 460px;
 
-    padding:
-        40px;
+    max-width: 92%;
 
-    text-align:
-        center;
+    padding: 35px;
 
-    color:
-        white;
+    color: white;
+
+    text-align: center;
 
     background:
+
         rgba(
+
             10,
+
             15,
+
             22,
-            .96
+
+            .97
+
         );
 
     border:
+
         1px solid
+
         rgba(
+
             255,
+
             255,
+
             255,
+
             .15
+
         );
 
-    border-radius:
-        18px;
+    border-radius: 18px;
 
     box-shadow:
 
         0 20px 80px
 
         rgba(
+
             0,
+
             0,
+
             0,
+
             .8
+
         );
 
 }
 
-.roomBox h1 {
 
-    font-size:
-        40px;
+.menuBox h1 {
 
-    letter-spacing:
-        5px;
+    font-size: 42px;
 
-    margin-bottom:
-        5px;
+    letter-spacing: 5px;
+
+    margin-bottom: 10px;
 
 }
 
-.subtitle {
 
-    color:
-        #8995a3;
+.menuBox h2 {
 
-    margin-bottom:
-        30px;
+    margin-bottom: 25px;
 
 }
 
-.roomBox input {
 
-    width:
-        100%;
+.menuButton {
 
-    padding:
-        15px;
+    width: 100%;
 
-    margin-top:
-        10px;
+    padding: 15px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #e63946;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.menuButton:hover {
+
+    background: #ff5965;
+
+}
+
+
+.backButton {
+
+    background: #39424d;
+
+}
+
+
+.backButton:hover {
+
+    background: #4d5965;
+
+}
+
+
+/* =========================================
+   SEÇİM BUTONLARI
+========================================= */
+
+.option {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 10px;
 
     border:
+
         1px solid
-        #444;
 
-    border-radius:
-        8px;
+        #454d56;
 
-    background:
-        #151a21;
+    border-radius: 8px;
 
-    color:
-        white;
+    background: #171d24;
 
-    text-align:
-        center;
+    color: white;
 
-    font-size:
-        18px;
-
-    text-transform:
-        uppercase;
-
-    outline:
-        none;
+    cursor: pointer;
 
 }
 
-.roomBox button {
 
-    width:
-        100%;
+.option.active {
 
-    padding:
-        15px;
+    border-color: #e63946;
 
-    margin-top:
-        10px;
+    background: #64252b;
+
+}
+
+
+.option:hover {
+
+    background: #252d36;
+
+}
+
+
+select {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 10px;
+
+    border-radius: 8px;
 
     border:
-        none;
 
-    border-radius:
-        8px;
+        1px solid
 
-    background:
-        #e63946;
+        #454d56;
 
-    color:
-        white;
+    background: #171d24;
 
-    font-size:
-        17px;
+    color: white;
 
-    font-weight:
-        bold;
-
-    cursor:
-        pointer;
+    font-size: 16px;
 
 }
 
-.roomBox button:hover {
 
-    background:
-        #ff5662;
+input {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 10px;
+
+    border-radius: 8px;
+
+    border:
+
+        1px solid
+
+        #454d56;
+
+    background: #171d24;
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 17px;
+
+    text-transform: uppercase;
 
 }
 
-.divider {
-
-    margin:
-        25px 0;
-
-    color:
-        #687382;
-
-}
 
 #roomMessage {
 
-    margin-top:
-        20px;
+    min-height: 25px;
 
-    min-height:
-        25px;
+    margin-top: 15px;
 
-    color:
-        #54e68b;
+    color: #55e68a;
 
 }
 
 
-/* =================================
+/* =========================================
+   HARİTA KARTLARI
+========================================= */
+
+.maps {
+
+    display: grid;
+
+    grid-template-columns:
+
+        1fr 1fr;
+
+    gap: 10px;
+
+}
+
+
+.mapCard {
+
+    padding: 20px;
+
+    border:
+
+        2px solid
+
+        #333;
+
+    border-radius: 10px;
+
+    background: #161c22;
+
+    cursor: pointer;
+
+}
+
+
+.mapCard.active {
+
+    border-color:
+
+        #e63946;
+
+}
+
+
+.mapCard:hover {
+
+    background:
+
+        #222b34;
+
+}
+
+
+.mapIcon {
+
+    font-size: 35px;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* =========================================
    HUD
-================================= */
+========================================= */
 
 #hud {
 
-    display:
-        none;
+    display: none;
 
-    position:
-        fixed;
+    position: fixed;
 
-    inset:
-        0;
+    inset: 0;
 
-    z-index:
-        10;
+    z-index: 20;
 
-    pointer-events:
-        none;
+    color: white;
 
-    color:
-        white;
+    pointer-events: none;
 
 }
+
 
 #fps {
 
-    position:
-        absolute;
+    position: absolute;
 
-    top:
-        15px;
+    top: 15px;
 
-    left:
-        15px;
+    left: 15px;
 
-    padding:
-        8px 12px;
+    padding: 8px 12px;
 
     background:
+
         rgba(
+
             0,
+
             0,
+
             0,
+
             .55
+
         );
 
-    border-radius:
-        6px;
+    border-radius: 6px;
 
 }
+
 
 #roomInfo {
 
-    position:
-        absolute;
+    position: absolute;
 
-    top:
-        55px;
+    top: 55px;
 
-    left:
-        15px;
+    left: 15px;
 
-    padding:
-        7px 12px;
+    padding: 7px 12px;
 
     background:
+
         rgba(
+
             0,
+
             0,
+
             0,
+
             .55
+
         );
 
-    border-radius:
-        6px;
+    border-radius: 6px;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
 }
+
 
 #score {
 
-    position:
-        absolute;
+    position: absolute;
 
-    top:
-        20px;
+    top: 20px;
 
-    right:
-        20px;
+    right: 20px;
 
-    padding:
-        10px 15px;
+    padding: 10px 15px;
 
     background:
+
         rgba(
+
             0,
+
             0,
+
             0,
+
             .55
+
         );
 
-    border-radius:
-        7px;
+    border-radius: 7px;
 
 }
+
 
 #crosshair {
 
-    position:
-        absolute;
+    position: absolute;
 
-    left:
-        50%;
+    left: 50%;
 
-    top:
-        50%;
+    top: 50%;
 
-    width:
-        22px;
+    width: 22px;
 
-    height:
-        22px;
+    height: 22px;
 
     transform:
+
         translate(
+
             -50%,
+
             -50%
+
         );
 
 }
+
 
 #crosshair::before {
 
-    content:
-        "";
+    content: "";
 
-    position:
-        absolute;
+    position: absolute;
 
-    left:
-        10px;
+    left: 10px;
 
-    width:
-        2px;
+    width: 2px;
 
-    height:
-        22px;
+    height: 22px;
 
-    background:
-        white;
+    background: white;
 
 }
+
 
 #crosshair::after {
 
-    content:
-        "";
+    content: "";
 
-    position:
-        absolute;
+    position: absolute;
 
-    top:
-        10px;
+    top: 10px;
 
-    width:
-        22px;
+    width: 22px;
 
-    height:
-        2px;
+    height: 2px;
 
-    background:
-        white;
+    background: white;
 
 }
+
 
 #stats {
 
-    position:
-        absolute;
+    position: absolute;
 
-    left:
-        20px;
+    left: 20px;
 
-    bottom:
-        20px;
+    bottom: 20px;
 
-    width:
-        220px;
+    width: 220px;
 
-    padding:
-        15px;
+    padding: 15px;
 
     background:
+
         rgba(
+
             0,
+
             0,
+
             0,
+
             .65
+
         );
 
-    border-radius:
-        10px;
+    border-radius: 10px;
 
 }
+
 
 #health-bar {
 
-    width:
-        100%;
+    width: 100%;
 
-    height:
-        12px;
+    height: 12px;
 
-    margin-top:
-        8px;
+    margin-top: 8px;
 
-    background:
-        #333;
+    background: #333;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
-    overflow:
-        hidden;
+    overflow: hidden;
 
 }
+
 
 #health-fill {
 
-    width:
-        100%;
+    width: 100%;
 
-    height:
-        100%;
+    height: 100%;
 
-    background:
-        #28d66c;
+    background: #28d66c;
 
 }
+
 
 #ammo {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        25px;
+    right: 25px;
 
-    bottom:
-        25px;
+    bottom: 25px;
 
-    font-size:
-        28px;
+    font-size: 28px;
 
-    font-weight:
-        bold;
-
-}
-
-#damage {
-
-    display:
-        none;
-
-    position:
-        fixed;
-
-    inset:
-        0;
-
-    z-index:
-        9;
-
-    background:
-        rgba(
-            255,
-            0,
-            0,
-            .25
-        );
-
-    pointer-events:
-        none;
+    font-weight: bold;
 
 }
 
 
-/* =================================
+/* =========================================
    SİLAH
-================================= */
+========================================= */
 
 #weapon {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        7%;
+    right: 7%;
 
-    bottom:
-        0;
+    bottom: 0;
 
-    width:
-        330px;
+    width: 330px;
 
-    height:
-        170px;
-
-    transform:
-        rotate(
-            -5deg
-        );
+    height: 170px;
 
 }
+
 
 .weapon-main {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        20px;
+    right: 20px;
 
-    bottom:
-        50px;
+    bottom: 50px;
 
-    width:
-        240px;
+    width: 240px;
 
-    height:
-        50px;
+    height: 50px;
 
-    background:
-        #1b1b1b;
+    background: #1b1b1b;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
 }
+
 
 .weapon-barrel {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        250px;
+    right: 250px;
 
-    bottom:
-        67px;
+    bottom: 67px;
 
-    width:
-        100px;
+    width: 100px;
 
-    height:
-        15px;
+    height: 15px;
 
-    background:
-        #090909;
+    background: #090909;
 
 }
+
 
 .weapon-handle {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        80px;
+    right: 80px;
 
-    bottom:
-        -5px;
+    bottom: -5px;
 
-    width:
-        55px;
+    width: 55px;
 
-    height:
-        85px;
+    height: 85px;
 
-    background:
-        #222;
+    background: #222;
 
-    transform:
-        rotate(
-            12deg
-        );
+    transform: rotate(12deg);
 
 }
+
 
 .weapon-mag {
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        160px;
+    right: 160px;
 
-    bottom:
-        5px;
+    bottom: 5px;
 
-    width:
-        35px;
+    width: 35px;
 
-    height:
-        75px;
+    height: 75px;
 
-    background:
-        #111;
+    background: #111;
 
-    transform:
-        rotate(
-            12deg
-        );
+    transform: rotate(12deg);
 
 }
+
 
 #muzzle {
 
-    display:
-        none;
+    display: none;
 
-    position:
-        absolute;
+    position: absolute;
 
-    right:
-        calc(
-            7% + 345px
-        );
+    right: calc(7% + 345px);
 
-    bottom:
-        75px;
+    bottom: 75px;
 
-    width:
-        35px;
+    width: 35px;
 
-    height:
-        35px;
+    height: 35px;
 
-    background:
-        #ffb000;
+    background: #ffb000;
 
-    border-radius:
-        50%;
+    border-radius: 50%;
 
     box-shadow:
 
-        0 0 15px
-        #ff6600,
+        0 0 15px #ff6600,
 
-        0 0 40px
-        #ff9900;
+        0 0 40px #ff9900;
 
 }
+
 
 </style>
 
@@ -751,31 +762,282 @@ body {
 <body>
 
 
-<!-- =================================
-     ODA MENÜSÜ
-================================= -->
+<!-- =========================================
+     ANA MENÜ
+========================================= -->
 
-<div id="roomMenu">
+<div
+    id="mainMenu"
+    class="menu"
+>
 
-    <div class="roomBox">
+    <div class="menuBox">
 
         <h1>
             WEBSTRIKE
         </h1>
 
-        <div class="subtitle">
+        <p>
             Multiplayer FPS
-        </div>
+        </p>
 
         <button
+            class="menuButton"
+            id="playButton"
+        >
+            OYNA
+        </button>
+
+        <button
+            class="menuButton"
+            id="mapButton"
+        >
+            HARİTA SEÇ
+        </button>
+
+        <button
+            class="menuButton"
+            id="enemyButton"
+        >
+            DÜŞMAN AYARLARI
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     HARİTA MENÜSÜ
+========================================= -->
+
+<div
+    id="mapMenu"
+    class="menu"
+    style="display:none"
+>
+
+    <div class="menuBox">
+
+        <h2>
+            HARİTA SEÇ
+        </h2>
+
+        <div class="maps">
+
+            <div
+                class="mapCard active"
+                data-map="training"
+            >
+
+                <div class="mapIcon">
+                    🏕️
+                </div>
+
+                <b>
+                    Eğitim Alanı
+                </b>
+
+                <p>
+                    Açık ve geniş alan
+                </p>
+
+            </div>
+
+
+            <div
+                class="mapCard"
+                data-map="city"
+            >
+
+                <div class="mapIcon">
+                    🏙️
+                </div>
+
+                <b>
+                    Şehir
+                </b>
+
+                <p>
+                    Binalı savaş alanı
+                </p>
+
+            </div>
+
+
+            <div
+                class="mapCard"
+                data-map="desert"
+            >
+
+                <div class="mapIcon">
+                    🏜️
+                </div>
+
+                <b>
+                    Çöl
+                </b>
+
+                <p>
+                    Açık çöl haritası
+                </p>
+
+            </div>
+
+
+            <div
+                class="mapCard"
+                data-map="forest"
+            >
+
+                <div class="mapIcon">
+                    🌲
+                </div>
+
+                <b>
+                    Orman
+                </b>
+
+                <p>
+                    Ağaçlık bölge
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menuButton backButton"
+            id="mapBack"
+        >
+            GERİ
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     DÜŞMAN AYARLARI
+========================================= -->
+
+<div
+    id="enemyMenu"
+    class="menu"
+    style="display:none"
+>
+
+    <div class="menuBox">
+
+        <h2>
+            DÜŞMAN AYARLARI
+        </h2>
+
+
+        <button
+            id="botsOff"
+            class="option active"
+        >
+            DÜŞMANLAR KAPALI
+        </button>
+
+
+        <button
+            id="botsOn"
+            class="option"
+        >
+            DÜŞMANLAR AÇIK
+        </button>
+
+
+        <select id="botCount">
+
+            <option value="1">
+                1 Düşman
+            </option>
+
+            <option value="3">
+                3 Düşman
+            </option>
+
+            <option value="5">
+                5 Düşman
+            </option>
+
+            <option value="10">
+                10 Düşman
+            </option>
+
+            <option value="20">
+                20 Düşman
+            </option>
+
+        </select>
+
+
+        <select id="difficulty">
+
+            <option value="easy">
+                Kolay
+            </option>
+
+            <option
+                value="normal"
+                selected
+            >
+                Normal
+            </option>
+
+            <option value="hard">
+                Zor
+            </option>
+
+        </select>
+
+
+        <button
+            class="menuButton backButton"
+            id="enemyBack"
+        >
+            GERİ
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     ODA MENÜSÜ
+========================================= -->
+
+<div
+    id="roomMenu"
+    class="menu"
+    style="display:none"
+>
+
+    <div class="menuBox">
+
+        <h2>
+            MULTIPLAYER
+        </h2>
+
+
+        <button
+            class="menuButton"
             id="createRoomBtn"
         >
             ODA OLUŞTUR
         </button>
 
-        <div class="divider">
+
+        <p style="margin:20px">
             VEYA
-        </div>
+        </p>
+
 
         <input
             id="roomCodeInput"
@@ -783,31 +1045,40 @@ body {
             placeholder="ODA KODU"
         >
 
+
         <button
+            class="menuButton"
             id="joinRoomBtn"
         >
             ODAYA KATIL
         </button>
 
+
         <div id="roomMessage"></div>
+
+
+        <button
+            class="menuButton backButton"
+            id="roomBack"
+        >
+            GERİ
+        </button>
 
     </div>
 
 </div>
 
 
-<!-- =================================
+<!-- =========================================
      OYUN
-================================= -->
+========================================= -->
 
-<canvas
-    id="game"
-></canvas>
+<canvas id="game"></canvas>
 
 
-<!-- =================================
+<!-- =========================================
      HUD
-================================= -->
+========================================= -->
 
 <div id="hud">
 
@@ -815,15 +1086,19 @@ body {
         FPS: 0
     </div>
 
+
     <div id="roomInfo">
         Oda: -
     </div>
+
 
     <div id="score">
         Skor: 0
     </div>
 
+
     <div id="crosshair"></div>
+
 
     <div id="stats">
 
@@ -833,15 +1108,15 @@ body {
             100
         </span>
 
+
         <div id="health-bar">
 
-            <div
-                id="health-fill"
-            ></div>
+            <div id="health-fill"></div>
 
         </div>
 
     </div>
+
 
     <div id="ammo">
 
@@ -852,6 +1127,7 @@ body {
         / 120
 
     </div>
+
 
     <div id="weapon">
 
@@ -873,17 +1149,13 @@ body {
 
     </div>
 
+
     <div id="muzzle"></div>
 
 </div>
 
 
-<div id="damage"></div>
-
-
-<!-- =================================
-     THREE.JS
-================================= -->
+<!-- THREE.JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js">
 </script>
@@ -892,9 +1164,33 @@ body {
 <script>
 
 
-/* =================================
-   DEĞİŞKENLER
-================================= */
+/* =========================================
+   OYUN AYARLARI
+========================================= */
+
+let selectedMap =
+    "training";
+
+
+let botsEnabled =
+    false;
+
+
+let botCount =
+    1;
+
+
+let difficulty =
+    "normal";
+
+
+let currentRoom =
+    "";
+
+
+/* =========================================
+   OYUN DEĞİŞKENLERİ
+========================================= */
 
 let scene;
 
@@ -908,65 +1204,64 @@ let player;
 
 let bots = [];
 
-let health = 100;
+let health =
+    100;
 
-let score = 0;
+let score =
+    0;
 
-let ammo = 30;
+let ammo =
+    30;
 
-let reserveAmmo = 120;
+let reserveAmmo =
+    120;
 
-let canShoot = true;
+let yaw =
+    0;
 
-let reloading = false;
+let pitch =
+    0;
 
-let gameStarted = false;
+let canShoot =
+    true;
 
-let yaw = 0;
+let reloading =
+    false;
 
-let pitch = 0;
-
-let fpsFrames = 0;
-
-let fpsTime = 0;
+let gameStarted =
+    false;
 
 let keys = {};
 
-let currentRoom = "";
+let fpsFrames =
+    0;
+
+let fpsTime =
+    0;
 
 
-/* =================================
-   HTML
-================================= */
+/* =========================================
+   MENÜLER
+========================================= */
+
+const mainMenu =
+    document.getElementById(
+        "mainMenu"
+    );
+
+const mapMenu =
+    document.getElementById(
+        "mapMenu"
+    );
+
+const enemyMenu =
+    document.getElementById(
+        "enemyMenu"
+    );
 
 const roomMenu =
     document.getElementById(
         "roomMenu"
-    );
-
-const createRoomBtn =
-    document.getElementById(
-        "createRoomBtn"
-    );
-
-const joinRoomBtn =
-    document.getElementById(
-        "joinRoomBtn"
-    );
-
-const roomCodeInput =
-    document.getElementById(
-        "roomCodeInput"
-    );
-
-const roomMessage =
-    document.getElementById(
-        "roomMessage"
-    );
-
-const roomInfo =
-    document.getElementById(
-        "roomInfo"
     );
 
 const hud =
@@ -975,26 +1270,240 @@ const hud =
     );
 
 
-/* =================================
-   ODA KODU
-================================= */
+/* =========================================
+   ANA MENÜ
+========================================= */
+
+document
+    .getElementById(
+        "playButton"
+    )
+    .onclick = function() {
+
+        mainMenu.style.display =
+            "none";
+
+        roomMenu.style.display =
+            "flex";
+
+    };
+
+
+document
+    .getElementById(
+        "mapButton"
+    )
+    .onclick = function() {
+
+        mainMenu.style.display =
+            "none";
+
+        mapMenu.style.display =
+            "flex";
+
+    };
+
+
+document
+    .getElementById(
+        "enemyButton"
+    )
+    .onclick = function() {
+
+        mainMenu.style.display =
+            "none";
+
+        enemyMenu.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================
+   HARİTA SEÇİMİ
+========================================= */
+
+document
+    .querySelectorAll(
+        ".mapCard"
+    )
+    .forEach(
+
+        function(card) {
+
+            card.onclick = function() {
+
+                document
+                    .querySelectorAll(
+                        ".mapCard"
+                    )
+                    .forEach(
+
+                        c =>
+
+                            c.classList
+                                .remove(
+                                    "active"
+                                )
+
+                    );
+
+
+                card.classList
+                    .add(
+                        "active"
+                    );
+
+
+                selectedMap =
+
+                    card.dataset.map;
+
+            };
+
+        }
+
+    );
+
+
+document
+    .getElementById(
+        "mapBack"
+    )
+    .onclick = function() {
+
+        mapMenu.style.display =
+            "none";
+
+        mainMenu.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================
+   DÜŞMAN AYARLARI
+========================================= */
+
+const botsOff =
+    document.getElementById(
+        "botsOff"
+    );
+
+const botsOn =
+    document.getElementById(
+        "botsOn"
+    );
+
+
+botsOff.onclick = function() {
+
+    botsEnabled =
+        false;
+
+    botsOff.classList
+        .add(
+            "active"
+        );
+
+    botsOn.classList
+        .remove(
+            "active"
+        );
+
+};
+
+
+botsOn.onclick = function() {
+
+    botsEnabled =
+        true;
+
+    botsOn.classList
+        .add(
+            "active"
+        );
+
+    botsOff.classList
+        .remove(
+            "active"
+        );
+
+};
+
+
+document
+    .getElementById(
+        "botCount"
+    )
+    .onchange = function(e) {
+
+        botCount =
+
+            Number(
+                e.target.value
+            );
+
+    };
+
+
+document
+    .getElementById(
+        "difficulty"
+    )
+    .onchange = function(e) {
+
+        difficulty =
+
+            e.target.value;
+
+    };
+
+
+document
+    .getElementById(
+        "enemyBack"
+    )
+    .onclick = function() {
+
+        enemyMenu.style.display =
+            "none";
+
+        mainMenu.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================
+   ODA SİSTEMİ
+========================================= */
 
 function generateRoomCode() {
 
     const chars =
+
         "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-    let code = "";
+
+    let code =
+        "";
+
 
     for (
+
         let i = 0;
+
         i < 6;
+
         i++
+
     ) {
 
         code +=
 
             chars[
+
                 Math.floor(
 
                     Math.random() *
@@ -1002,112 +1511,132 @@ function generateRoomCode() {
                     chars.length
 
                 )
+
             ];
 
     }
+
 
     return code;
 
 }
 
 
-/* =================================
-   ODA OLUŞTUR
-================================= */
+document
+    .getElementById(
+        "createRoomBtn"
+    )
+    .onclick = function() {
 
-createRoomBtn.onclick =
-function() {
+        currentRoom =
 
-    currentRoom =
-        generateRoomCode();
-
-
-    roomMessage.textContent =
-
-        "Oda oluşturuldu: " +
-
-        currentRoom;
+            generateRoomCode();
 
 
-    roomInfo.textContent =
+        document
+            .getElementById(
+                "roomMessage"
+            )
+            .textContent =
 
-        "Oda: " +
+                "Oda oluşturuldu: " +
 
-        currentRoom;
-
-
-    setTimeout(
-
-        startGame,
-
-        1200
-
-    );
-
-};
+                currentRoom;
 
 
-/* =================================
-   ODAYA KATIL
-================================= */
+        setTimeout(
 
-joinRoomBtn.onclick =
-function() {
+            startGame,
 
-    const code =
+            1000
 
-        roomCodeInput.value
+        );
 
-        .trim()
-
-        .toUpperCase();
+    };
 
 
-    if (
-        code.length !== 6
-    ) {
+document
+    .getElementById(
+        "joinRoomBtn"
+    )
+    .onclick = function() {
 
-        roomMessage.textContent =
+        const code =
 
-            "6 haneli oda kodu gir.";
+            document
+                .getElementById(
+                    "roomCodeInput"
+                )
+                .value
 
-        return;
+                .trim()
 
-    }
-
-
-    currentRoom =
-        code;
-
-
-    roomMessage.textContent =
-
-        "Odaya katılıyorsun: " +
-
-        currentRoom;
+                .toUpperCase();
 
 
-    roomInfo.textContent =
+        if (
 
-        "Oda: " +
+            code.length !== 6
 
-        currentRoom;
+        ) {
+
+            document
+                .getElementById(
+                    "roomMessage"
+                )
+                .textContent =
+
+                    "6 haneli kod gir.";
+
+            return;
+
+        }
 
 
-    setTimeout(
-
-        startGame,
-
-        1000
-
-    );
-
-};
+        currentRoom =
+            code;
 
 
-/* =================================
-   OYUNU BAŞLAT
-================================= */
+        document
+            .getElementById(
+                "roomMessage"
+            )
+            .textContent =
+
+                "Odaya katıldın: " +
+
+                code;
+
+
+        setTimeout(
+
+            startGame,
+
+            1000
+
+        );
+
+    };
+
+
+document
+    .getElementById(
+        "roomBack"
+    )
+    .onclick = function() {
+
+        roomMenu.style.display =
+            "none";
+
+        mainMenu.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================
+   OYUN BAŞLAT
+========================================= */
 
 function startGame() {
 
@@ -1122,14 +1651,22 @@ function startGame() {
 
     init();
 
-    document.body.requestPointerLock();
+    document
+        .getElementById(
+            "roomInfo"
+        )
+        .textContent =
+
+            "Oda: " +
+
+            currentRoom;
 
 }
 
 
-/* =================================
-   THREE.JS BAŞLAT
-================================= */
+/* =========================================
+   THREE.JS
+========================================= */
 
 function init() {
 
@@ -1138,20 +1675,41 @@ function init() {
 
 
     scene.background =
+
         new THREE.Color(
-            0x87a9c7
+
+            selectedMap === "desert"
+
+                ? 0xc9a66b
+
+                : selectedMap === "forest"
+
+                ? 0x557755
+
+                : selectedMap === "city"
+
+                ? 0x70757a
+
+                : 0x87a9c7
+
         );
 
 
     scene.fog =
+
         new THREE.Fog(
-            0x87a9c7,
+
+            scene.background,
+
             30,
-            120
+
+            130
+
         );
 
 
     camera =
+
         new THREE.PerspectiveCamera(
 
             75,
@@ -1168,9 +1726,11 @@ function init() {
 
 
     renderer =
+
         new THREE.WebGLRenderer({
 
             canvas:
+
                 document.getElementById(
                     "game"
                 ),
@@ -1210,9 +1770,7 @@ function init() {
         new THREE.Clock();
 
 
-    /* IŞIK */
-
-    const ambient =
+    const light =
 
         new THREE.HemisphereLight(
 
@@ -1220,44 +1778,15 @@ function init() {
 
             0x444444,
 
-            1.2
+            1.3
 
         );
 
 
     scene.add(
-        ambient
+        light
     );
 
-
-    const sun =
-
-        new THREE.DirectionalLight(
-
-            0xffffff,
-
-            1.5
-
-        );
-
-
-    sun.position.set(
-
-        30,
-
-        50,
-
-        20
-
-    );
-
-
-    scene.add(
-        sun
-    );
-
-
-    /* OYUNCU */
 
     player = {
 
@@ -1288,20 +1817,78 @@ function init() {
 
     createMap();
 
-    createBots();
+
+    if (
+        botsEnabled
+    ) {
+
+        for (
+
+            let i = 0;
+
+            i < botCount;
+
+            i++
+
+        ) {
+
+            createBot();
+
+        }
+
+    }
+
 
     setupControls();
+
 
     animate();
 
 }
 
 
-/* =================================
+/* =========================================
    HARİTA
-================================= */
+========================================= */
 
 function createMap() {
+
+    let floorColor =
+        0x555b60;
+
+
+    if (
+        selectedMap ===
+        "desert"
+    ) {
+
+        floorColor =
+            0xc9a66b;
+
+    }
+
+
+    if (
+        selectedMap ===
+        "forest"
+    ) {
+
+        floorColor =
+            0x416b45;
+
+    }
+
+
+    if (
+        selectedMap ===
+        "city"
+    ) {
+
+        floorColor =
+            0x666a70;
+
+    }
+
 
     const floor =
 
@@ -1318,7 +1905,7 @@ function createMap() {
             new THREE.MeshStandardMaterial({
 
                 color:
-                    0x555b60
+                    floorColor
 
             })
 
@@ -1335,59 +1922,6 @@ function createMap() {
     );
 
 
-    /* MAVİ BÖLGE */
-
-    createZone(
-
-        -25,
-
-        0,
-
-        20,
-
-        25,
-
-        0x286090
-
-    );
-
-
-    /* KIRMIZI BÖLGE */
-
-    createZone(
-
-        25,
-
-        0,
-
-        20,
-
-        25,
-
-        0x904040
-
-    );
-
-
-    /* YEŞİL BÖLGE */
-
-    createZone(
-
-        0,
-
-        -25,
-
-        35,
-
-        20,
-
-        0x3d8050
-
-    );
-
-
-    /* DIŞ DUVARLAR */
-
     createWall(
 
         0,
@@ -1456,102 +1990,144 @@ function createMap() {
     );
 
 
-    /* İÇ DUVAR */
+    if (
 
-    createWall(
+        selectedMap ===
 
-        0,
+        "city"
 
-        2,
+    ) {
 
-        10,
+        for (
 
-        2,
+            let i = 0;
 
-        4,
+            i < 12;
 
-        25
+            i++
 
-    );
+        ) {
+
+            createWall(
+
+                Math.random() *
+
+                60 -
+
+                30,
+
+                2,
+
+                Math.random() *
+
+                60 -
+
+                30,
+
+                5,
+
+                4,
+
+                5
+
+            );
+
+        }
+
+    }
+
+
+    if (
+
+        selectedMap ===
+
+        "forest"
+
+    ) {
+
+        for (
+
+            let i = 0;
+
+            i < 20;
+
+            i++
+
+        ) {
+
+            createTree(
+
+                Math.random() *
+
+                70 -
+
+                35,
+
+                Math.random() *
+
+                70 -
+
+                35
+
+            );
+
+        }
+
+    }
+
+
+    if (
+
+        selectedMap ===
+
+        "desert"
+
+    ) {
+
+        for (
+
+            let i = 0;
+
+            i < 12;
+
+            i++
+
+        ) {
+
+            createWall(
+
+                Math.random() *
+
+                70 -
+
+                35,
+
+                1,
+
+                Math.random() *
+
+                70 -
+
+                35,
+
+                4,
+
+                2,
+
+                4
+
+            );
+
+        }
+
+    }
 
 }
 
 
-/* =================================
-   BÖLGE
-================================= */
-
-function createZone(
-
-    x,
-
-    z,
-
-    width,
-
-    depth,
-
-    color
-
-) {
-
-    const zone =
-
-        new THREE.Mesh(
-
-            new THREE.PlaneGeometry(
-
-                width,
-
-                depth
-
-            ),
-
-            new THREE.MeshBasicMaterial({
-
-                color:
-
-                    color,
-
-                transparent:
-
-                    true,
-
-                opacity:
-
-                    .25
-
-            })
-
-        );
-
-
-    zone.rotation.x =
-
-        -Math.PI / 2;
-
-
-    zone.position.set(
-
-        x,
-
-        .01,
-
-        z
-
-    );
-
-
-    scene.add(
-        zone
-    );
-
-}
-
-
-/* =================================
+/* =========================================
    DUVAR
-================================= */
+========================================= */
 
 function createWall(
 
@@ -1586,7 +2162,6 @@ function createWall(
             new THREE.MeshStandardMaterial({
 
                 color:
-
                     0x777b80
 
             })
@@ -1612,28 +2187,103 @@ function createWall(
 }
 
 
-/* =================================
-   BOTLAR
-================================= */
+/* =========================================
+   AĞAÇ
+========================================= */
 
-function createBots() {
+function createTree(
 
-    for (
+    x,
 
-        let i = 0;
+    z
 
-        i < 8;
+) {
 
-        i++
+    const trunk =
 
-    ) {
+        new THREE.Mesh(
 
-        createBot();
+            new THREE.CylinderGeometry(
 
-    }
+                .3,
+
+                .4,
+
+                3
+
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x654321
+
+            })
+
+        );
+
+
+    trunk.position.set(
+
+        x,
+
+        1.5,
+
+        z
+
+    );
+
+
+    scene.add(
+        trunk
+    );
+
+
+    const leaves =
+
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+
+                2,
+
+                8,
+
+                8
+
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x236b35
+
+            })
+
+        );
+
+
+    leaves.position.set(
+
+        x,
+
+        4,
+
+        z
+
+    );
+
+
+    scene.add(
+        leaves
+    );
 
 }
 
+
+/* =========================================
+   BOT
+========================================= */
 
 function createBot() {
 
@@ -1659,8 +2309,7 @@ function createBot() {
             new THREE.MeshStandardMaterial({
 
                 color:
-
-                    0x263d9c
+                    0x8b2020
 
             })
 
@@ -1693,7 +2342,6 @@ function createBot() {
             new THREE.MeshStandardMaterial({
 
                 color:
-
                     0xffc49b
 
             })
@@ -1710,66 +2358,49 @@ function createBot() {
     );
 
 
-    /* DÜŞMAN SİLAHI */
-
-    const gun =
-
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-
-                .15,
-
-                .15,
-
-                1
-
-            ),
-
-            new THREE.MeshStandardMaterial({
-
-                color:
-
-                    0x111111
-
-            })
-
-        );
-
-
-    gun.position.set(
-
-        .55,
-
-        1,
-
-        -.5
-
-    );
-
-
-    bot.add(
-        gun
-    );
-
-
     bot.position.set(
 
         Math.random() *
 
-        65 -
+        60 -
 
-        32,
+        30,
 
         0,
 
         Math.random() *
 
-        65 -
+        60 -
 
-        25
+        20
 
     );
+
+
+    let speed =
+        1.5;
+
+
+    if (
+        difficulty ===
+        "easy"
+    ) {
+
+        speed =
+            1;
+
+    }
+
+
+    if (
+        difficulty ===
+        "hard"
+    ) {
+
+        speed =
+            3;
+
+    }
 
 
     bot.userData = {
@@ -1778,10 +2409,7 @@ function createBot() {
             100,
 
         speed:
-            1.5,
-
-        shootTimer:
-            1
+            speed
 
     };
 
@@ -1798,12 +2426,11 @@ function createBot() {
 }
 
 
-/* =================================
+/* =========================================
    KONTROLLER
-================================= */
+========================================= */
 
 function setupControls() {
-
 
     document.addEventListener(
 
@@ -1819,7 +2446,6 @@ function setupControls() {
             if (
 
                 e.code ===
-
                 "KeyR"
 
             ) {
@@ -1864,11 +2490,8 @@ function setupControls() {
                     "game"
                 )
 
-            ) {
-
+            )
                 return;
-
-            }
 
 
             yaw -=
@@ -1928,15 +2551,34 @@ function setupControls() {
 
     );
 
+
+    document
+        .getElementById(
+            "game"
+        )
+        .addEventListener(
+
+            "click",
+
+            function() {
+
+                this.requestPointerLock();
+
+            }
+
+        );
+
 }
 
 
-/* =================================
-   OYUNCU
-================================= */
+/* =========================================
+   OYUNCU HAREKETİ
+========================================= */
 
 function updatePlayer(
+
     delta
+
 ) {
 
     const direction =
@@ -1944,11 +2586,15 @@ function updatePlayer(
         new THREE.Vector3();
 
 
+    /* W = İLERİ */
+
     if (
         keys["KeyW"]
     )
         direction.z -= 1;
 
+
+    /* S = GERİ */
 
     if (
         keys["KeyS"]
@@ -1956,11 +2602,15 @@ function updatePlayer(
         direction.z += 1;
 
 
+    /* A = SOL */
+
     if (
         keys["KeyA"]
     )
         direction.x -= 1;
 
+
+    /* D = SAĞ */
 
     if (
         keys["KeyD"]
@@ -2007,6 +2657,8 @@ function updatePlayer(
         );
 
 
+    /* İLERİ GERİ */
+
     player.position.add(
 
         forward.multiplyScalar(
@@ -2021,6 +2673,8 @@ function updatePlayer(
 
     );
 
+
+    /* SAĞ SOL */
 
     player.position.add(
 
@@ -2095,9 +2749,9 @@ function updatePlayer(
 }
 
 
-/* =================================
+/* =========================================
    ATEŞ
-================================= */
+========================================= */
 
 function shoot() {
 
@@ -2105,31 +2759,22 @@ function shoot() {
 
         !canShoot ||
 
-        reloading
+        reloading ||
+
+        ammo <= 0
 
     )
         return;
 
 
-    if (
-        ammo <= 0
-    ) {
-
-        reload();
-
-        return;
-
-    }
-
-
     ammo--;
-
-
-    updateHUD();
 
 
     canShoot =
         false;
+
+
+    updateHUD();
 
 
     setTimeout(
@@ -2149,14 +2794,11 @@ function shoot() {
     const muzzle =
 
         document.getElementById(
-
             "muzzle"
-
         );
 
 
     muzzle.style.display =
-
         "block";
 
 
@@ -2165,7 +2807,6 @@ function shoot() {
         function() {
 
             muzzle.style.display =
-
                 "none";
 
         },
@@ -2200,25 +2841,20 @@ function shoot() {
 
     bots.forEach(
 
-        function(bot) {
+        bot => {
 
             bot.traverse(
 
-                function(child) {
+                child => {
 
                     if (
 
                         child.isMesh
 
-                    ) {
-
+                    )
                         objects.push(
-
                             child
-
                         );
-
-                    }
 
                 }
 
@@ -2240,9 +2876,7 @@ function shoot() {
 
     if (
 
-        hits.length >
-
-        0
+        hits.length > 0
 
     ) {
 
@@ -2260,7 +2894,6 @@ function shoot() {
         ) {
 
             bot =
-
                 bot.parent;
 
         }
@@ -2282,14 +2915,30 @@ function shoot() {
             if (
 
                 bot.userData.health <=
-
                 0
 
             ) {
 
-                killBot(
+                scene.remove(
                     bot
                 );
+
+
+                bots =
+
+                    bots.filter(
+
+                        b =>
+                            b !== bot
+
+                    );
+
+
+                score +=
+                    100;
+
+
+                updateHUD();
 
             }
 
@@ -2300,63 +2949,52 @@ function shoot() {
 }
 
 
-/* =================================
-   BOT AI
-================================= */
+/* =========================================
+   BOT HAREKETİ
+========================================= */
 
 function updateBots(
+
     delta
+
 ) {
+
+    if (
+        !botsEnabled
+    )
+        return;
+
 
     bots.forEach(
 
-        function(bot) {
+        bot => {
 
-            const distance =
+            const direction =
 
-                bot.position.distanceTo(
+                new THREE.Vector3()
 
-                    player.position
+                .subVectors(
 
-                );
+                    player.position,
 
+                    bot.position
 
-            if (
+                )
 
-                distance >
-
-                5
-
-            ) {
-
-                const direction =
-
-                    new THREE.Vector3()
-
-                    .subVectors(
-
-                        player.position,
-
-                        bot.position
-
-                    )
-
-                    .normalize();
+                .normalize();
 
 
-                bot.position.add(
+            bot.position.add(
 
-                    direction.multiplyScalar(
+                direction.multiplyScalar(
 
-                        bot.userData.speed *
+                    bot.userData.speed *
 
-                        delta
+                    delta
 
-                    )
+                )
 
-                );
-
-            }
+            );
 
 
             bot.lookAt(
@@ -2370,47 +3008,26 @@ function updateBots(
             );
 
 
-            bot.userData.shootTimer -=
-
-                delta;
-
-
             if (
 
-                distance <
+                bot.position.distanceTo(
 
-                25 &&
+                    player.position
 
-                bot.userData.shootTimer <=
-
-                0
+                ) < 3
 
             ) {
 
-                if (
+                damagePlayer(
 
-                    Math.random() <
+                    difficulty ===
+                    "hard"
 
-                    .4
+                        ? 15
 
-                ) {
+                        : 5
 
-                    damagePlayer(
-
-                        10
-
-                    );
-
-                }
-
-
-                bot.userData.shootTimer =
-
-                    1 +
-
-                    Math.random() *
-
-                    2;
+                );
 
             }
 
@@ -2421,67 +3038,14 @@ function updateBots(
 }
 
 
-/* =================================
-   BOT ÖLDÜR
-================================= */
-
-function killBot(
-    bot
-) {
-
-    scene.remove(
-        bot
-    );
-
-
-    bots =
-
-        bots.filter(
-
-            b =>
-
-                b !== bot
-
-        );
-
-
-    score +=
-
-        100;
-
-
-    updateHUD();
-
-
-    setTimeout(
-
-        function() {
-
-            if (
-
-                gameStarted
-
-            ) {
-
-                createBot();
-
-            }
-
-        },
-
-        2000
-
-    );
-
-}
-
-
-/* =================================
+/* =========================================
    HASAR
-================================= */
+========================================= */
 
 function damagePlayer(
+
     amount
+
 ) {
 
     health -=
@@ -2500,47 +3064,17 @@ function damagePlayer(
         );
 
 
-    document.getElementById(
-
-        "damage"
-
-    ).style.display =
-
-        "block";
-
-
-    setTimeout(
-
-        function() {
-
-            document.getElementById(
-
-                "damage"
-
-            ).style.display =
-
-                "none";
-
-        },
-
-        120
-
-    );
-
-
     updateHUD();
 
 
     if (
 
         health <=
-
         0
 
     ) {
 
         health =
-
             100;
 
 
@@ -2554,14 +3088,17 @@ function damagePlayer(
 
         );
 
+
+        updateHUD();
+
     }
 
 }
 
 
-/* =================================
+/* =========================================
    RELOAD
-================================= */
+========================================= */
 
 function reload() {
 
@@ -2585,18 +3122,11 @@ function reload() {
 
         function() {
 
-            const need =
-
-                30 -
-
-                ammo;
-
-
             const amount =
 
                 Math.min(
 
-                    need,
+                    30 - ammo,
 
                     reserveAmmo
 
@@ -2604,12 +3134,10 @@ function reload() {
 
 
             ammo +=
-
                 amount;
 
 
             reserveAmmo -=
-
                 amount;
 
 
@@ -2628,60 +3156,62 @@ function reload() {
 }
 
 
-/* =================================
+/* =========================================
    HUD
-================================= */
+========================================= */
 
 function updateHUD() {
 
-    document.getElementById(
+    document
+        .getElementById(
+            "healthText"
+        )
+        .textContent =
 
-        "healthText"
-
-    ).textContent =
-
-        health;
-
-
-    document.getElementById(
-
-        "health-fill"
-
-    ).style.width =
-
-        health +
-
-        "%";
+            health;
 
 
-    document.getElementById(
+    document
+        .getElementById(
+            "health-fill"
+        )
+        .style.width =
 
-        "ammoValue"
+            health +
 
-    ).textContent =
-
-        ammo;
+            "%";
 
 
-    document.getElementById(
+    document
+        .getElementById(
+            "ammoValue"
+        )
+        .textContent =
 
-        "score"
+            ammo;
 
-    ).textContent =
 
-        "Skor: " +
+    document
+        .getElementById(
+            "score"
+        )
+        .textContent =
 
-        score;
+            "Skor: " +
+
+            score;
 
 }
 
 
-/* =================================
+/* =========================================
    FPS
-================================= */
+========================================= */
 
 function updateFPS(
+
     delta
+
 ) {
 
     fpsFrames++;
@@ -2693,9 +3223,7 @@ function updateFPS(
 
     if (
 
-        fpsTime >=
-
-        .5
+        fpsTime >= .5
 
     ) {
 
@@ -2710,15 +3238,15 @@ function updateFPS(
             );
 
 
-        document.getElementById(
+        document
+            .getElementById(
+                "fps"
+            )
+            .textContent =
 
-            "fps"
+                "FPS: " +
 
-        ).textContent =
-
-            "FPS: " +
-
-            fps;
+                fps;
 
 
         fpsFrames =
@@ -2733,9 +3261,9 @@ function updateFPS(
 }
 
 
-/* =================================
-   ANİMASYON
-================================= */
+/* =========================================
+   OYUN DÖNGÜSÜ
+========================================= */
 
 function animate() {
 
@@ -2747,9 +3275,7 @@ function animate() {
 
 
     if (
-
         !gameStarted
-
     )
         return;
 
@@ -2797,9 +3323,9 @@ function animate() {
 }
 
 
-/* =================================
-   EKRAN
-================================= */
+/* =========================================
+   EKRAN BOYUTU
+========================================= */
 
 window.addEventListener(
 
