@@ -1,43 +1,1540 @@
-  margin-bottom: 6px;
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebStrike FPS</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-input[type="text"], select {
-input[type="text"], select, input[type="range"] {
-  width: 100%;
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.5);
-  transition: all 0.2s;
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #111;
+    font-family: Arial, sans-serif;
 }
-input[type="range"] { padding: 4px; cursor: pointer; }
-input[type="text"]:focus, select:focus {
-  border-color: var(--cs2-gold);
-  box-shadow: 0 0 10px var(--cs2-gold-glow);
-  color: #8a99ad;
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    display: block;
 }
-/* Crosshair */
-/* Crosshair Base */
-.crosshair-cs2 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  width: 30px;
-  height: 30px;
-  pointer-events: none;
+
+#menu {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
 }
+
+.menu-box {
+    width: 420px;
+    max-width: 90%;
+    padding: 35px;
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid #555;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 40px rgba(0,0,0,.7);
 }
-.ch-line { position: absolute; background: var(--cs2-green); }
-.ch-top { top: 1px; left: 9px; width: 2px; height: 6px; }
-.ch-bottom { bottom: 1px; left: 9px; width: 2px; height: 6px; }
-.ch-left { top: 9px; left: 1px; width: 6px; height: 2px; }
-.ch-right { top: 9px; right: 1px; width: 6px; height: 2px; }
-.ch-top { top: 2px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
-.ch-bottom { bottom: 2px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
-.ch-left { top: 50%; left: 2px; width: 6px; height: 2px; transform: translateY(-50%); }
-.ch-right { top: 50%; right: 2px; width: 6px; height: 2px; transform: translateY(-50%); }
-/* Bottom Left HUD */
-.cs2-bottom-left { position: absolute; bottom: 24px; left: 24px; display: flex; gap: 16px; }
-  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-  100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+
+.menu-box h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
 }
+
+.menu-box p {
+    color: #bbb;
+    margin-bottom: 25px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #e63946;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff4d5a;
+}
+
+#hud {
+    display: none;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    color: white;
+}
+
+#crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    transform: translate(-50%, -50%);
+}
+
+#crosshair::before,
+#crosshair::after {
+    content: "";
+    position: absolute;
+    background: white;
+}
+
+#crosshair::before {
+    width: 2px;
+    height: 22px;
+    left: 10px;
+    top: 0;
+}
+
+#crosshair::after {
+    width: 22px;
+    height: 2px;
+    left: 0;
+    top: 10px;
+}
+
+#stats {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: rgba(0,0,0,.65);
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 190px;
+}
+
+#health-bar {
+    width: 160px;
+    height: 12px;
+    background: #333;
+    margin-top: 8px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+#health-fill {
+    height: 100%;
+    width: 100%;
+    background: #36d16d;
+}
+
+#ammo {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#score {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    font-size: 20px;
+}
+
+#message {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0 2px 5px black;
+}
+
+#weapon {
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    right: 10%;
+    bottom: 0;
+    transform: rotate(-5deg);
+}
+
+.weapon-body {
+    position: absolute;
+    width: 230px;
+    height: 55px;
+    right: 20px;
+    bottom: 15px;
+    background: #222;
+    border-radius: 10px;
+}
+
+.weapon-barrel {
+    position: absolute;
+    width: 100px;
+    height: 18px;
+    right: 220px;
+    bottom: 40px;
+    background: #111;
+}
+
+.weapon-handle {
+    position: absolute;
+    width: 55px;
+    height: 80px;
+    right: 70px;
+    bottom: -20px;
+    background: #333;
+    transform: rotate(15deg);
+    border-radius: 5px;
+}
+
+#muzzle {
+    display: none;
+    position: absolute;
+    right: calc(10% + 310px);
+    bottom: 65px;
+    width: 30px;
+    height: 30px;
+    background: orange;
+    border-radius: 50%;
+    box-shadow: 0 0 30px orange;
+}
+
+#damage {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,0,0,.25);
+    display: none;
+    z-index: 9;
+}
+
+#instructions {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ddd;
+    background: rgba(0,0,0,.5);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="menu">
+    <div class="menu-box">
+        <h1>WEBSTRIKE</h1>
+        <p>3D FPS Tarayıcı Oyunu</p>
+
+        <p>
+            WASD: Hareket<br>
+            Mouse: Bakış<br>
+            Sol tık: Ateş<br>
+            R: Şarjör değiştir
+        </p>
+
+        <button id="startButton">OYUNA BAŞLA</button>
+    </div>
+</div>
+
+<div id="hud">
+
+    <div id="crosshair"></div>
+
+    <div id="instructions">
+        WASD Hareket • Mouse Bakış • Sol Tık Ateş • R Yenile
+    </div>
+
+    <div id="score">
+        Skor: <span id="scoreValue">0</span>
+    </div>
+
+    <div id="message"></div>
+
+    <div id="stats">
+        <div>CAN: <span id="healthText">100</span></div>
+        <div id="health-bar">
+            <div id="health-fill"></div>
+        </div>
+    </div>
+
+    <div id="ammo">
+        <span id="ammoValue">30</span> / 120
+    </div>
+
+    <div id="weapon">
+        <div class="weapon-barrel"></div>
+        <div class="weapon-body"></div>
+        <div class="weapon-handle"></div>
+    </div>
+
+    <div id="muzzle"></div>
+
+</div>
+
+<div id="damage"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+let scene;
+let camera;
+let renderer;
+let clock;
+
+let player;
+let bots = [];
+let bullets = [];
+
+let keys = {};
+
+let health = 100;
+let score = 0;
+
+let ammo = 30;
+let reserveAmmo = 120;
+
+let canShoot = true;
+let reloading = false;
+
+let gameStarted = false;
+
+let yaw = 0;
+let pitch = 0;
+
+const canvas = document.getElementById("game");
+
+const menu = document.getElementById("menu");
+const hud = document.getElementById("hud");
+
+const startButton = document.getElementById("startButton");
+
+const healthText = document.getElementById("healthText");
+const healthFill = document.getElementById("health-fill");
+
+const ammoValue = document.getElementById("ammoValue");
+const scoreValue = document.getElementById("scoreValue");
+
+const message = document.getElementById("message");
+const damage = document.getElementById("damage");
+
+const muzzle = document.getElementById("muzzle");
+
+
+/* =========================
+   OYUNU BAŞLAT
+========================= */
+
+function startGame() {
+
+    gameStarted = true;
+
+    menu.style.display = "none";
+    hud.style.display = "block";
+
+    init();
+
+    canvas.requestPointerLock();
+
+}
+
+
+/* =========================
+   THREE.JS
+========================= */
+
+function init() {
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x87ceeb);
+
+    scene.fog = new THREE.Fog(0x87ceeb, 20, 100);
+
+
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+
+
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true
+    });
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+
+    clock = new THREE.Clock();
+
+
+    /* IŞIK */
+
+    const ambient = new THREE.AmbientLight(
+        0xffffff,
+        0.6
+    );
+
+    scene.add(ambient);
+
+
+    const sun = new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+    sun.position.set(
+        20,
+        40,
+        20
+    );
+
+    scene.add(sun);
+
+
+    /* OYUNCU */
+
+    player = {
+        position: new THREE.Vector3(
+            0,
+            1.6,
+            15
+        ),
+        speed: 6
+    };
+
+
+    camera.position.copy(
+        player.position
+    );
+
+
+    /* HARİTA */
+
+    createMap();
+
+
+    /* BOTLAR */
+
+    createBots();
+
+
+    /* KONTROLLER */
+
+    setupControls();
+
+
+    animate();
+
+}
+
+
+/* =========================
+   HARİTA
+========================= */
+
+function createMap() {
+
+    /* ZEMİN */
+
+    const floorGeometry =
+        new THREE.PlaneGeometry(
+            100,
+            100
+        );
+
+    const floorMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x555555
+        });
+
+    const floor =
+        new THREE.Mesh(
+            floorGeometry,
+            floorMaterial
+        );
+
+    floor.rotation.x =
+        -Math.PI / 2;
+
+    scene.add(floor);
+
+
+    /* DUVAR OLUŞTURUCU */
+
+    function wall(
+        x,
+        y,
+        z,
+        width,
+        height,
+        depth
+    ) {
+
+        const geometry =
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            );
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color: 0x777777
+            });
+
+        const mesh =
+            new THREE.Mesh(
+                geometry,
+                material
+            );
+
+        mesh.position.set(
+            x,
+            y,
+            z
+        );
+
+        scene.add(mesh);
+
+    }
+
+
+    /* DIŞ DUVARLAR */
+
+    wall(
+        0,
+        2,
+        -40,
+        80,
+        4,
+        2
+    );
+
+    wall(
+        0,
+        2,
+        40,
+        80,
+        4,
+        2
+    );
+
+    wall(
+        -40,
+        2,
+        0,
+        2,
+        4,
+        80
+    );
+
+    wall(
+        40,
+        2,
+        0,
+        2,
+        4,
+        80
+    );
+
+
+    /* İÇ DUVARLAR */
+
+    wall(
+        -15,
+        2,
+        -10,
+        20,
+        4,
+        2
+    );
+
+    wall(
+        15,
+        2,
+        5,
+        20,
+        4,
+        2
+    );
+
+    wall(
+        -10,
+        2,
+        20,
+        2,
+        4,
+        20
+    );
+
+    wall(
+        20,
+        2,
+        -20,
+        2,
+        4,
+        20
+    );
+
+
+    /* KUTULAR */
+
+    for (
+        let i = 0;
+        i < 15;
+        i++
+    ) {
+
+        const geometry =
+            new THREE.BoxGeometry(
+                2,
+                2,
+                2
+            );
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color: 0x8b5a2b
+            });
+
+        const box =
+            new THREE.Mesh(
+                geometry,
+                material
+            );
+
+        box.position.set(
+
+            Math.random() * 60 - 30,
+
+            1,
+
+            Math.random() * 60 - 30
+
+        );
+
+        scene.add(box);
+
+    }
+
+}
+
+
+/* =========================
+   BOTLAR
+========================= */
+
+function createBots() {
+
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        createBot();
+
+    }
+
+}
+
+
+function createBot() {
+
+    const group =
+        new THREE.Group();
+
+
+    /* GÖVDE */
+
+    const bodyGeometry =
+        new THREE.BoxGeometry(
+            0.8,
+            1.2,
+            0.5
+        );
+
+    const bodyMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x2222aa
+        });
+
+    const body =
+        new THREE.Mesh(
+            bodyGeometry,
+            bodyMaterial
+        );
+
+    body.position.y =
+        0.8;
+
+    group.add(body);
+
+
+    /* KAFA */
+
+    const headGeometry =
+        new THREE.SphereGeometry(
+            0.3,
+            16,
+            16
+        );
+
+    const headMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xffc49b
+        });
+
+    const head =
+        new THREE.Mesh(
+            headGeometry,
+            headMaterial
+        );
+
+    head.position.y =
+        1.65;
+
+    group.add(head);
+
+
+    /* POZİSYON */
+
+    group.position.set(
+
+        Math.random() * 60 - 30,
+
+        0,
+
+        Math.random() * 50 - 20
+
+    );
+
+
+    group.userData = {
+
+        health: 100,
+
+        speed:
+            1 +
+            Math.random(),
+
+        shootTimer:
+            Math.random() * 3
+
+    };
+
+
+    scene.add(group);
+
+    bots.push(group);
+
+}
+
+
+/* =========================
+   KONTROLLER
+========================= */
+
+function setupControls() {
+
+
+    document.addEventListener(
+        "keydown",
+        function(e) {
+
+            keys[e.code] = true;
+
+
+            if (
+                e.code === "KeyR"
+            ) {
+
+                reload();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keyup",
+        function(e) {
+
+            keys[e.code] = false;
+
+        }
+    );
+
+
+    document.addEventListener(
+        "mousemove",
+        function(e) {
+
+            if (
+                document.pointerLockElement !== canvas
+            ) {
+
+                return;
+
+            }
+
+
+            yaw -=
+                e.movementX *
+                0.002;
+
+            pitch -=
+                e.movementY *
+                0.002;
+
+
+            pitch =
+                Math.max(
+                    -1.4,
+                    Math.min(
+                        1.4,
+                        pitch
+                    )
+                );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "mousedown",
+        function(e) {
+
+            if (
+                e.button === 0 &&
+                gameStarted
+            ) {
+
+                shoot();
+
+            }
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "click",
+        function() {
+
+            if (
+                gameStarted
+            ) {
+
+                canvas.requestPointerLock();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   OYUNCU HAREKET
+========================= */
+
+function updatePlayer(delta) {
+
+    const direction =
+        new THREE.Vector3();
+
+
+    if (
+        keys["KeyW"]
+    ) {
+
+        direction.z -= 1;
+
+    }
+
+    if (
+        keys["KeyS"]
+    ) {
+
+        direction.z += 1;
+
+    }
+
+    if (
+        keys["KeyA"]
+    ) {
+
+        direction.x -= 1;
+
+    }
+
+    if (
+        keys["KeyD"]
+    ) {
+
+        direction.x += 1;
+
+    }
+
+
+    direction.normalize();
+
+
+    const speed =
+        player.speed *
+        delta;
+
+
+    const forward =
+        new THREE.Vector3(
+            Math.sin(yaw),
+            0,
+            Math.cos(yaw)
+        );
+
+
+    const right =
+        new THREE.Vector3(
+            Math.cos(yaw),
+            0,
+            -Math.sin(yaw)
+        );
+
+
+    player.position.add(
+
+        forward
+        .multiplyScalar(
+            -direction.z *
+            speed
+        )
+
+    );
+
+
+    player.position.add(
+
+        right
+        .multiplyScalar(
+            direction.x *
+            speed
+        )
+
+    );
+
+
+    /* SINIR */
+
+    player.position.x =
+        Math.max(
+            -37,
+            Math.min(
+                37,
+                player.position.x
+            )
+        );
+
+
+    player.position.z =
+        Math.max(
+            -37,
+            Math.min(
+                37,
+                player.position.z
+            )
+        );
+
+
+    camera.position.copy(
+        player.position
+    );
+
+
+    camera.rotation.order =
+        "YXZ";
+
+
+    camera.rotation.y =
+        yaw;
+
+
+    camera.rotation.x =
+        pitch;
+
+}
+
+
+/* =========================
+   ATEŞ ET
+========================= */
+
+function shoot() {
+
+    if (
+        !canShoot ||
+        reloading ||
+        ammo <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    ammo--;
+
+    updateHUD();
+
+
+    canShoot = false;
+
+
+    setTimeout(
+        function() {
+
+            canShoot = true;
+
+        },
+        120
+    );
+
+
+    muzzle.style.display =
+        "block";
+
+
+    setTimeout(
+        function() {
+
+            muzzle.style.display =
+                "none";
+
+        },
+        60
+    );
+
+
+    /* RAYCAST */
+
+    const raycaster =
+        new THREE.Raycaster();
+
+
+    raycaster.setFromCamera(
+        new THREE.Vector2(0, 0),
+        camera
+    );
+
+
+    const objects = [];
+
+
+    bots.forEach(
+        function(bot) {
+
+            bot.traverse(
+                function(child) {
+
+                    if (
+                        child.isMesh
+                    ) {
+
+                        objects.push(
+                            child
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const hits =
+        raycaster.intersectObjects(
+            objects
+        );
+
+
+    if (
+        hits.length > 0
+    ) {
+
+        const hit =
+            hits[0].object;
+
+
+        const bot =
+            hit.parent;
+
+
+        if (
+            bot &&
+            bot.userData
+        ) {
+
+            bot.userData.health -=
+                50;
+
+
+            if (
+                bot.userData.health <= 0
+            ) {
+
+                killBot(
+                    bot
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   BOT ÖLDÜR
+========================= */
+
+function killBot(bot) {
+
+    scene.remove(
+        bot
+    );
+
+
+    bots =
+        bots.filter(
+            b => b !== bot
+        );
+
+
+    score += 100;
+
+
+    scoreValue.textContent =
+        score;
+
+
+    setTimeout(
+        createBot,
+        2000
+    );
+
+}
+
+
+/* =========================
+   BOT YAPAY ZEKA
+========================= */
+
+function updateBots(delta) {
+
+    bots.forEach(
+        function(bot) {
+
+            const distance =
+                bot.position.distanceTo(
+                    player.position
+                );
+
+
+            /* OYUNCUYA DOĞRU GEL */
+
+            if (
+                distance > 5
+            ) {
+
+                const direction =
+                    new THREE.Vector3()
+                    .subVectors(
+                        player.position,
+                        bot.position
+                    )
+                    .normalize();
+
+
+                bot.position.add(
+
+                    direction.multiplyScalar(
+
+                        bot.userData.speed *
+                        delta
+
+                    )
+
+                );
+
+            }
+
+
+            /* OYUNCUYA BAK */
+
+            bot.lookAt(
+                player.position.x,
+                1,
+                player.position.z
+            );
+
+
+            /* SALDIR */
+
+            bot.userData.shootTimer -=
+                delta;
+
+
+            if (
+                distance < 20 &&
+                bot.userData.shootTimer <= 0
+            ) {
+
+                botShoot(
+                    bot
+                );
+
+
+                bot.userData.shootTimer =
+                    1 +
+                    Math.random() * 2;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   BOT ATEŞ
+========================= */
+
+function botShoot(bot) {
+
+    const distance =
+        bot.position.distanceTo(
+            player.position
+        );
+
+
+    if (
+        distance > 25
+    ) {
+
+        return;
+
+    }
+
+
+    const accuracy =
+        Math.random();
+
+
+    if (
+        accuracy > 0.35
+    ) {
+
+        damagePlayer(
+            10
+        );
+
+    }
+
+}
+
+
+/* =========================
+   HASAR
+========================= */
+
+function damagePlayer(amount) {
+
+    health -=
+        amount;
+
+
+    health =
+        Math.max(
+            0,
+            health
+        );
+
+
+    damage.style.display =
+        "block";
+
+
+    setTimeout(
+        function() {
+
+            damage.style.display =
+                "none";
+
+        },
+        100
+    );
+
+
+    updateHUD();
+
+
+    if (
+        health <= 0
+    ) {
+
+        gameOver();
+
+    }
+
+}
+
+
+/* =========================
+   RELOAD
+========================= */
+
+function reload() {
+
+    if (
+        reloading ||
+        ammo === 30 ||
+        reserveAmmo <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    reloading = true;
+
+    message.textContent =
+        "ŞARJÖR DEĞİŞTİRİLİYOR...";
+
+
+    setTimeout(
+        function() {
+
+            const needed =
+                30 - ammo;
+
+
+            const amount =
+                Math.min(
+                    needed,
+                    reserveAmmo
+                );
+
+
+            ammo +=
+                amount;
+
+
+            reserveAmmo -=
+                amount;
+
+
+            reloading =
+                false;
+
+
+            message.textContent =
+                "";
+
+
+            updateHUD();
+
+        },
+        1500
+    );
+
+}
+
+
+/* =========================
+   HUD
+========================= */
+
+function updateHUD() {
+
+    healthText.textContent =
+        health;
+
+
+    healthFill.style.width =
+        health + "%";
+
+
+    ammoValue.textContent =
+        ammo;
+
+
+    scoreValue.textContent =
+        score;
+
+}
+
+
+/* =========================
+   OYUN BİTTİ
+========================= */
+
+function gameOver() {
+
+    gameStarted =
+        false;
+
+
+    document.exitPointerLock();
+
+
+    message.textContent =
+        "ÖLDÜN!";
+
+
+    setTimeout(
+        function() {
+
+            location.reload();
+
+        },
+        2000
+    );
+
+}
+
+
+/* =========================
+   ANİMASYON
+========================= */
+
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    if (
+        !gameStarted
+    ) {
+
+        return;
+
+    }
+
+
+    const delta =
+        Math.min(
+            clock.getDelta(),
+            0.05
+        );
+
+
+    updatePlayer(
+        delta
+    );
+
+
+    updateBots(
+        delta
+    );
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+/* =========================
+   PENCERE BOYUTU
+========================= */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        if (
+            !camera ||
+            !renderer
+        ) {
+
+            return;
+
+        }
+
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+
+            window.innerWidth,
+
+            window.innerHeight
+
+        );
+
+    }
+);
+
+
+/* =========================
+   BAŞLAT
+========================= */
+
+startButton.addEventListener(
+    "click",
+    startGame
+);
+
+</script>
+
+</body>
+</html>
