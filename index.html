@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -2108,125 +2109,215 @@ function setupControls(){
 
 
 /* =========================
-   OYUNCU
+   DÜZELTİLMİŞ OYUNCU HAREKETİ
    W = İLERİ
    S = GERİ
+   A = SOL
+   D = SAĞ
 ========================= */
 
 function updatePlayer(delta){
 
-    const direction =
-        new THREE.Vector3();
+    // Hareket yönleri
+    let moveForward = 0;
+    let moveRight = 0;
 
 
+    // W = İLERİ
     if(
         keys["KeyW"]
-    )
-        direction.z -= 1;
+    ){
+
+        moveForward += 1;
+
+    }
 
 
+    // S = GERİ
     if(
         keys["KeyS"]
-    )
-        direction.z += 1;
+    ){
+
+        moveForward -= 1;
+
+    }
 
 
+    // A = SOL
     if(
         keys["KeyA"]
-    )
-        direction.x -= 1;
+    ){
+
+        moveRight -= 1;
+
+    }
 
 
+    // D = SAĞ
     if(
         keys["KeyD"]
-    )
-        direction.x += 1;
+    ){
+
+        moveRight += 1;
+
+    }
 
 
-    if(
-        direction.lengthSq()>0
-    )
-        direction.normalize();
+    // ÇAPRAZ HAREKETTE HIZI SABİTLE
+    // W + D basınca daha hızlı gitmesini engeller
+    const movementLength =
+        Math.sqrt(
 
+            moveForward *
+            moveForward +
 
-    const forward =
-        new THREE.Vector3(
-
-            Math.sin(yaw),
-            0,
-            Math.cos(yaw)
+            moveRight *
+            moveRight
 
         );
 
 
+    if(
+        movementLength > 0
+    ){
+
+        moveForward /=
+            movementLength;
+
+        moveRight /=
+            movementLength;
+
+    }
+
+
+    // KAMERANIN BAKTIĞI İLERİ YÖN
+    const forward =
+        new THREE.Vector3(
+
+            -Math.sin(yaw),
+
+            0,
+
+            -Math.cos(yaw)
+
+        );
+
+
+    // KAMERANIN SAĞ YÖNÜ
     const right =
         new THREE.Vector3(
 
             Math.cos(yaw),
+
             0,
+
             -Math.sin(yaw)
 
         );
 
 
-    player.position.add(
+    // İLERİ / GERİ HAREKET
+    player.position.x +=
 
-        forward.multiplyScalar(
+        forward.x *
 
-            -direction.z *
-            player.speed *
-            delta
+        moveForward *
 
-        )
+        player.speed *
 
-    );
-
-
-    player.position.add(
-
-        right.multiplyScalar(
-
-            direction.x *
-            player.speed *
-            delta
-
-        )
-
-    );
+        delta;
 
 
+    player.position.z +=
+
+        forward.z *
+
+        moveForward *
+
+        player.speed *
+
+        delta;
+
+
+    // SAĞ / SOL HAREKET
+    player.position.x +=
+
+        right.x *
+
+        moveRight *
+
+        player.speed *
+
+        delta;
+
+
+    player.position.z +=
+
+        right.z *
+
+        moveRight *
+
+        player.speed *
+
+        delta;
+
+
+    // HARİTA SINIRLARI
     player.position.x =
+
         Math.max(
+
             -42,
+
             Math.min(
+
                 42,
+
                 player.position.x
+
             )
+
         );
 
 
     player.position.z =
+
         Math.max(
+
             -42,
+
             Math.min(
+
                 42,
+
                 player.position.z
+
             )
+
         );
 
 
+    // KAMERAYI OYUNCUYA BAĞLA
     camera.position.copy(
+
         player.position
+
     );
 
 
-    camera.rotation.order=
+    // KAMERA DÖNÜŞ SİSTEMİ
+    camera.rotation.order =
+
         "YXZ";
 
-    camera.rotation.y=
+
+    camera.rotation.y =
+
         yaw;
 
-    camera.rotation.x=
+
+    camera.rotation.x =
+
         pitch;
 
 }
@@ -2764,3 +2855,4 @@ window.addEventListener(
 
 </body>
 </html>
+```
