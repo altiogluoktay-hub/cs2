@@ -1,31 +1,2660 @@
-              <h4>ODA KUR (HOST)</h4>
-              <p>Arkadaşlarınla oynamak için oda oluştur.</p>
-              <button id="btn-create-room" class="cs2-sec-btn">ODA OLUŞTUR</button>
-              <div id="host-code-display" class="code-box hidden">ODA KODUN: <span id="my-room-code">------</span></div>
-            </div>
-            <div class="online-box">
-              <h4>ODAYA KATIL</h4>
-              <input type="text" id="join-room-code" placeholder="ODA KODUNU GİR" maxlength="6">
-              <button id="btn-join-room" class="cs2-sec-btn">ODAYA KATIL</button>
-            </div>
-          </div>
-          <div id="multi-status" class="online-status"></div>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WebStrike FPS</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#080b0f;
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+button{
+    font-family:inherit;
+}
+
+#game{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+/* =========================
+   ANA MENÜ
+========================= */
+
+#mainMenu{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.72),
+            rgba(0,0,0,.08) 45%,
+            rgba(0,0,0,.72)
+        ),
+        url("menu-bg.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+/* =========================
+   ÜST MENÜ
+========================= */
+
+.topbar{
+    height:74px;
+    position:absolute;
+    inset:0 0 auto 0;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    background:rgba(4,7,10,.88);
+    border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.top-left{
+    display:flex;
+    gap:22px;
+}
+
+.icon-btn{
+    width:40px;
+    height:45px;
+    border:0;
+    background:transparent;
+    color:white;
+    font-size:25px;
+    cursor:pointer;
+}
+
+.icon-btn:hover{
+    color:#35df60;
+}
+
+.nav{
+    display:flex;
+    height:100%;
+    align-items:center;
+}
+
+.nav-item{
+    height:100%;
+    display:flex;
+    align-items:center;
+    padding:0 28px;
+
+    font-size:19px;
+    font-weight:bold;
+
+    border-right:1px solid rgba(255,255,255,.18);
+    cursor:pointer;
+}
+
+.nav-item:first-child{
+    border-left:1px solid rgba(255,255,255,.18);
+}
+
+.nav-item.active{
+    border-bottom:4px solid #36dc59;
+    background:rgba(255,255,255,.04);
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    font-size:20px;
+}
+
+.online{
+    color:#32dc58;
+}
+
+/* =========================
+   SOL PANEL
+========================= */
+
+.left-panel{
+    position:absolute;
+    top:100px;
+    left:18px;
+    bottom:90px;
+    width:355px;
+    overflow:auto;
+}
+
+.menu-card{
+    background:rgba(13,17,20,.90);
+    border:1px solid rgba(255,255,255,.10);
+    margin-bottom:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.card-title{
+    padding:16px 18px;
+    font-size:19px;
+    font-weight:bold;
+    border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.mission{
+    padding:18px;
+}
+
+.mission strong{
+    color:#37df60;
+    font-size:18px;
+}
+
+.mission p{
+    margin-top:8px;
+    color:#bbb;
+}
+
+.check{
+    float:right;
+    color:#37df60;
+    font-size:35px;
+}
+
+.daily{
+    padding:16px 18px;
+}
+
+.daily-head{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.progress{
+    height:7px;
+    background:#333;
+}
+
+.progress div{
+    width:100%;
+    height:100%;
+    background:#37df60;
+}
+
+.rewards{
+    display:flex;
+}
+
+.reward{
+    flex:1;
+    min-height:135px;
+    padding:12px 8px;
+    text-align:center;
+    border-right:1px solid rgba(255,255,255,.08);
+}
+
+.reward:last-child{
+    border-right:0;
+}
+
+.reward-icon{
+    font-size:45px;
+    margin:10px;
+}
+
+.reward small{
+    color:#37df60;
+    display:block;
+    margin-top:8px;
+}
+
+.popular{
+    padding-bottom:18px;
+}
+
+.weapon-image{
+    height:190px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.weapon-image span{
+    font-size:100px;
+    transform:rotate(-15deg);
+}
+
+.popular-info{
+    padding:0 18px;
+}
+
+.popular-info h3{
+    margin-bottom:10px;
+}
+
+.price{
+    color:#39dc5d;
+    margin-top:8px;
+}
+
+/* =========================
+   KARAKTER
+========================= */
+
+.character-area{
+    position:absolute;
+    top:75px;
+    left:380px;
+    right:400px;
+    bottom:90px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    pointer-events:none;
+}
+
+.character-placeholder{
+    width:250px;
+    height:480px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:180px;
+
+    filter:drop-shadow(
+        0 25px 25px rgba(0,0,0,.8)
+    );
+}
+
+/* =========================
+   SAĞ PANEL
+========================= */
+
+.right-panel{
+    position:absolute;
+    top:74px;
+    right:0;
+    bottom:74px;
+    width:385px;
+
+    background:linear-gradient(
+        rgba(8,12,14,.92),
+        rgba(8,12,14,.80)
+    );
+
+    border-left:1px solid rgba(255,255,255,.1);
+
+    padding:24px 18px;
+    overflow:auto;
+}
+
+.right-title{
+    font-size:22px;
+    margin-bottom:15px;
+}
+
+.room-button{
+    width:100%;
+    height:58px;
+    margin-bottom:10px;
+
+    background:rgba(255,255,255,.04);
+    color:white;
+
+    border:1px solid rgba(255,255,255,.22);
+
+    text-align:left;
+    padding:0 20px;
+
+    font-size:17px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.room-button:hover{
+    border-color:#35db59;
+    background:rgba(53,219,89,.08);
+}
+
+.room-button span{
+    float:right;
+    font-size:25px;
+}
+
+.settings{
+    margin-top:20px;
+}
+
+.setting-title{
+    font-size:20px;
+    padding:15px 0;
+    border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.label{
+    margin:18px 0 10px;
+    color:#ddd;
+    font-weight:bold;
+}
+
+.map-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+}
+
+.map{
+    height:90px;
+    background:#222;
+    border:2px solid transparent;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+.map:hover,
+.map.selected{
+    border-color:#35db59;
+}
+
+.map.selected{
+    background:#183b22;
+}
+
+.map-icon{
+    font-size:30px;
+}
+
+.map-name{
+    font-size:11px;
+    margin-top:6px;
+}
+
+.option-group{
+    display:flex;
+    gap:5px;
+}
+
+.option{
+    flex:1;
+    padding:12px 4px;
+
+    background:#22272a;
+    border:1px solid #444;
+    color:white;
+
+    cursor:pointer;
+}
+
+.option.selected{
+    background:#2ca946;
+    border-color:#40e362;
+}
+
+.start-button{
+    width:100%;
+    height:62px;
+    margin-top:22px;
+
+    border:0;
+
+    background:#2ca946;
+    color:white;
+
+    font-size:23px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.start-button:hover{
+    background:#36c953;
+}
+
+/* =========================
+   ALT BAR
+========================= */
+
+.bottom-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:74px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+
+    background:rgba(5,8,11,.95);
+    border-top:1px solid rgba(255,255,255,.1);
+
+    font-size:16px;
+}
+
+/* =========================
+   ODA MODAL
+========================= */
+
+#roomModal{
+    display:none;
+
+    position:fixed;
+    inset:0;
+    z-index:2000;
+
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(0,0,0,.75);
+}
+
+.room-box{
+    width:420px;
+    max-width:90%;
+
+    padding:30px;
+
+    background:#101519;
+    border:1px solid #444;
+
+    box-shadow:0 20px 80px rgba(0,0,0,.8);
+
+    text-align:center;
+}
+
+.room-box h2{
+    margin-bottom:20px;
+}
+
+.room-box input{
+    width:100%;
+    padding:15px;
+
+    background:#080b0f;
+    color:white;
+
+    border:1px solid #444;
+
+    text-align:center;
+    font-size:20px;
+
+    text-transform:uppercase;
+}
+
+.modal-button{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+
+    border:0;
+
+    background:#2ca946;
+    color:white;
+
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.close-button{
+    background:#333;
+}
+
+#roomMessage{
+    min-height:25px;
+    margin-top:15px;
+    color:#3ddd63;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    display:none;
+
+    position:fixed;
+    inset:0;
+    z-index:10;
+
+    pointer-events:none;
+    color:white;
+}
+
+#fps{
+    position:absolute;
+    top:15px;
+    left:15px;
+
+    padding:8px 12px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#roomInfo{
+    position:absolute;
+    top:55px;
+    left:15px;
+
+    padding:7px 12px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#score{
+    position:absolute;
+    top:15px;
+    right:20px;
+
+    padding:10px 15px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#crosshair{
+    position:absolute;
+    top:50%;
+    left:50%;
+
+    width:22px;
+    height:22px;
+
+    transform:translate(-50%,-50%);
+}
+
+#crosshair::before{
+    content:"";
+
+    position:absolute;
+    left:10px;
+
+    width:2px;
+    height:22px;
+
+    background:white;
+}
+
+#crosshair::after{
+    content:"";
+
+    position:absolute;
+    top:10px;
+
+    width:22px;
+    height:2px;
+
+    background:white;
+}
+
+#stats{
+    position:absolute;
+    left:20px;
+    bottom:20px;
+
+    width:220px;
+
+    padding:15px;
+
+    background:rgba(0,0,0,.65);
+}
+
+#health-bar{
+    height:12px;
+    margin-top:8px;
+
+    background:#333;
+}
+
+#health-fill{
+    width:100%;
+    height:100%;
+    background:#2ed75f;
+}
+
+#ammo{
+    position:absolute;
+    right:25px;
+    bottom:25px;
+
+    font-size:28px;
+    font-weight:bold;
+}
+
+#damage{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    z-index:20;
+
+    background:rgba(255,0,0,.25);
+}
+
+/* =========================
+   CS TARZI SİLAH
+========================= */
+
+#weapon{
+    position:absolute;
+
+    right:6%;
+    bottom:-5px;
+
+    width:390px;
+    height:230px;
+
+    transform:rotate(-3deg);
+    filter:drop-shadow(
+        8px 12px 8px rgba(0,0,0,.65)
+    );
+}
+
+.weapon-main{
+    position:absolute;
+
+    right:25px;
+    bottom:85px;
+
+    width:285px;
+    height:58px;
+
+    background:
+        linear-gradient(
+            #303030,
+            #111
+        );
+
+    border-radius:8px 14px 8px 5px;
+
+    border:2px solid #090909;
+}
+
+.weapon-top{
+    position:absolute;
+
+    right:100px;
+    bottom:140px;
+
+    width:180px;
+    height:18px;
+
+    background:#171717;
+
+    border-radius:4px;
+}
+
+.weapon-barrel{
+    position:absolute;
+
+    right:300px;
+    bottom:105px;
+
+    width:90px;
+    height:16px;
+
+    background:#080808;
+
+    border-radius:4px;
+}
+
+.weapon-front{
+    position:absolute;
+
+    right:365px;
+    bottom:99px;
+
+    width:20px;
+    height:28px;
+
+    background:#050505;
+
+    border-radius:4px;
+}
+
+.weapon-handle{
+    position:absolute;
+
+    right:75px;
+    bottom:0;
+
+    width:62px;
+    height:115px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #111,
+            #292929,
+            #111
+        );
+
+    transform:rotate(12deg);
+
+    border-radius:5px;
+}
+
+.weapon-mag{
+    position:absolute;
+
+    right:185px;
+    bottom:25px;
+
+    width:42px;
+    height:100px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #080808,
+            #222,
+            #080808
+        );
+
+    transform:rotate(10deg);
+
+    border-radius:4px;
+}
+
+.weapon-trigger{
+    position:absolute;
+
+    right:130px;
+    bottom:70px;
+
+    width:35px;
+    height:45px;
+
+    border:5px solid #080808;
+
+    border-top:0;
+
+    border-radius:0 0 15px 15px;
+}
+
+.weapon-hand{
+    position:absolute;
+
+    right:38px;
+    bottom:20px;
+
+    width:75px;
+    height:70px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #b87955,
+            #8f573d
+        );
+
+    border-radius:35px 20px 20px 30px;
+
+    transform:rotate(-15deg);
+
+    z-index:3;
+}
+
+.weapon-hand-left{
+    position:absolute;
+
+    right:205px;
+    bottom:55px;
+
+    width:75px;
+    height:55px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #b87955,
+            #8f573d
+        );
+
+    border-radius:30px;
+
+    transform:rotate(8deg);
+
+    z-index:3;
+}
+
+#muzzle{
+    display:none;
+
+    position:absolute;
+
+    right:calc(6% + 390px);
+    bottom:100px;
+
+    width:40px;
+    height:40px;
+
+    background:#ffb000;
+    border-radius:50%;
+
+    box-shadow:
+        0 0 15px #ff6600,
+        0 0 40px #ff9900;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1100px){
+
+    .left-panel{
+        width:280px;
+    }
+
+    .character-area{
+        left:290px;
+        right:350px;
+    }
+
+    .right-panel{
+        width:350px;
+    }
+
+    .nav-item{
+        padding:0 12px;
+        font-size:14px;
+    }
+}
+
+@media(max-width:800px){
+
+    .left-panel{
+        display:none;
+    }
+
+    .character-area{
+        left:0;
+        right:350px;
+    }
+
+    .topbar{
+        padding:0 10px;
+    }
+
+    .nav-item{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="mainMenu">
+
+    <div class="topbar">
+
+        <div class="top-left">
+            <button class="icon-btn">⌂</button>
+            <button class="icon-btn">▣</button>
+            <button class="icon-btn">⚙</button>
+            <button class="icon-btn">⏻</button>
         </div>
-        <!-- Keybindings Cheat Sheet -->
-        <div class="cs2-controls-box">
-          <div class="ctrl-cell"><span>WASD</span> HAREKET</div>
-          <div class="ctrl-cell"><span>SOL TIK</span> ATEŞ ET</div>
-          <div class="ctrl-cell"><span>SAĞ TIK</span> AWP ZOOM</div>
-          <div class="ctrl-cell"><span>F</span> SİLAHI İNCELE</div>
-          <div class="ctrl-cell"><span>R</span> ŞARJÖR DOLDUR</div>
-          <div class="ctrl-cell"><span>B</span> SATIN ALMA MENÜSÜ</div>
-          <div class="ctrl-cell"><span>C</span> RADYO MESAJLARI</div>
-          <div class="ctrl-cell"><span>TAB</span> SKOR TABLOSU</div>
+
+        <div class="nav">
+            <div class="nav-item">ENVANTER</div>
+            <div class="nav-item">TEÇHİZAT</div>
+            <div class="nav-item active">OYNA</div>
+            <div class="nav-item">MAĞAZA</div>
+            <div class="nav-item">HABERLER</div>
         </div>
-      </div>
+
+        <div class="top-right">
+            <span class="online">👥 2/2</span>
+            <span>●</span>
+            <span>⇥</span>
+        </div>
+
     </div>
-  </div>
-  <!-- Game Logic Script -->
-  <script src="src/game.js"></script>
+
+    <div class="left-panel">
+
+        <div class="menu-card">
+
+            <div class="mission">
+                <strong>GÖREV TAMAMLANDI</strong>
+                <span class="check">✓</span>
+                <p>Sonraki Göreve: 9 Saat</p>
+            </div>
+
+            <div class="daily">
+
+                <div class="daily-head">
+                    <span>GÜNLÜK GÖREVLER</span>
+                    <b>3/3</b>
+                </div>
+
+                <div class="progress">
+                    <div></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="menu-card">
+
+            <div class="card-title">
+                ÖDÜLLER
+            </div>
+
+            <div class="rewards">
+
+                <div class="reward">
+                    <div class="reward-icon">📦</div>
+                    Günlük Kasa
+                    <small>1/1 ✓</small>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">XP</div>
+                    XP Kartı
+                    <small>1/1 ✓</small>
+                </div>
+
+                <div class="reward">
+                    <div class="reward-icon">🧴</div>
+                    Grafiti
+                    <small>1/1 ✓</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="menu-card popular">
+
+            <div class="card-title">
+                YENİ VE POPÜLER
+            </div>
+
+            <div class="weapon-image">
+                <span>🔫</span>
+            </div>
+
+            <div class="popular-info">
+                <h3>Pusu Çıkartma Kapsülü</h3>
+                <div class="price">$0.99</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="character-area">
+        <div class="character-placeholder">
+            🧍
+        </div>
+    </div>
+
+    <div class="right-panel">
+
+        <div class="right-title">
+            ODA
+        </div>
+
+        <button class="room-button" id="createRoomBtn">
+            ODA OLUŞTUR
+            <span>＋</span>
+        </button>
+
+        <button class="room-button" id="joinRoomBtn">
+            ODAYA KATIL
+            <span>⇥</span>
+        </button>
+
+        <div class="settings">
+
+            <div class="setting-title">
+                ⚙ OYUN AYARLARI
+            </div>
+
+            <div class="label">
+                HARİTA SEÇ
+            </div>
+
+            <div class="map-grid">
+
+                <div class="map selected" data-map="training">
+                    <div class="map-icon">🏕️</div>
+                    <div class="map-name">Eğitim</div>
+                </div>
+
+                <div class="map" data-map="city">
+                    <div class="map-icon">🏙️</div>
+                    <div class="map-name">Şehir</div>
+                </div>
+
+                <div class="map" data-map="desert">
+                    <div class="map-icon">🏜️</div>
+                    <div class="map-name">Çöl</div>
+                </div>
+
+                <div class="map" data-map="forest">
+                    <div class="map-icon">🌲</div>
+                    <div class="map-name">Orman</div>
+                </div>
+
+            </div>
+
+            <div class="label">
+                DÜŞMANLAR
+            </div>
+
+            <div class="option-group">
+
+                <button class="option" id="botsOff">
+                    KAPALI
+                </button>
+
+                <button class="option selected" id="botsOn">
+                    AÇIK
+                </button>
+
+            </div>
+
+            <div class="label">
+                DÜŞMAN SAYISI
+            </div>
+
+            <div class="option-group">
+
+                <button class="option">1</button>
+                <button class="option">3</button>
+                <button class="option selected">5</button>
+                <button class="option">10</button>
+                <button class="option">20</button>
+
+            </div>
+
+            <div class="label">
+                ZORLUK
+            </div>
+
+            <div class="option-group">
+
+                <button class="option">KOLAY</button>
+                <button class="option selected">NORMAL</button>
+                <button class="option">ZOR</button>
+
+            </div>
+
+            <button class="start-button" id="startGameBtn">
+                BAŞLA ▶
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="bottom-bar">
+        <span>⚙ AYARLAR</span>
+        <span>👥 DOSTLUK İSTEĞİ</span>
+        <span>➤ RÜTBE</span>
+        <span>★ BAŞARIMLAR</span>
+        <span>❔ YARDIM</span>
+    </div>
+
+</div>
+
+<div id="roomModal">
+
+    <div class="room-box">
+
+        <h2 id="modalTitle">
+            ODA OLUŞTUR
+        </h2>
+
+        <input
+            id="roomCodeInput"
+            maxlength="6"
+            placeholder="ODA KODU"
+        >
+
+        <button class="modal-button" id="modalAction">
+            ODA OLUŞTUR
+        </button>
+
+        <button class="modal-button close-button" id="closeModal">
+            GERİ
+        </button>
+
+        <div id="roomMessage"></div>
+
+    </div>
+
+</div>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+
+    <div id="fps">
+        FPS: 0
+    </div>
+
+    <div id="roomInfo">
+        Oda: -
+    </div>
+
+    <div id="score">
+        Skor: 0
+    </div>
+
+    <div id="crosshair"></div>
+
+    <div id="stats">
+
+        CAN:
+        <span id="healthText">100</span>
+
+        <div id="health-bar">
+            <div id="health-fill"></div>
+        </div>
+
+    </div>
+
+    <div id="ammo">
+        <span id="ammoValue">30</span>
+        / 120
+    </div>
+
+    <div id="weapon">
+
+        <div class="weapon-barrel"></div>
+        <div class="weapon-front"></div>
+        <div class="weapon-main"></div>
+        <div class="weapon-top"></div>
+        <div class="weapon-mag"></div>
+        <div class="weapon-handle"></div>
+        <div class="weapon-trigger"></div>
+        <div class="weapon-hand"></div>
+        <div class="weapon-hand-left"></div>
+
+    </div>
+
+    <div id="muzzle"></div>
+
+</div>
+
+<div id="damage"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+/* =========================
+   DEĞİŞKENLER
+========================= */
+
+let scene;
+let camera;
+let renderer;
+let clock;
+
+let player;
+let bots=[];
+
+let health=100;
+let score=0;
+
+let ammo=30;
+let reserveAmmo=120;
+
+let canShoot=true;
+let reloading=false;
+let gameStarted=false;
+
+let yaw=0;
+let pitch=0;
+
+let fpsFrames=0;
+let fpsTime=0;
+
+const keys={};
+
+let currentRoom="";
+
+let selectedMap="training";
+let botsEnabled=true;
+let botCount=5;
+
+let selectedDifficulty="normal";
+let initialized=false;
+
+
+/* =========================
+   MENÜ
+========================= */
+
+const mainMenu =
+    document.getElementById("mainMenu");
+
+const roomModal =
+    document.getElementById("roomModal");
+
+const modalTitle =
+    document.getElementById("modalTitle");
+
+const modalAction =
+    document.getElementById("modalAction");
+
+const roomCodeInput =
+    document.getElementById("roomCodeInput");
+
+const roomMessage =
+    document.getElementById("roomMessage");
+
+const createRoomBtn =
+    document.getElementById("createRoomBtn");
+
+const joinRoomBtn =
+    document.getElementById("joinRoomBtn");
+
+const closeModal =
+    document.getElementById("closeModal");
+
+const startGameBtn =
+    document.getElementById("startGameBtn");
+
+let roomMode="create";
+
+
+/* =========================
+   HARİTA SEÇİMİ
+========================= */
+
+document.querySelectorAll(".map").forEach(map=>{
+
+    map.addEventListener("click",()=>{
+
+        document
+            .querySelectorAll(".map")
+            .forEach(m=>m.classList.remove("selected"));
+
+        map.classList.add("selected");
+
+        selectedMap=map.dataset.map;
+
+    });
+
+});
+
+
+/* =========================
+   AYARLAR
+========================= */
+
+document.querySelectorAll(".option").forEach(button=>{
+
+    button.addEventListener("click",()=>{
+
+        const parent=button.parentElement;
+
+        parent
+            .querySelectorAll(".option")
+            .forEach(b=>b.classList.remove("selected"));
+
+        button.classList.add("selected");
+
+        const text=button.textContent.trim();
+
+        if(text==="KAPALI"){
+            botsEnabled=false;
+        }
+
+        if(text==="AÇIK"){
+            botsEnabled=true;
+        }
+
+        if(["1","3","5","10","20"].includes(text)){
+            botCount=Number(text);
+        }
+
+        if(["KOLAY","NORMAL","ZOR"].includes(text)){
+            selectedDifficulty=text.toLowerCase();
+        }
+
+    });
+
+});
+
+
+/* =========================
+   ODA
+========================= */
+
+createRoomBtn.onclick=()=>{
+
+    roomMode="create";
+
+    modalTitle.textContent="ODA OLUŞTUR";
+    modalAction.textContent="ODA OLUŞTUR";
+
+    roomCodeInput.value="";
+    roomMessage.textContent="";
+
+    roomCodeInput.style.display="none";
+    roomModal.style.display="flex";
+
+};
+
+
+joinRoomBtn.onclick=()=>{
+
+    roomMode="join";
+
+    modalTitle.textContent="ODAYA KATIL";
+    modalAction.textContent="ODAYA KATIL";
+
+    roomCodeInput.value="";
+    roomMessage.textContent="";
+
+    roomCodeInput.style.display="block";
+    roomModal.style.display="flex";
+
+};
+
+
+closeModal.onclick=()=>{
+
+    roomModal.style.display="none";
+
+};
+
+
+function generateRoomCode(){
+
+    const chars=
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code="";
+
+    for(let i=0;i<6;i++){
+
+        code+=chars[
+            Math.floor(
+                Math.random()*chars.length
+            )
+        ];
+
+    }
+
+    return code;
+
+}
+
+
+modalAction.onclick=()=>{
+
+    if(roomMode==="create"){
+
+        currentRoom=generateRoomCode();
+
+        roomMessage.textContent=
+            "Oda kodun: "+currentRoom;
+
+        setTimeout(()=>{
+            roomModal.style.display="none";
+        },1200);
+
+    }else{
+
+        const code=
+            roomCodeInput.value
+            .trim()
+            .toUpperCase();
+
+        if(code.length!==6){
+
+            roomMessage.textContent=
+                "6 haneli oda kodu gir.";
+
+            return;
+
+        }
+
+        currentRoom=code;
+
+        roomMessage.textContent=
+            "Odaya katıldın: "+currentRoom;
+
+        setTimeout(()=>{
+            roomModal.style.display="none";
+        },1000);
+
+    }
+
+};
+
+
+/* =========================
+   OYUNU BAŞLAT
+========================= */
+
+startGameBtn.onclick=startGame;
+
+
+function startGame(){
+
+    mainMenu.style.display="none";
+
+    document.getElementById("game")
+        .style.display="block";
+
+    document.getElementById("hud")
+        .style.display="block";
+
+    gameStarted=true;
+
+    if(!initialized){
+
+        init();
+        initialized=true;
+
+    }
+
+    document
+        .getElementById("game")
+        .requestPointerLock();
+
+}
+
+
+/* =========================
+   THREE.JS
+========================= */
+
+function init(){
+
+    scene=new THREE.Scene();
+
+    scene.background=
+        new THREE.Color(0x87a9c7);
+
+    scene.fog=
+        new THREE.Fog(
+            0x87a9c7,
+            30,
+            120
+        );
+
+
+    camera=
+        new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth/
+            window.innerHeight,
+            .1,
+            300
+        );
+
+
+    renderer=
+        new THREE.WebGLRenderer({
+
+            canvas:
+                document.getElementById("game"),
+
+            antialias:true,
+
+            powerPreference:
+                "high-performance"
+
+        });
+
+
+    renderer.setPixelRatio(
+        Math.min(
+            window.devicePixelRatio,
+            1.5
+        )
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+
+    clock=new THREE.Clock();
+
+
+    scene.add(
+        new THREE.HemisphereLight(
+            0xffffff,
+            0x444444,
+            1.2
+        )
+    );
+
+
+    const sun=
+        new THREE.DirectionalLight(
+            0xffffff,
+            1.5
+        );
+
+    sun.position.set(
+        30,
+        50,
+        20
+    );
+
+    scene.add(sun);
+
+
+    player={
+
+        position:
+            new THREE.Vector3(
+                0,
+                1.6,
+                25
+            ),
+
+        speed:7
+
+    };
+
+
+    camera.position.copy(
+        player.position
+    );
+
+
+    createMap();
+
+
+    if(botsEnabled){
+
+        for(
+            let i=0;
+            i<botCount;
+            i++
+        ){
+
+            createBot();
+
+        }
+
+    }
+
+
+    setupControls();
+
+    updateHUD();
+
+    animate();
+
+}
+
+
+/* =========================
+   HARİTA
+========================= */
+
+function createMap(){
+
+    let floorColor=0x555b60;
+
+    if(selectedMap==="desert")
+        floorColor=0x9a815b;
+
+    if(selectedMap==="forest")
+        floorColor=0x3d6844;
+
+    if(selectedMap==="city")
+        floorColor=0x55575b;
+
+
+    const floor=
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                100,
+                100
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:floorColor
+            })
+
+        );
+
+
+    floor.rotation.x=
+        -Math.PI/2;
+
+    scene.add(floor);
+
+
+    if(selectedMap==="training"){
+
+        createZone(
+            -25,
+            0,
+            20,
+            25,
+            0x286090
+        );
+
+        createZone(
+            25,
+            0,
+            20,
+            25,
+            0x904040
+        );
+
+        createZone(
+            0,
+            -25,
+            35,
+            20,
+            0x3d8050
+        );
+
+    }
+
+
+    createWall(0,2,-45,90,4,2);
+    createWall(0,2,45,90,4,2);
+    createWall(-45,2,0,2,4,90);
+    createWall(45,2,0,2,4,90);
+
+    createWall(
+        0,
+        2,
+        10,
+        2,
+        4,
+        25
+    );
+
+}
+
+
+function createZone(
+    x,
+    z,
+    width,
+    depth,
+    color
+){
+
+    const zone=
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                width,
+                depth
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color:color,
+                transparent:true,
+                opacity:.25
+
+            })
+
+        );
+
+
+    zone.rotation.x=
+        -Math.PI/2;
+
+    zone.position.set(
+        x,
+        .01,
+        z
+    );
+
+    scene.add(zone);
+
+}
+
+
+function createWall(
+    x,
+    y,
+    z,
+    width,
+    height,
+    depth
+){
+
+    const wall=
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                width,
+                height,
+                depth
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x777b80
+            })
+
+        );
+
+
+    wall.position.set(
+        x,
+        y,
+        z
+    );
+
+    scene.add(wall);
+
+}
+
+
+/* =========================
+   BOT
+========================= */
+
+function createBot(){
+
+    const bot=
+        new THREE.Group();
+
+
+    const body=
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                .8,
+                1.2,
+                .5
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x263d9c
+            })
+
+        );
+
+    body.position.y=.8;
+
+    bot.add(body);
+
+
+    const head=
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                .3,
+                12,
+                12
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0xffc49b
+            })
+
+        );
+
+    head.position.y=1.65;
+
+    bot.add(head);
+
+
+    const gun=
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                .15,
+                .15,
+                1
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x111111
+            })
+
+        );
+
+    gun.position.set(
+        .55,
+        1,
+        -.5
+    );
+
+    bot.add(gun);
+
+
+    bot.position.set(
+
+        Math.random()*65-32,
+        0,
+        Math.random()*65-25
+
+    );
+
+
+    let speed=1.5;
+
+    if(selectedDifficulty==="easy")
+        speed=1;
+
+    if(selectedDifficulty==="hard")
+        speed=2.3;
+
+
+    bot.userData={
+
+        health:100,
+        speed:speed,
+        shootTimer:1
+
+    };
+
+
+    scene.add(bot);
+
+    bots.push(bot);
+
+}
+
+
+/* =========================
+   KONTROLLER
+========================= */
+
+function setupControls(){
+
+    document.addEventListener(
+        "keydown",
+        e=>{
+
+            keys[e.code]=true;
+
+            if(e.code==="KeyR"){
+                reload();
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keyup",
+        e=>{
+
+            keys[e.code]=false;
+
+        }
+    );
+
+
+    document.addEventListener(
+        "mousemove",
+        e=>{
+
+            if(
+                document.pointerLockElement!==
+                document.getElementById("game")
+            )
+                return;
+
+
+            yaw-=e.movementX*.002;
+
+            pitch-=e.movementY*.002;
+
+
+            pitch=
+                Math.max(
+                    -1.4,
+                    Math.min(
+                        1.4,
+                        pitch
+                    )
+                );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "mousedown",
+        e=>{
+
+            if(!gameStarted)
+                return;
+
+
+            if(e.button===0){
+
+                const canvas=
+                    document.getElementById("game");
+
+
+                if(
+                    document.pointerLockElement!==canvas
+                ){
+
+                    canvas.requestPointerLock();
+
+                    return;
+
+                }
+
+                shoot();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   PROFESYONEL WASD SİSTEMİ
+========================= */
+
+function updatePlayer(delta){
+
+    let moveX=0;
+    let moveZ=0;
+
+
+    // W - İLERİ
+    if(keys["KeyW"]){
+        moveZ-=1;
+    }
+
+
+    // S - GERİ
+    if(keys["KeyS"]){
+        moveZ+=1;
+    }
+
+
+    // A - SOL
+    if(keys["KeyA"]){
+        moveX-=1;
+    }
+
+
+    // D - SAĞ
+    if(keys["KeyD"]){
+        moveX+=1;
+    }
+
+
+    // Hareket varsa
+    if(moveX!==0 || moveZ!==0){
+
+        /*
+        Çapraz hareket hızını sabit tutar.
+        Böylece W+A, W veya D'den daha hızlı olmaz.
+        */
+
+        const length=
+            Math.sqrt(
+                moveX*moveX+
+                moveZ*moveZ
+            );
+
+
+        moveX/=length;
+        moveZ/=length;
+
+
+        /*
+        Kameranın baktığı ileri yön.
+        W her zaman kameranın baktığı yöne gider.
+        */
+
+        const forwardX=
+            -Math.sin(yaw);
+
+        const forwardZ=
+            -Math.cos(yaw);
+
+
+        /*
+        Kameranın sağ yönü.
+        A ve D hareketleri buna göre hesaplanır.
+        */
+
+        const rightX=
+            Math.cos(yaw);
+
+        const rightZ=
+            -Math.sin(yaw);
+
+
+        /*
+        İleri / geri hareket
+        */
+
+        const forwardMoveX=
+            forwardX*
+            (-moveZ);
+
+        const forwardMoveZ=
+            forwardZ*
+            (-moveZ);
+
+
+        /*
+        Sağ / sol hareket
+        */
+
+        const rightMoveX=
+            rightX*
+            moveX;
+
+        const rightMoveZ=
+            rightZ*
+            moveX;
+
+
+        /*
+        Nihai hareket yönü
+        */
+
+        const finalX=
+            forwardMoveX+
+            rightMoveX;
+
+        const finalZ=
+            forwardMoveZ+
+            rightMoveZ;
+
+
+        /*
+        Oyuncuyu hareket ettir
+        */
+
+        player.position.x+=
+            finalX*
+            player.speed*
+            delta;
+
+        player.position.z+=
+            finalZ*
+            player.speed*
+            delta;
+
+    }
+
+
+    /*
+    Harita sınırları
+    */
+
+    player.position.x=
+        Math.max(
+            -42,
+            Math.min(
+                42,
+                player.position.x
+            )
+        );
+
+
+    player.position.z=
+        Math.max(
+            -42,
+            Math.min(
+                42,
+                player.position.z
+            )
+        );
+
+
+    /*
+    Kamerayı oyuncuya bağla
+    */
+
+    camera.position.copy(
+        player.position
+    );
+
+
+    /*
+    FPS kamera sistemi
+    */
+
+    camera.rotation.order=
+        "YXZ";
+
+    camera.rotation.y=
+        yaw;
+
+    camera.rotation.x=
+        pitch;
+
+}
+
+
+/* =========================
+   ATEŞ
+========================= */
+
+function shoot(){
+
+    if(
+        !canShoot||
+        reloading
+    )
+        return;
+
+
+    if(ammo<=0){
+
+        reload();
+
+        return;
+
+    }
+
+
+    ammo--;
+
+    updateHUD();
+
+    canShoot=false;
+
+
+    setTimeout(
+        ()=>{
+            canShoot=true;
+        },
+        120
+    );
+
+
+    const muzzle=
+        document.getElementById(
+            "muzzle"
+        );
+
+
+    muzzle.style.display="block";
+
+
+    setTimeout(
+        ()=>{
+            muzzle.style.display="none";
+        },
+        60
+    );
+
+
+    const raycaster=
+        new THREE.Raycaster();
+
+
+    raycaster.setFromCamera(
+        new THREE.Vector2(0,0),
+        camera
+    );
+
+
+    const objects=[];
+
+
+    bots.forEach(bot=>{
+
+        bot.traverse(child=>{
+
+            if(child.isMesh){
+                objects.push(child);
+            }
+
+        });
+
+    });
+
+
+    const hits=
+        raycaster.intersectObjects(
+            objects
+        );
+
+
+    if(hits.length>0){
+
+        let bot=
+            hits[0].object;
+
+
+        while(
+            bot.parent&&
+            !bot.userData.health
+        ){
+
+            bot=bot.parent;
+
+        }
+
+
+        if(
+            bot.userData&&
+            bot.userData.health
+        ){
+
+            bot.userData.health-=50;
+
+
+            if(
+                bot.userData.health<=0
+            ){
+
+                killBot(bot);
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   BOT AI
+========================= */
+
+function updateBots(delta){
+
+    bots.forEach(bot=>{
+
+        const distance=
+            bot.position.distanceTo(
+                player.position
+            );
+
+
+        if(distance>5){
+
+            const direction=
+                new THREE.Vector3()
+                .subVectors(
+                    player.position,
+                    bot.position
+                )
+                .normalize();
+
+
+            bot.position.add(
+
+                direction.multiplyScalar(
+
+                    bot.userData.speed*
+                    delta
+
+                )
+
+            );
+
+        }
+
+
+        bot.lookAt(
+            player.position.x,
+            1,
+            player.position.z
+        );
+
+
+        bot.userData.shootTimer-=delta;
+
+
+        if(
+            distance<25&&
+            bot.userData.shootTimer<=0
+        ){
+
+            let chance=.4;
+
+            if(
+                selectedDifficulty==="easy"
+            )
+                chance=.2;
+
+            if(
+                selectedDifficulty==="hard"
+            )
+                chance=.7;
+
+
+            if(Math.random()<chance){
+
+                damagePlayer(10);
+
+            }
+
+
+            bot.userData.shootTimer=
+                1+
+                Math.random()*2;
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   BOT ÖLDÜR
+========================= */
+
+function killBot(bot){
+
+    scene.remove(bot);
+
+    bots=
+        bots.filter(
+            b=>b!==bot
+        );
+
+    score+=100;
+
+    updateHUD();
+
+
+    if(botsEnabled){
+
+        setTimeout(
+            ()=>{
+
+                if(gameStarted){
+                    createBot();
+                }
+
+            },
+            2000
+        );
+
+    }
+
+}
+
+
+/* =========================
+   HASAR
+========================= */
+
+function damagePlayer(amount){
+
+    health-=amount;
+
+    health=
+        Math.max(
+            0,
+            health
+        );
+
+
+    const damage=
+        document.getElementById(
+            "damage"
+        );
+
+
+    damage.style.display="block";
+
+
+    setTimeout(
+        ()=>{
+            damage.style.display="none";
+        },
+        120
+    );
+
+
+    updateHUD();
+
+
+    if(health<=0){
+
+        health=100;
+
+        player.position.set(
+            0,
+            1.6,
+            25
+        );
+
+        updateHUD();
+
+    }
+
+}
+
+
+/* =========================
+   RELOAD
+========================= */
+
+function reload(){
+
+    if(
+        reloading||
+        ammo>=30||
+        reserveAmmo<=0
+    )
+        return;
+
+
+    reloading=true;
+
+
+    setTimeout(
+        ()=>{
+
+            const need=
+                30-ammo;
+
+
+            const amount=
+                Math.min(
+                    need,
+                    reserveAmmo
+                );
+
+
+            ammo+=amount;
+
+            reserveAmmo-=amount;
+
+            reloading=false;
+
+            updateHUD();
+
+        },
+        1200
+    );
+
+}
+
+
+/* =========================
+   HUD
+========================= */
+
+function updateHUD(){
+
+    document.getElementById(
+        "healthText"
+    ).textContent=health;
+
+
+    document.getElementById(
+        "health-fill"
+    ).style.width=
+        health+"%";
+
+
+    document.getElementById(
+        "ammoValue"
+    ).textContent=ammo;
+
+
+    document.getElementById(
+        "score"
+    ).textContent=
+        "Skor: "+score;
+
+
+    document.getElementById(
+        "roomInfo"
+    ).textContent=
+        "Oda: "+
+        (currentRoom||"-");
+
+}
+
+
+/* =========================
+   FPS
+========================= */
+
+function updateFPS(delta){
+
+    fpsFrames++;
+
+    fpsTime+=delta;
+
+
+    if(fpsTime>=.5){
+
+        const fps=
+            Math.round(
+                fpsFrames/
+                fpsTime
+            );
+
+
+        document.getElementById(
+            "fps"
+        ).textContent=
+            "FPS: "+fps;
+
+
+        fpsFrames=0;
+        fpsTime=0;
+
+    }
+
+}
+
+
+/* =========================
+   OYUN DÖNGÜSÜ
+========================= */
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    if(!gameStarted)
+        return;
+
+
+    const delta=
+        Math.min(
+            clock.getDelta(),
+            .05
+        );
+
+
+    updatePlayer(delta);
+
+    updateBots(delta);
+
+    updateFPS(delta);
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+/* =========================
+   EKRAN BOYUTU
+========================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        if(
+            !camera||
+            !renderer
+        )
+            return;
+
+
+        camera.aspect=
+            window.innerWidth/
+            window.innerHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
+
+</script>
+
 </body>
 </html>
