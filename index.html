@@ -1431,7 +1431,9 @@ modalAction.onclick=()=>{
             "Oda kodun: "+currentRoom;
 
         setTimeout(()=>{
+
             roomModal.style.display="none";
+
         },1200);
 
     }else{
@@ -1456,7 +1458,9 @@ modalAction.onclick=()=>{
             "Odaya katıldın: "+currentRoom;
 
         setTimeout(()=>{
+
             roomModal.style.display="none";
+
         },1000);
 
     }
@@ -1475,10 +1479,12 @@ function startGame(){
 
     mainMenu.style.display="none";
 
-    document.getElementById("game")
+    document
+        .getElementById("game")
         .style.display="block";
 
-    document.getElementById("hud")
+    document
+        .getElementById("hud")
         .style.display="block";
 
     gameStarted=true;
@@ -1486,13 +1492,32 @@ function startGame(){
     if(!initialized){
 
         init();
+
         initialized=true;
 
     }
 
-    document
-        .getElementById("game")
-        .requestPointerLock();
+    requestPointerLock();
+
+}
+
+
+/* =========================
+   POINTER LOCK
+========================= */
+
+function requestPointerLock(){
+
+    const canvas=
+        document.getElementById("game");
+
+    if(
+        document.pointerLockElement!==canvas
+    ){
+
+        canvas.requestPointerLock();
+
+    }
 
 }
 
@@ -1909,7 +1934,11 @@ function setupControls(){
             keys[e.code]=true;
 
             if(e.code==="KeyR"){
+
+                e.preventDefault();
+
                 reload();
+
             }
 
         }
@@ -1931,22 +1960,50 @@ function setupControls(){
         e=>{
 
             if(
+                !gameStarted||
                 document.pointerLockElement!==
                 document.getElementById("game")
-            )
+            ){
+
                 return;
 
+            }
 
-            yaw-=e.movementX*.002;
 
-            pitch-=e.movementY*.002;
+            /*
+            MOUSE KAMERA KONTROLÜ
+
+            Mouse sağa:
+            Kamera sağa döner.
+
+            Mouse sola:
+            Kamera sola döner.
+
+            Mouse yukarı:
+            Kamera yukarı bakar.
+
+            Mouse aşağı:
+            Kamera aşağı bakar.
+            */
+
+            const sensitivity=0.0022;
+
+
+            yaw-=
+                e.movementX*
+                sensitivity;
+
+
+            pitch-=
+                e.movementY*
+                sensitivity;
 
 
             pitch=
                 Math.max(
-                    -1.4,
+                    -1.45,
                     Math.min(
-                        1.4,
+                        1.45,
                         pitch
                     )
                 );
@@ -1979,6 +2036,7 @@ function setupControls(){
 
                 }
 
+
                 shoot();
 
             }
@@ -1986,65 +2044,105 @@ function setupControls(){
         }
     );
 
+
+    /*
+    OYUN ALANINA TIKLAYINCA
+    MOUSE KONTROLÜ AKTİF OLUR
+    */
+
+    document
+        .getElementById("game")
+        .addEventListener(
+            "click",
+            ()=>{
+
+                if(gameStarted){
+
+                    requestPointerLock();
+
+                }
+
+            }
+        );
+
 }
 
 
 /* =========================
-   PROFESYONEL WASD SİSTEMİ
+   PROFESYONEL WASD HAREKET SİSTEMİ
 ========================= */
 
 function updatePlayer(delta){
 
-    let moveX=0;
-    let moveZ=0;
+    /*
+    Hareket girdileri
+
+    W = İleri
+    S = Geri
+    A = Sol
+    D = Sağ
+    */
+
+    let inputX=0;
+    let inputZ=0;
 
 
-    // W - İLERİ
     if(keys["KeyW"]){
-        moveZ-=1;
+
+        inputZ-=1;
+
     }
 
 
-    // S - GERİ
     if(keys["KeyS"]){
-        moveZ+=1;
+
+        inputZ+=1;
+
     }
 
 
-    // A - SOL
     if(keys["KeyA"]){
-        moveX-=1;
+
+        inputX-=1;
+
     }
 
 
-    // D - SAĞ
     if(keys["KeyD"]){
-        moveX+=1;
+
+        inputX+=1;
+
     }
 
 
-    // Hareket varsa
-    if(moveX!==0 || moveZ!==0){
+    /*
+    Aynı anda W+A veya W+D
+    basıldığında oyuncunun daha
+    hızlı gitmesini engeller.
+    */
+
+    const inputLength=
+        Math.hypot(
+            inputX,
+            inputZ
+        );
+
+
+    if(inputLength>0){
+
+        inputX/=inputLength;
+
+        inputZ/=inputLength;
+
 
         /*
-        Çapraz hareket hızını sabit tutar.
-        Böylece W+A, W veya D'den daha hızlı olmaz.
-        */
+        KAMERANIN İLERİ YÖNÜ
 
-        const length=
-            Math.sqrt(
-                moveX*moveX+
-                moveZ*moveZ
-            );
+        yaw değerine göre hesaplanır.
 
-
-        moveX/=length;
-        moveZ/=length;
-
-
-        /*
-        Kameranın baktığı ileri yön.
-        W her zaman kameranın baktığı yöne gider.
+        Böylece oyuncu her zaman
+        kameranın baktığı yöne göre
+        hareket eder.
         */
 
         const forwardX=
@@ -2055,8 +2153,10 @@ function updatePlayer(delta){
 
 
         /*
-        Kameranın sağ yönü.
-        A ve D hareketleri buna göre hesaplanır.
+        KAMERANIN SAĞ YÖNÜ
+
+        Kameranın yönüne 90 derece
+        dik olan yön hesaplanır.
         */
 
         const rightX=
@@ -2067,55 +2167,53 @@ function updatePlayer(delta){
 
 
         /*
-        İleri / geri hareket
+        WASD GİRDİSİNİ KAMERA YÖNÜNE
+        DÖNÜŞTÜRÜYORUZ.
+
+        inputZ:
+        W = -1
+        S = +1
+
+        inputX:
+        A = -1
+        D = +1
         */
 
-        const forwardMoveX=
-            forwardX*
-            (-moveZ);
 
-        const forwardMoveZ=
-            forwardZ*
-            (-moveZ);
+        const movementX=
+            (
+                forwardX*
+                (-inputZ)
+            )+
+            (
+                rightX*
+                inputX
+            );
+
+
+        const movementZ=
+            (
+                forwardZ*
+                (-inputZ)
+            )+
+            (
+                rightZ*
+                inputX
+            );
 
 
         /*
-        Sağ / sol hareket
-        */
-
-        const rightMoveX=
-            rightX*
-            moveX;
-
-        const rightMoveZ=
-            rightZ*
-            moveX;
-
-
-        /*
-        Nihai hareket yönü
-        */
-
-        const finalX=
-            forwardMoveX+
-            rightMoveX;
-
-        const finalZ=
-            forwardMoveZ+
-            rightMoveZ;
-
-
-        /*
-        Oyuncuyu hareket ettir
+        Oyuncuyu hareket ettir.
         */
 
         player.position.x+=
-            finalX*
+            movementX*
             player.speed*
             delta;
 
+
         player.position.z+=
-            finalZ*
+            movementZ*
             player.speed*
             delta;
 
@@ -2123,7 +2221,10 @@ function updatePlayer(delta){
 
 
     /*
-    Harita sınırları
+    HARİTA SINIRLARI
+
+    Oyuncunun haritanın dışına
+    çıkmasını engeller.
     */
 
     player.position.x=
@@ -2147,7 +2248,7 @@ function updatePlayer(delta){
 
 
     /*
-    Kamerayı oyuncuya bağla
+    KAMERA KONUMU
     */
 
     camera.position.copy(
@@ -2156,14 +2257,22 @@ function updatePlayer(delta){
 
 
     /*
-    FPS kamera sistemi
+    FPS KAMERA ROTASYONU
+
+    Y ekseni:
+    Sağa / sola bakış
+
+    X ekseni:
+    Yukarı / aşağı bakış
     */
 
     camera.rotation.order=
         "YXZ";
 
+
     camera.rotation.y=
         yaw;
+
 
     camera.rotation.x=
         pitch;
@@ -2202,7 +2311,9 @@ function shoot(){
 
     setTimeout(
         ()=>{
+
             canShoot=true;
+
         },
         120
     );
@@ -2219,7 +2330,9 @@ function shoot(){
 
     setTimeout(
         ()=>{
+
             muzzle.style.display="none";
+
         },
         60
     );
@@ -2243,7 +2356,9 @@ function shoot(){
         bot.traverse(child=>{
 
             if(child.isMesh){
+
                 objects.push(child);
+
             }
 
         });
@@ -2352,15 +2467,23 @@ function updateBots(delta){
 
             let chance=.4;
 
+
             if(
                 selectedDifficulty==="easy"
-            )
+            ){
+
                 chance=.2;
+
+            }
+
 
             if(
                 selectedDifficulty==="hard"
-            )
+            ){
+
                 chance=.7;
+
+            }
 
 
             if(Math.random()<chance){
@@ -2405,7 +2528,9 @@ function killBot(bot){
             ()=>{
 
                 if(gameStarted){
+
                     createBot();
+
                 }
 
             },
@@ -2443,7 +2568,9 @@ function damagePlayer(amount){
 
     setTimeout(
         ()=>{
+
             damage.style.display="none";
+
         },
         120
     );
@@ -2579,6 +2706,7 @@ function updateFPS(delta){
 
 
         fpsFrames=0;
+
         fpsTime=0;
 
     }
@@ -2608,12 +2736,33 @@ function animate(){
         );
 
 
+    /*
+    ÖNCE OYUNCU HAREKETİ
+
+    WASD hareketi kamera yönüne
+    göre hesaplanır.
+    */
+
     updatePlayer(delta);
+
+
+    /*
+    SONRA BOTLAR
+    */
 
     updateBots(delta);
 
+
+    /*
+    FPS HESAPLAMA
+    */
+
     updateFPS(delta);
 
+
+    /*
+    GÖRÜNTÜYÜ OLUŞTUR
+    */
 
     renderer.render(
         scene,
