@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WebStrike FPS</title>
+<title>WebStrike FPS - Dust 2</title>
 
 <style>
 *{
@@ -19,6 +19,7 @@ html,body{
     background:#080b0f;
     font-family:Arial,sans-serif;
     color:white;
+    user-select:none;
 }
 
 button{
@@ -31,6 +32,7 @@ button{
     width:100%;
     height:100%;
     display:none;
+    cursor:crosshair;
 }
 
 /* =========================
@@ -45,15 +47,19 @@ button{
     background:
         linear-gradient(
             90deg,
-            rgba(0,0,0,.72),
-            rgba(0,0,0,.08) 45%,
-            rgba(0,0,0,.72)
+            rgba(0,0,0,.85),
+            rgba(0,0,0,.15) 50%,
+            rgba(0,0,0,.85)
         ),
-        url("menu-bg.png");
+        linear-gradient(
+            135deg,
+            #18221b,
+            #111820,
+            #292015
+        );
 
     background-size:cover;
     background-position:center;
-    background-repeat:no-repeat;
 }
 
 /* =========================
@@ -71,7 +77,7 @@ button{
 
     padding:0 30px;
 
-    background:rgba(4,7,10,.88);
+    background:rgba(4,7,10,.92);
     border-bottom:1px solid rgba(255,255,255,.12);
 }
 
@@ -147,10 +153,10 @@ button{
 }
 
 .menu-card{
-    background:rgba(13,17,20,.90);
+    background:rgba(13,17,20,.94);
     border:1px solid rgba(255,255,255,.10);
     margin-bottom:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
 }
 
 .card-title{
@@ -233,7 +239,7 @@ button{
 }
 
 .weapon-image{
-    height:190px;
+    height:150px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -302,8 +308,8 @@ button{
     width:385px;
 
     background:linear-gradient(
-        rgba(8,12,14,.92),
-        rgba(8,12,14,.80)
+        rgba(8,12,14,.95),
+        rgba(8,12,14,.88)
     );
 
     border-left:1px solid rgba(255,255,255,.1);
@@ -364,12 +370,12 @@ button{
 
 .map-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(2,1fr);
     gap:6px;
 }
 
 .map{
-    height:90px;
+    height:70px;
     background:#222;
     border:2px solid transparent;
 
@@ -391,12 +397,12 @@ button{
 }
 
 .map-icon{
-    font-size:30px;
+    font-size:26px;
 }
 
 .map-name{
     font-size:11px;
-    margin-top:6px;
+    margin-top:4px;
 }
 
 .option-group{
@@ -564,6 +570,16 @@ button{
 #roomInfo{
     position:absolute;
     top:55px;
+    left:15px;
+
+    padding:7px 12px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#mapInfo{
+    position:absolute;
+    top:95px;
     left:15px;
 
     padding:7px 12px;
@@ -916,6 +932,10 @@ button{
 
 <body>
 
+<!-- =========================
+     ANA MENÜ
+========================= -->
+
 <div id="mainMenu">
 
     <div class="topbar">
@@ -1009,8 +1029,8 @@ button{
             </div>
 
             <div class="popular-info">
-                <h3>Pusu Çıkartma Kapsülü</h3>
-                <div class="price">$0.99</div>
+                <h3>Dust 2 Operasyonu</h3>
+                <div class="price">HARİTA AKTİF</div>
             </div>
 
         </div>
@@ -1051,24 +1071,14 @@ button{
 
             <div class="map-grid">
 
-                <div class="map selected" data-map="training">
+                <div class="map" data-map="training">
                     <div class="map-icon">🏕️</div>
                     <div class="map-name">Eğitim</div>
                 </div>
 
-                <div class="map" data-map="city">
-                    <div class="map-icon">🏙️</div>
-                    <div class="map-name">Şehir</div>
-                </div>
-
-                <div class="map" data-map="desert">
+                <div class="map selected" data-map="dust2">
                     <div class="map-icon">🏜️</div>
-                    <div class="map-name">Çöl</div>
-                </div>
-
-                <div class="map" data-map="forest">
-                    <div class="map-icon">🌲</div>
-                    <div class="map-name">Orman</div>
+                    <div class="map-name">Dust 2</div>
                 </div>
 
             </div>
@@ -1133,6 +1143,10 @@ button{
 
 </div>
 
+<!-- =========================
+     ODA MODAL
+========================= -->
+
 <div id="roomModal">
 
     <div class="room-box">
@@ -1161,6 +1175,10 @@ button{
 
 </div>
 
+<!-- =========================
+     OYUN
+========================= -->
+
 <canvas id="game"></canvas>
 
 <div id="hud">
@@ -1171,6 +1189,10 @@ button{
 
     <div id="roomInfo">
         Oda: -
+    </div>
+
+    <div id="mapInfo">
+        Harita: Dust 2
     </div>
 
     <div id="score">
@@ -1231,6 +1253,8 @@ let clock;
 let player;
 let bots=[];
 
+let obstacles=[];
+
 let health=100;
 let score=0;
 
@@ -1251,7 +1275,7 @@ const keys={};
 
 let currentRoom="";
 
-let selectedMap="training";
+let selectedMap="dust2";
 let botsEnabled=true;
 let botCount=5;
 
@@ -1260,37 +1284,37 @@ let initialized=false;
 
 
 /* =========================
-   MENÜ
+   MENÜ ELEMANLARI
 ========================= */
 
-const mainMenu =
+const mainMenu=
     document.getElementById("mainMenu");
 
-const roomModal =
+const roomModal=
     document.getElementById("roomModal");
 
-const modalTitle =
+const modalTitle=
     document.getElementById("modalTitle");
 
-const modalAction =
+const modalAction=
     document.getElementById("modalAction");
 
-const roomCodeInput =
+const roomCodeInput=
     document.getElementById("roomCodeInput");
 
-const roomMessage =
+const roomMessage=
     document.getElementById("roomMessage");
 
-const createRoomBtn =
+const createRoomBtn=
     document.getElementById("createRoomBtn");
 
-const joinRoomBtn =
+const joinRoomBtn=
     document.getElementById("joinRoomBtn");
 
-const closeModal =
+const closeModal=
     document.getElementById("closeModal");
 
-const startGameBtn =
+const startGameBtn=
     document.getElementById("startGameBtn");
 
 let roomMode="create";
@@ -1306,11 +1330,14 @@ document.querySelectorAll(".map").forEach(map=>{
 
         document
             .querySelectorAll(".map")
-            .forEach(m=>m.classList.remove("selected"));
+            .forEach(m=>
+                m.classList.remove("selected")
+            );
 
         map.classList.add("selected");
 
-        selectedMap=map.dataset.map;
+        selectedMap=
+            map.dataset.map;
 
     });
 
@@ -1325,15 +1352,19 @@ document.querySelectorAll(".option").forEach(button=>{
 
     button.addEventListener("click",()=>{
 
-        const parent=button.parentElement;
+        const parent=
+            button.parentElement;
 
         parent
             .querySelectorAll(".option")
-            .forEach(b=>b.classList.remove("selected"));
+            .forEach(b=>
+                b.classList.remove("selected")
+            );
 
         button.classList.add("selected");
 
-        const text=button.textContent.trim();
+        const text=
+            button.textContent.trim();
 
         if(text==="KAPALI"){
             botsEnabled=false;
@@ -1343,12 +1374,24 @@ document.querySelectorAll(".option").forEach(button=>{
             botsEnabled=true;
         }
 
-        if(["1","3","5","10","20"].includes(text)){
-            botCount=Number(text);
+        if(
+            ["1","3","5","10","20"]
+            .includes(text)
+        ){
+
+            botCount=
+                Number(text);
+
         }
 
-        if(["KOLAY","NORMAL","ZOR"].includes(text)){
-            selectedDifficulty=text.toLowerCase();
+        if(
+            ["KOLAY","NORMAL","ZOR"]
+            .includes(text)
+        ){
+
+            selectedDifficulty=
+                text.toLowerCase();
+
         }
 
     });
@@ -1357,21 +1400,27 @@ document.querySelectorAll(".option").forEach(button=>{
 
 
 /* =========================
-   ODA
+   ODA SİSTEMİ
 ========================= */
 
 createRoomBtn.onclick=()=>{
 
     roomMode="create";
 
-    modalTitle.textContent="ODA OLUŞTUR";
-    modalAction.textContent="ODA OLUŞTUR";
+    modalTitle.textContent=
+        "ODA OLUŞTUR";
+
+    modalAction.textContent=
+        "ODA OLUŞTUR";
 
     roomCodeInput.value="";
     roomMessage.textContent="";
 
-    roomCodeInput.style.display="none";
-    roomModal.style.display="flex";
+    roomCodeInput.style.display=
+        "none";
+
+    roomModal.style.display=
+        "flex";
 
 };
 
@@ -1380,21 +1429,28 @@ joinRoomBtn.onclick=()=>{
 
     roomMode="join";
 
-    modalTitle.textContent="ODAYA KATIL";
-    modalAction.textContent="ODAYA KATIL";
+    modalTitle.textContent=
+        "ODAYA KATIL";
+
+    modalAction.textContent=
+        "ODAYA KATIL";
 
     roomCodeInput.value="";
     roomMessage.textContent="";
 
-    roomCodeInput.style.display="block";
-    roomModal.style.display="flex";
+    roomCodeInput.style.display=
+        "block";
+
+    roomModal.style.display=
+        "flex";
 
 };
 
 
 closeModal.onclick=()=>{
 
-    roomModal.style.display="none";
+    roomModal.style.display=
+        "none";
 
 };
 
@@ -1406,13 +1462,19 @@ function generateRoomCode(){
 
     let code="";
 
-    for(let i=0;i<6;i++){
+    for(
+        let i=0;
+        i<6;
+        i++
+    ){
 
-        code+=chars[
-            Math.floor(
-                Math.random()*chars.length
-            )
-        ];
+        code+=
+            chars[
+                Math.floor(
+                    Math.random()*
+                    chars.length
+                )
+            ];
 
     }
 
@@ -1425,14 +1487,17 @@ modalAction.onclick=()=>{
 
     if(roomMode==="create"){
 
-        currentRoom=generateRoomCode();
+        currentRoom=
+            generateRoomCode();
 
         roomMessage.textContent=
-            "Oda kodun: "+currentRoom;
+            "Oda kodun: "+
+            currentRoom;
 
         setTimeout(()=>{
 
-            roomModal.style.display="none";
+            roomModal.style.display=
+                "none";
 
         },1200);
 
@@ -1440,8 +1505,8 @@ modalAction.onclick=()=>{
 
         const code=
             roomCodeInput.value
-            .trim()
-            .toUpperCase();
+                .trim()
+                .toUpperCase();
 
         if(code.length!==6){
 
@@ -1455,11 +1520,13 @@ modalAction.onclick=()=>{
         currentRoom=code;
 
         roomMessage.textContent=
-            "Odaya katıldın: "+currentRoom;
+            "Odaya katıldın: "+
+            currentRoom;
 
         setTimeout(()=>{
 
-            roomModal.style.display="none";
+            roomModal.style.display=
+                "none";
 
         },1000);
 
@@ -1469,23 +1536,27 @@ modalAction.onclick=()=>{
 
 
 /* =========================
-   OYUNU BAŞLAT
+   OYUN BAŞLAT
 ========================= */
 
-startGameBtn.onclick=startGame;
+startGameBtn.onclick=
+    startGame;
 
 
 function startGame(){
 
-    mainMenu.style.display="none";
+    mainMenu.style.display=
+        "none";
 
     document
         .getElementById("game")
-        .style.display="block";
+        .style.display=
+        "block";
 
     document
         .getElementById("hud")
-        .style.display="block";
+        .style.display=
+        "block";
 
     gameStarted=true;
 
@@ -1497,57 +1568,46 @@ function startGame(){
 
     }
 
-    requestPointerLock();
+    document
+        .getElementById("game")
+        .requestPointerLock();
 
 }
 
 
 /* =========================
-   POINTER LOCK
-========================= */
-
-function requestPointerLock(){
-
-    const canvas=
-        document.getElementById("game");
-
-    if(
-        document.pointerLockElement!==canvas
-    ){
-
-        canvas.requestPointerLock();
-
-    }
-
-}
-
-
-/* =========================
-   THREE.JS
+   THREE.JS BAŞLANGIÇ
 ========================= */
 
 function init(){
 
-    scene=new THREE.Scene();
+    scene=
+        new THREE.Scene();
 
     scene.background=
-        new THREE.Color(0x87a9c7);
+        new THREE.Color(
+            0xd2b48c
+        );
 
     scene.fog=
-        new THREE.Fog(
-            0x87a9c7,
-            30,
-            120
+        new THREE.FogExp2(
+            0xd2b48c,
+            0.0025
         );
 
 
     camera=
         new THREE.PerspectiveCamera(
+
             75,
+
             window.innerWidth/
             window.innerHeight,
+
             .1,
-            300
+
+            1000
+
         );
 
 
@@ -1555,7 +1615,9 @@ function init(){
         new THREE.WebGLRenderer({
 
             canvas:
-                document.getElementById("game"),
+                document.getElementById(
+                    "game"
+                ),
 
             antialias:true,
 
@@ -1566,73 +1628,134 @@ function init(){
 
 
     renderer.setPixelRatio(
+
         Math.min(
+
             window.devicePixelRatio,
+
             1.5
+
         )
+
     );
+
 
     renderer.setSize(
+
         window.innerWidth,
+
         window.innerHeight
+
     );
 
 
-    clock=new THREE.Clock();
+    renderer.shadowMap.enabled=
+        true;
 
+
+    clock=
+        new THREE.Clock();
+
+
+    /* IŞIK */
 
     scene.add(
+
         new THREE.HemisphereLight(
+
             0xffffff,
-            0x444444,
-            1.2
+
+            0x6b5845,
+
+            1.4
+
         )
+
     );
 
 
     const sun=
         new THREE.DirectionalLight(
-            0xffffff,
+
+            0xfffaed,
+
             1.5
+
         );
 
+
     sun.position.set(
-        30,
-        50,
-        20
+
+        100,
+
+        200,
+
+        100
+
     );
+
+
+    sun.castShadow=true;
+
 
     scene.add(sun);
 
 
+    /* OYUNCU */
+
     player={
 
         position:
+
             new THREE.Vector3(
+
                 0,
-                1.6,
-                25
+
+                2,
+
+                140
+
             ),
 
-        speed:7
+        speed:8
 
     };
 
 
     camera.position.copy(
+
         player.position
+
     );
 
 
-    createMap();
+    /* HARİTA */
 
+    if(
+        selectedMap==="dust2"
+    ){
+
+        createDust2Map();
+
+    }else{
+
+        createTrainingMap();
+
+    }
+
+
+    /* BOTLAR */
 
     if(botsEnabled){
 
         for(
+
             let i=0;
+
             i<botCount;
+
             i++
+
         ){
 
             createBot();
@@ -1652,33 +1775,650 @@ function init(){
 
 
 /* =========================
-   HARİTA
+   KUTU OLUŞTURMA
 ========================= */
 
-function createMap(){
+function createBox(
 
-    let floorColor=0x555b60;
+    x,
+    y,
+    z,
+    w,
+    h,
+    d,
+    color,
+    collision=true
 
-    if(selectedMap==="desert")
-        floorColor=0x9a815b;
+){
 
-    if(selectedMap==="forest")
-        floorColor=0x3d6844;
+    const geometry=
 
-    if(selectedMap==="city")
-        floorColor=0x55575b;
+        new THREE.BoxGeometry(
+
+            w,
+
+            h,
+
+            d
+
+        );
+
+
+    const material=
+
+        new THREE.MeshStandardMaterial({
+
+            color:color,
+
+            roughness:.8
+
+        });
+
+
+    const mesh=
+
+        new THREE.Mesh(
+
+            geometry,
+
+            material
+
+        );
+
+
+    mesh.position.set(
+
+        x,
+
+        y,
+
+        z
+
+    );
+
+
+    mesh.castShadow=true;
+
+    mesh.receiveShadow=true;
+
+
+    scene.add(mesh);
+
+
+    if(collision){
+
+        obstacles.push({
+
+            mesh:mesh,
+
+            box:new THREE.Box3()
+                .setFromObject(mesh)
+
+        });
+
+    }
+
+
+    return mesh;
+
+}
+
+
+/* =========================
+   DUST 2 HARİTASI
+========================= */
+
+function createDust2Map(){
+
+    /* ZEMİN */
+
+    const floorGeo=
+
+        new THREE.PlaneGeometry(
+
+            500,
+
+            500
+
+        );
+
+
+    const floorMat=
+
+        new THREE.MeshStandardMaterial({
+
+            color:0xc2a47e,
+
+            roughness:.9
+
+        });
 
 
     const floor=
+
+        new THREE.Mesh(
+
+            floorGeo,
+
+            floorMat
+
+        );
+
+
+    floor.rotation.x=
+        -Math.PI/2;
+
+
+    floor.receiveShadow=true;
+
+
+    scene.add(floor);
+
+
+    const wallColor=
+        0xe0c098;
+
+    const darkWall=
+        0xb5916d;
+
+    const boxColor=
+        0x8b5a2b;
+
+    const siteColor=
+        0xb8860b;
+
+    const propColor=
+        0xa0522d;
+
+
+    /* DIŞ SINIRLAR */
+
+    createBox(
+
+        0,20,-200,
+
+        400,40,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        0,20,200,
+
+        400,40,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -200,20,0,
+
+        6,40,400,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        200,20,0,
+
+        6,40,400,
+
+        wallColor
+
+    );
+
+
+    /* T SPAWN */
+
+    createBox(
+
+        0,12,170,
+
+        160,24,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -60,12,145,
+
+        4,24,50,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        60,12,145,
+
+        4,24,50,
+
+        wallColor
+
+    );
+
+
+    /* B TÜNELLER */
+
+    createBox(
+
+        -90,12,100,
+
+        50,24,6,
+
+        darkWall
+
+    );
+
+
+    createBox(
+
+        -115,12,60,
+
+        6,24,80,
+
+        darkWall
+
+    );
+
+
+    createBox(
+
+        -90,12,20,
+
+        50,24,6,
+
+        darkWall
+
+    );
+
+
+    /* B SITE */
+
+    createBox(
+
+        -140,12,-40,
+
+        60,24,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -165,12,-10,
+
+        6,24,60,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -140,3,-40,
+
+        22,6,22,
+
+        siteColor
+
+    );
+
+
+    createBox(
+
+        -125,4,-20,
+
+        10,8,10,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        -155,5,-60,
+
+        12,10,12,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        -130,2,-70,
+
+        8,4,14,
+
+        propColor
+
+    );
+
+
+    /* MID */
+
+    createBox(
+
+        -25,12,60,
+
+        4,24,100,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        25,12,60,
+
+        4,24,100,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -60,12,-10,
+
+        4,24,60,
+
+        wallColor
+
+    );
+
+
+    /* MID DOUBLE DOORS */
+
+    createBox(
+
+        -10,12,-50,
+
+        26,24,6,
+
+        darkWall
+
+    );
+
+
+    createBox(
+
+        16,12,-50,
+
+        26,24,6,
+
+        darkWall
+
+    );
+
+
+    /* CATWALK */
+
+    createBox(
+
+        45,12,0,
+
+        4,24,80,
+
+        wallColor
+
+    );
+
+
+    /* SHORT */
+
+    createBox(
+
+        75,12,-20,
+
+        4,24,90,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        60,8,25,
+
+        26,16,20,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        90,12,-70,
+
+        30,24,6,
+
+        wallColor
+
+    );
+
+
+    /* LONG A */
+
+    createBox(
+
+        120,12,40,
+
+        6,24,160,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        145,12,40,
+
+        6,24,160,
+
+        wallColor
+
+    );
+
+
+    /* PIT */
+
+    createBox(
+
+        132,3,100,
+
+        18,6,20,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        132,12,115,
+
+        18,24,4,
+
+        wallColor
+
+    );
+
+
+    /* A SITE */
+
+    createBox(
+
+        120,12,-130,
+
+        70,24,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        85,12,-100,
+
+        6,24,60,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        120,3,-110,
+
+        20,6,20,
+
+        siteColor
+
+    );
+
+
+    createBox(
+
+        105,5,-95,
+
+        10,10,10,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        135,4,-125,
+
+        12,8,12,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        110,2,-75,
+
+        8,4,8,
+
+        propColor
+
+    );
+
+
+    /* CT SPAWN */
+
+    createBox(
+
+        0,12,-150,
+
+        120,24,6,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -60,12,-125,
+
+        4,24,50,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        50,12,-125,
+
+        4,24,50,
+
+        wallColor
+
+    );
+
+
+    createBox(
+
+        -20,4,-150,
+
+        14,8,14,
+
+        boxColor
+
+    );
+
+
+    createBox(
+
+        20,4,-150,
+
+        14,8,14,
+
+        boxColor
+
+    );
+
+}
+
+
+/* =========================
+   EĞİTİM HARİTASI
+========================= */
+
+function createTrainingMap(){
+
+    const floor=
+
         new THREE.Mesh(
 
             new THREE.PlaneGeometry(
+
                 100,
+
                 100
+
             ),
 
             new THREE.MeshStandardMaterial({
-                color:floorColor
+
+                color:0x555b60
+
             })
 
         );
@@ -1687,128 +2427,63 @@ function createMap(){
     floor.rotation.x=
         -Math.PI/2;
 
+
     scene.add(floor);
 
 
-    if(selectedMap==="training"){
+    createBox(
 
-        createZone(
-            -25,
-            0,
-            20,
-            25,
-            0x286090
-        );
+        0,2,-45,
 
-        createZone(
-            25,
-            0,
-            20,
-            25,
-            0x904040
-        );
+        90,4,2,
 
-        createZone(
-            0,
-            -25,
-            35,
-            20,
-            0x3d8050
-        );
+        0x777b80
 
-    }
-
-
-    createWall(0,2,-45,90,4,2);
-    createWall(0,2,45,90,4,2);
-    createWall(-45,2,0,2,4,90);
-    createWall(45,2,0,2,4,90);
-
-    createWall(
-        0,
-        2,
-        10,
-        2,
-        4,
-        25
     );
 
-}
 
+    createBox(
 
-function createZone(
-    x,
-    z,
-    width,
-    depth,
-    color
-){
+        0,2,45,
 
-    const zone=
-        new THREE.Mesh(
+        90,4,2,
 
-            new THREE.PlaneGeometry(
-                width,
-                depth
-            ),
+        0x777b80
 
-            new THREE.MeshBasicMaterial({
-
-                color:color,
-                transparent:true,
-                opacity:.25
-
-            })
-
-        );
-
-
-    zone.rotation.x=
-        -Math.PI/2;
-
-    zone.position.set(
-        x,
-        .01,
-        z
     );
 
-    scene.add(zone);
 
-}
+    createBox(
 
+        -45,2,0,
 
-function createWall(
-    x,
-    y,
-    z,
-    width,
-    height,
-    depth
-){
+        2,4,90,
 
-    const wall=
-        new THREE.Mesh(
+        0x777b80
 
-            new THREE.BoxGeometry(
-                width,
-                height,
-                depth
-            ),
-
-            new THREE.MeshStandardMaterial({
-                color:0x777b80
-            })
-
-        );
-
-
-    wall.position.set(
-        x,
-        y,
-        z
     );
 
-    scene.add(wall);
+
+    createBox(
+
+        45,2,0,
+
+        2,4,90,
+
+        0x777b80
+
+    );
+
+
+    createBox(
+
+        0,2,10,
+
+        2,4,25,
+
+        0x777b80
+
+    );
 
 }
 
@@ -1824,97 +2499,168 @@ function createBot(){
 
 
     const body=
+
         new THREE.Mesh(
 
             new THREE.BoxGeometry(
+
                 .8,
+
                 1.2,
+
                 .5
+
             ),
 
             new THREE.MeshStandardMaterial({
+
                 color:0x263d9c
+
             })
 
         );
 
+
     body.position.y=.8;
+
 
     bot.add(body);
 
 
     const head=
+
         new THREE.Mesh(
 
             new THREE.SphereGeometry(
+
                 .3,
+
                 12,
+
                 12
+
             ),
 
             new THREE.MeshStandardMaterial({
+
                 color:0xffc49b
+
             })
 
         );
 
+
     head.position.y=1.65;
+
 
     bot.add(head);
 
 
     const gun=
+
         new THREE.Mesh(
 
             new THREE.BoxGeometry(
+
                 .15,
+
                 .15,
+
                 1
+
             ),
 
             new THREE.MeshStandardMaterial({
+
                 color:0x111111
+
             })
 
         );
 
+
     gun.position.set(
+
         .55,
+
         1,
+
         -.5
+
     );
+
 
     bot.add(gun);
 
 
+    let spawnX;
+    let spawnZ;
+
+
+    if(selectedMap==="dust2"){
+
+        spawnX=
+            Math.random()*280-140;
+
+        spawnZ=
+            Math.random()*250-100;
+
+    }else{
+
+        spawnX=
+            Math.random()*60-30;
+
+        spawnZ=
+            Math.random()*60-10;
+
+    }
+
+
     bot.position.set(
 
-        Math.random()*65-32,
+        spawnX,
+
         0,
-        Math.random()*65-25
+
+        spawnZ
 
     );
 
 
     let speed=1.5;
 
-    if(selectedDifficulty==="easy")
+
+    if(
+        selectedDifficulty==="kolay"
+    ){
+
         speed=1;
 
-    if(selectedDifficulty==="hard")
+    }
+
+
+    if(
+        selectedDifficulty==="zor"
+    ){
+
         speed=2.3;
+
+    }
 
 
     bot.userData={
 
         health:100,
+
         speed:speed,
+
         shootTimer:1
 
     };
 
 
     scene.add(bot);
+
 
     bots.push(bot);
 
@@ -1928,41 +2674,54 @@ function createBot(){
 function setupControls(){
 
     document.addEventListener(
+
         "keydown",
+
         e=>{
 
             keys[e.code]=true;
 
-            if(e.code==="KeyR"){
 
-                e.preventDefault();
+            if(
+                e.code==="KeyR"
+            ){
 
                 reload();
 
             }
 
         }
+
     );
 
 
     document.addEventListener(
+
         "keyup",
+
         e=>{
 
             keys[e.code]=false;
 
         }
+
     );
 
 
     document.addEventListener(
+
         "mousemove",
+
         e=>{
 
             if(
-                !gameStarted||
+
                 document.pointerLockElement!==
-                document.getElementById("game")
+
+                document.getElementById(
+                    "game"
+                )
+
             ){
 
                 return;
@@ -1970,50 +2729,39 @@ function setupControls(){
             }
 
 
-            /*
-            MOUSE KAMERA KONTROLÜ
-
-            Mouse sağa:
-            Kamera sağa döner.
-
-            Mouse sola:
-            Kamera sola döner.
-
-            Mouse yukarı:
-            Kamera yukarı bakar.
-
-            Mouse aşağı:
-            Kamera aşağı bakar.
-            */
-
-            const sensitivity=0.0022;
-
-
             yaw-=
-                e.movementX*
-                sensitivity;
+                e.movementX*.002;
 
 
             pitch-=
-                e.movementY*
-                sensitivity;
+                e.movementY*.002;
 
 
             pitch=
+
                 Math.max(
-                    -1.45,
+
+                    -1.4,
+
                     Math.min(
-                        1.45,
+
+                        1.4,
+
                         pitch
+
                     )
+
                 );
 
         }
+
     );
 
 
     document.addEventListener(
+
         "mousedown",
+
         e=>{
 
             if(!gameStarted)
@@ -2023,11 +2771,17 @@ function setupControls(){
             if(e.button===0){
 
                 const canvas=
-                    document.getElementById("game");
+
+                    document.getElementById(
+                        "game"
+                    );
 
 
                 if(
-                    document.pointerLockElement!==canvas
+
+                    document.pointerLockElement!==
+                    canvas
+
                 ){
 
                     canvas.requestPointerLock();
@@ -2042,240 +2796,318 @@ function setupControls(){
             }
 
         }
+
     );
-
-
-    /*
-    OYUN ALANINA TIKLAYINCA
-    MOUSE KONTROLÜ AKTİF OLUR
-    */
-
-    document
-        .getElementById("game")
-        .addEventListener(
-            "click",
-            ()=>{
-
-                if(gameStarted){
-
-                    requestPointerLock();
-
-                }
-
-            }
-        );
 
 }
 
 
 /* =========================
-   PROFESYONEL WASD HAREKET SİSTEMİ
+   PROFESYONEL WASD
 ========================= */
 
 function updatePlayer(delta){
 
-    /*
-    Hareket girdileri
-
-    W = İleri
-    S = Geri
-    A = Sol
-    D = Sağ
-    */
-
-    let inputX=0;
-    let inputZ=0;
+    let moveX=0;
+    let moveZ=0;
 
 
     if(keys["KeyW"]){
 
-        inputZ-=1;
+        moveZ-=1;
 
     }
 
 
     if(keys["KeyS"]){
 
-        inputZ+=1;
+        moveZ+=1;
 
     }
 
 
     if(keys["KeyA"]){
 
-        inputX-=1;
+        moveX-=1;
 
     }
 
 
     if(keys["KeyD"]){
 
-        inputX+=1;
+        moveX+=1;
 
     }
 
 
-    /*
-    Aynı anda W+A veya W+D
-    basıldığında oyuncunun daha
-    hızlı gitmesini engeller.
-    */
+    if(
 
-    const inputLength=
-        Math.hypot(
-            inputX,
-            inputZ
-        );
+        moveX!==0||
+
+        moveZ!==0
+
+    ){
+
+        const length=
+
+            Math.sqrt(
+
+                moveX*moveX+
+
+                moveZ*moveZ
+
+            );
 
 
-    if(inputLength>0){
+        moveX/=length;
 
-        inputX/=inputLength;
+        moveZ/=length;
 
-        inputZ/=inputLength;
-
-
-        /*
-        KAMERANIN İLERİ YÖNÜ
-
-        yaw değerine göre hesaplanır.
-
-        Böylece oyuncu her zaman
-        kameranın baktığı yöne göre
-        hareket eder.
-        */
 
         const forwardX=
+
             -Math.sin(yaw);
 
+
         const forwardZ=
+
             -Math.cos(yaw);
 
 
-        /*
-        KAMERANIN SAĞ YÖNÜ
-
-        Kameranın yönüne 90 derece
-        dik olan yön hesaplanır.
-        */
-
         const rightX=
+
             Math.cos(yaw);
 
+
         const rightZ=
+
             -Math.sin(yaw);
 
 
-        /*
-        WASD GİRDİSİNİ KAMERA YÖNÜNE
-        DÖNÜŞTÜRÜYORUZ.
+        const finalX=
 
-        inputZ:
-        W = -1
-        S = +1
+            forwardX*(-moveZ)+
 
-        inputX:
-        A = -1
-        D = +1
-        */
+            rightX*moveX;
 
 
-        const movementX=
-            (
-                forwardX*
-                (-inputZ)
-            )+
-            (
-                rightX*
-                inputX
-            );
+        const finalZ=
+
+            forwardZ*(-moveZ)+
+
+            rightZ*moveX;
 
 
-        const movementZ=
-            (
-                forwardZ*
-                (-inputZ)
-            )+
-            (
-                rightZ*
-                inputX
-            );
+        const nextPosition=
+
+            player.position.clone();
 
 
-        /*
-        Oyuncuyu hareket ettir.
-        */
+        nextPosition.x+=
 
-        player.position.x+=
-            movementX*
+            finalX*
+
             player.speed*
+
             delta;
 
 
-        player.position.z+=
-            movementZ*
+        nextPosition.z+=
+
+            finalZ*
+
             player.speed*
+
             delta;
+
+
+        if(
+            !checkCollision(
+                nextPosition
+            )
+        ){
+
+            player.position.copy(
+
+                nextPosition
+
+            );
+
+        }
 
     }
 
 
-    /*
-    HARİTA SINIRLARI
+    if(selectedMap==="dust2"){
 
-    Oyuncunun haritanın dışına
-    çıkmasını engeller.
-    */
+        player.position.x=
 
-    player.position.x=
-        Math.max(
-            -42,
-            Math.min(
-                42,
-                player.position.x
-            )
-        );
+            Math.max(
 
+                -190,
 
-    player.position.z=
-        Math.max(
-            -42,
-            Math.min(
-                42,
-                player.position.z
-            )
-        );
+                Math.min(
+
+                    190,
+
+                    player.position.x
+
+                )
+
+            );
 
 
-    /*
-    KAMERA KONUMU
-    */
+        player.position.z=
+
+            Math.max(
+
+                -190,
+
+                Math.min(
+
+                    190,
+
+                    player.position.z
+
+                )
+
+            );
+
+    }else{
+
+        player.position.x=
+
+            Math.max(
+
+                -42,
+
+                Math.min(
+
+                    42,
+
+                    player.position.x
+
+                )
+
+            );
+
+
+        player.position.z=
+
+            Math.max(
+
+                -42,
+
+                Math.min(
+
+                    42,
+
+                    player.position.z
+
+                )
+
+            );
+
+    }
+
 
     camera.position.copy(
+
         player.position
+
     );
 
 
-    /*
-    FPS KAMERA ROTASYONU
-
-    Y ekseni:
-    Sağa / sola bakış
-
-    X ekseni:
-    Yukarı / aşağı bakış
-    */
-
     camera.rotation.order=
+
         "YXZ";
 
 
     camera.rotation.y=
+
         yaw;
 
 
     camera.rotation.x=
+
         pitch;
+
+}
+
+
+/* =========================
+   ÇARPIŞMA
+========================= */
+
+function checkCollision(position){
+
+    const playerBox=
+
+        new THREE.Box3(
+
+            new THREE.Vector3(
+
+                position.x-.35,
+
+                0,
+
+                position.z-.35
+
+            ),
+
+            new THREE.Vector3(
+
+                position.x+.35,
+
+                2,
+
+                position.z+.35
+
+            )
+
+        );
+
+
+    for(
+
+        let i=0;
+
+        i<obstacles.length;
+
+        i++
+
+    ){
+
+        const obstacle=
+
+            obstacles[i];
+
+
+        obstacle.box.setFromObject(
+
+            obstacle.mesh
+
+        );
+
+
+        if(
+
+            playerBox.intersectsBox(
+
+                obstacle.box
+
+            )
+
+        ){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
 
 }
 
@@ -2287,10 +3119,16 @@ function updatePlayer(delta){
 function shoot(){
 
     if(
+
         !canShoot||
+
         reloading
-    )
+
+    ){
+
         return;
+
+    }
 
 
     if(ammo<=0){
@@ -2304,47 +3142,70 @@ function shoot(){
 
     ammo--;
 
+
     updateHUD();
+
 
     canShoot=false;
 
 
     setTimeout(
+
         ()=>{
 
             canShoot=true;
 
         },
+
         120
+
     );
 
 
     const muzzle=
+
         document.getElementById(
+
             "muzzle"
+
         );
 
 
-    muzzle.style.display="block";
+    muzzle.style.display=
+        "block";
 
 
     setTimeout(
+
         ()=>{
 
-            muzzle.style.display="none";
+            muzzle.style.display=
+                "none";
 
         },
+
         60
+
     );
 
 
     const raycaster=
+
         new THREE.Raycaster();
 
 
     raycaster.setFromCamera(
-        new THREE.Vector2(0,0),
+
+        new THREE.Vector2(
+
+            0,
+
+            0
+
+        ),
+
         camera
+
     );
 
 
@@ -2367,37 +3228,53 @@ function shoot(){
 
 
     const hits=
+
         raycaster.intersectObjects(
-            objects
+
+            objects,
+
+            false
+
         );
 
 
     if(hits.length>0){
 
         let bot=
+
             hits[0].object;
 
 
         while(
+
             bot.parent&&
+
             !bot.userData.health
+
         ){
 
-            bot=bot.parent;
+            bot=
+
+                bot.parent;
 
         }
 
 
         if(
+
             bot.userData&&
+
             bot.userData.health
+
         ){
 
             bot.userData.health-=50;
 
 
             if(
+
                 bot.userData.health<=0
+
             ){
 
                 killBot(bot);
@@ -2419,57 +3296,108 @@ function updateBots(delta){
 
     bots.forEach(bot=>{
 
+        if(!bot.parent)
+            return;
+
+
         const distance=
+
             bot.position.distanceTo(
+
                 player.position
+
             );
 
 
         if(distance>5){
 
             const direction=
+
                 new THREE.Vector3()
-                .subVectors(
-                    player.position,
-                    bot.position
-                )
-                .normalize();
+
+                    .subVectors(
+
+                        player.position,
+
+                        bot.position
+
+                    )
+
+                    .normalize();
 
 
-            bot.position.add(
+            const nextPosition=
+
+                bot.position.clone();
+
+
+            nextPosition.add(
 
                 direction.multiplyScalar(
 
                     bot.userData.speed*
+
                     delta
 
                 )
 
             );
 
+
+            if(
+
+                !checkBotCollision(
+
+                    bot,
+
+                    nextPosition
+
+                )
+
+            ){
+
+                bot.position.copy(
+
+                    nextPosition
+
+                );
+
+            }
+
         }
 
 
         bot.lookAt(
+
             player.position.x,
+
             1,
+
             player.position.z
+
         );
 
 
-        bot.userData.shootTimer-=delta;
+        bot.userData.shootTimer-=
+
+            delta;
 
 
         if(
-            distance<25&&
+
+            distance<40&&
+
             bot.userData.shootTimer<=0
+
         ){
 
             let chance=.4;
 
 
             if(
-                selectedDifficulty==="easy"
+
+                selectedDifficulty==="kolay"
+
             ){
 
                 chance=.2;
@@ -2478,7 +3406,9 @@ function updateBots(delta){
 
 
             if(
-                selectedDifficulty==="hard"
+
+                selectedDifficulty==="zor"
+
             ){
 
                 chance=.7;
@@ -2486,7 +3416,11 @@ function updateBots(delta){
             }
 
 
-            if(Math.random()<chance){
+            if(
+
+                Math.random()<chance
+
+            ){
 
                 damagePlayer(10);
 
@@ -2494,12 +3428,97 @@ function updateBots(delta){
 
 
             bot.userData.shootTimer=
+
                 1+
+
                 Math.random()*2;
 
         }
 
     });
+
+}
+
+
+/* =========================
+   BOT ÇARPIŞMA
+========================= */
+
+function checkBotCollision(
+
+    bot,
+
+    position
+
+){
+
+    const botBox=
+
+        new THREE.Box3(
+
+            new THREE.Vector3(
+
+                position.x-.4,
+
+                0,
+
+                position.z-.4
+
+            ),
+
+            new THREE.Vector3(
+
+                position.x+.4,
+
+                2,
+
+                position.z+.4
+
+            )
+
+        );
+
+
+    for(
+
+        let i=0;
+
+        i<obstacles.length;
+
+        i++
+
+    ){
+
+        const obstacle=
+
+            obstacles[i];
+
+
+        obstacle.box.setFromObject(
+
+            obstacle.mesh
+
+        );
+
+
+        if(
+
+            botBox.intersectsBox(
+
+                obstacle.box
+
+            )
+
+        ){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
 
 }
 
@@ -2512,12 +3531,20 @@ function killBot(bot){
 
     scene.remove(bot);
 
+
     bots=
+
         bots.filter(
-            b=>b!==bot
+
+            b=>
+
+                b!==bot
+
         );
 
+
     score+=100;
+
 
     updateHUD();
 
@@ -2525,6 +3552,7 @@ function killBot(bot){
     if(botsEnabled){
 
         setTimeout(
+
             ()=>{
 
                 if(gameStarted){
@@ -2534,7 +3562,9 @@ function killBot(bot){
                 }
 
             },
+
             2000
+
         );
 
     }
@@ -2550,29 +3580,42 @@ function damagePlayer(amount){
 
     health-=amount;
 
+
     health=
+
         Math.max(
+
             0,
+
             health
+
         );
 
 
     const damage=
+
         document.getElementById(
+
             "damage"
+
         );
 
 
-    damage.style.display="block";
+    damage.style.display=
+        "block";
 
 
     setTimeout(
+
         ()=>{
 
-            damage.style.display="none";
+            damage.style.display=
+                "none";
 
         },
+
         120
+
     );
 
 
@@ -2583,11 +3626,33 @@ function damagePlayer(amount){
 
         health=100;
 
-        player.position.set(
-            0,
-            1.6,
-            25
-        );
+
+        if(selectedMap==="dust2"){
+
+            player.position.set(
+
+                0,
+
+                2,
+
+                140
+
+            );
+
+        }else{
+
+            player.position.set(
+
+                0,
+
+                2,
+
+                25
+
+            );
+
+        }
+
 
         updateHUD();
 
@@ -2603,40 +3668,58 @@ function damagePlayer(amount){
 function reload(){
 
     if(
+
         reloading||
+
         ammo>=30||
+
         reserveAmmo<=0
-    )
+
+    ){
+
         return;
+
+    }
 
 
     reloading=true;
 
 
     setTimeout(
+
         ()=>{
 
             const need=
+
                 30-ammo;
 
 
             const amount=
+
                 Math.min(
+
                     need,
+
                     reserveAmmo
+
                 );
 
 
             ammo+=amount;
 
+
             reserveAmmo-=amount;
 
+
             reloading=false;
+
 
             updateHUD();
 
         },
+
         1200
+
     );
 
 }
@@ -2649,32 +3732,81 @@ function reload(){
 function updateHUD(){
 
     document.getElementById(
+
         "healthText"
-    ).textContent=health;
+
+    ).textContent=
+
+        health;
 
 
     document.getElementById(
+
         "health-fill"
+
     ).style.width=
+
         health+"%";
 
 
     document.getElementById(
+
         "ammoValue"
-    ).textContent=ammo;
+
+    ).textContent=
+
+        ammo;
 
 
     document.getElementById(
+
         "score"
+
     ).textContent=
-        "Skor: "+score;
+
+        "Skor: "+
+
+        score;
 
 
     document.getElementById(
+
         "roomInfo"
+
     ).textContent=
+
         "Oda: "+
-        (currentRoom||"-");
+
+        (
+
+            currentRoom||
+
+            "-"
+
+        );
+
+
+    document.getElementById(
+
+        "mapInfo"
+
+    ).textContent=
+
+        "Harita: "+
+
+        (
+
+            selectedMap==="dust2"
+
+            ?
+
+            "Dust 2"
+
+            :
+
+            "Eğitim"
+
+        );
 
 }
 
@@ -2687,22 +3819,32 @@ function updateFPS(delta){
 
     fpsFrames++;
 
+
     fpsTime+=delta;
 
 
     if(fpsTime>=.5){
 
         const fps=
+
             Math.round(
+
                 fpsFrames/
+
                 fpsTime
+
             );
 
 
         document.getElementById(
+
             "fps"
+
         ).textContent=
-            "FPS: "+fps;
+
+            "FPS: "+
+
+            fps;
 
 
         fpsFrames=0;
@@ -2721,52 +3863,45 @@ function updateFPS(delta){
 function animate(){
 
     requestAnimationFrame(
+
         animate
+
     );
 
 
-    if(!gameStarted)
+    if(!gameStarted){
+
         return;
+
+    }
 
 
     const delta=
+
         Math.min(
+
             clock.getDelta(),
+
             .05
+
         );
 
-
-    /*
-    ÖNCE OYUNCU HAREKETİ
-
-    WASD hareketi kamera yönüne
-    göre hesaplanır.
-    */
 
     updatePlayer(delta);
 
 
-    /*
-    SONRA BOTLAR
-    */
-
     updateBots(delta);
 
-
-    /*
-    FPS HESAPLAMA
-    */
 
     updateFPS(delta);
 
 
-    /*
-    GÖRÜNTÜYÜ OLUŞTUR
-    */
-
     renderer.render(
+
         scene,
+
         camera
+
     );
 
 }
@@ -2777,18 +3912,28 @@ function animate(){
 ========================= */
 
 window.addEventListener(
+
     "resize",
+
     ()=>{
 
         if(
+
             !camera||
+
             !renderer
-        )
+
+        ){
+
             return;
+
+        }
 
 
         camera.aspect=
+
             window.innerWidth/
+
             window.innerHeight;
 
 
@@ -2796,11 +3941,15 @@ window.addEventListener(
 
 
         renderer.setSize(
+
             window.innerWidth,
+
             window.innerHeight
+
         );
 
     }
+
 );
 
 </script>
