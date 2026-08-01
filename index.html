@@ -1,840 +1,5108 @@
-<script>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>WebStrike FPS - Özgün Operasyon</title>
+
+<style>
+
 /* =========================================================
-   WEBSTRIKE - ÖZGÜN INDUSTRIAL DISTRICT HARİTASI
-   KARAKTER ÖLÇEĞİ:
-   Oyuncu boyu: yaklaşık 1.6 metre
-   Kapılar: yaklaşık 2.2 metre
-   Duvarlar: yaklaşık 3 metre
-   Kutular: yaklaşık 1 metre
+   TEMEL
 ========================================================= */
 
-const mapObjects = [];
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-/* -------------------------
-   GENEL OBJE OLUŞTURUCU
-------------------------- */
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#080b0f;
+    font-family:Arial,sans-serif;
+    color:white;
+    user-select:none;
+}
 
-function createMapBox(
+button{
+    font-family:inherit;
+}
+
+#game{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:none;
+    cursor:crosshair;
+}
+
+/* =========================================================
+   ANA MENÜ
+========================================================= */
+
+#mainMenu{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+
+    background:
+        radial-gradient(
+            circle at 70% 45%,
+            rgba(75,110,65,.15),
+            transparent 35%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.92),
+            rgba(0,0,0,.25) 50%,
+            rgba(0,0,0,.9)
+        ),
+        linear-gradient(
+            135deg,
+            #111912,
+            #10161c,
+            #211b12
+        );
+
+    background-size:cover;
+    background-position:center;
+}
+
+/* =========================================================
+   ÜST MENÜ
+========================================================= */
+
+.topbar{
+    height:74px;
+
+    position:absolute;
+    inset:0 0 auto 0;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    background:rgba(4,7,10,.94);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.12);
+
+    box-shadow:
+        0 5px 25px
+        rgba(0,0,0,.35);
+}
+
+.top-left{
+    display:flex;
+    gap:12px;
+}
+
+.icon-btn{
+    width:44px;
+    height:45px;
+
+    border:0;
+
+    background:transparent;
+
+    color:#ddd;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.icon-btn:hover{
+    color:#35df60;
+
+    transform:
+        translateY(-2px);
+}
+
+.nav{
+    display:flex;
+
+    height:100%;
+
+    align-items:center;
+}
+
+.nav-item{
+    height:100%;
+
+    display:flex;
+    align-items:center;
+
+    padding:
+        0 26px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    border-right:
+        1px solid
+        rgba(255,255,255,.12);
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.nav-item:first-child{
+    border-left:
+        1px solid
+        rgba(255,255,255,.12);
+}
+
+.nav-item:hover{
+    background:
+        rgba(255,255,255,.04);
+}
+
+.nav-item.active{
+    border-bottom:
+        4px solid
+        #36dc59;
+
+    background:
+        rgba(53,220,89,.05);
+
+    color:#fff;
+}
+
+.top-right{
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    font-size:19px;
+}
+
+.online{
+    color:#32dc58;
+
+    font-weight:bold;
+}
+
+/* =========================================================
+   SOL PANEL
+========================================================= */
+
+.left-panel{
+    position:absolute;
+
+    top:100px;
+    left:18px;
+    bottom:90px;
+
+    width:355px;
+
+    overflow:auto;
+
+    scrollbar-width:
+        thin;
+}
+
+.menu-card{
+    background:
+        rgba(13,17,20,.95);
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.4);
+}
+
+.card-title{
+    padding:
+        16px 18px;
+
+    font-size:19px;
+
+    font-weight:bold;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.1);
+}
+
+.mission{
+    padding:18px;
+
+    min-height:
+        100px;
+}
+
+.mission strong{
+    color:#37df60;
+
+    font-size:18px;
+}
+
+.mission p{
+    margin-top:8px;
+
+    color:#aaa;
+
+    font-size:14px;
+}
+
+.check{
+    float:right;
+
+    color:#37df60;
+
+    font-size:35px;
+
+    line-height:
+        25px;
+}
+
+.daily{
+    padding:
+        16px 18px;
+}
+
+.daily-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+    color:#ddd;
+}
+
+.progress{
+    height:7px;
+
+    background:#333;
+
+    overflow:hidden;
+}
+
+.progress div{
+    width:100%;
+
+    height:100%;
+
+    background:#37df60;
+}
+
+.rewards{
+    display:flex;
+}
+
+.reward{
+    flex:1;
+
+    min-height:135px;
+
+    padding:
+        12px 8px;
+
+    text-align:center;
+
+    border-right:
+        1px solid
+        rgba(255,255,255,.08);
+
+    color:#ddd;
+}
+
+.reward:last-child{
+    border-right:0;
+}
+
+.reward-icon{
+    font-size:42px;
+
+    margin:
+        10px 0;
+}
+
+.reward small{
+    color:#37df60;
+
+    display:block;
+
+    margin-top:8px;
+}
+
+.popular{
+    padding-bottom:18px;
+}
+
+.weapon-image{
+    height:150px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.05),
+            transparent 65%
+        );
+}
+
+.weapon-image span{
+    font-size:100px;
+
+    transform:
+        rotate(-15deg);
+
+    filter:
+        drop-shadow(
+            8px 10px 8px
+            rgba(0,0,0,.7)
+        );
+}
+
+.popular-info{
+    padding:
+        0 18px;
+}
+
+.popular-info h3{
+    margin-bottom:10px;
+}
+
+.price{
+    color:#39dc5d;
+
+    margin-top:8px;
+
+    font-size:14px;
+
+    font-weight:bold;
+}
+
+/* =========================================================
+   KARAKTER ALANI
+========================================================= */
+
+.character-area{
+    position:absolute;
+
+    top:75px;
+    left:380px;
+    right:400px;
+    bottom:90px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    pointer-events:none;
+}
+
+.character-placeholder{
+    width:250px;
+    height:480px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:180px;
+
+    filter:
+        drop-shadow(
+            0 25px 25px
+            rgba(0,0,0,.8)
+        );
+}
+
+/* =========================================================
+   SAĞ PANEL
+========================================================= */
+
+.right-panel{
+    position:absolute;
+
+    top:74px;
+    right:0;
+    bottom:74px;
+
+    width:385px;
+
+    background:
+        linear-gradient(
+            rgba(8,12,14,.97),
+            rgba(8,12,14,.9)
+        );
+
+    border-left:
+        1px solid
+        rgba(255,255,255,.1);
+
+    padding:
+        24px 18px;
+
+    overflow:auto;
+
+    scrollbar-width:
+        thin;
+}
+
+.right-title{
+    font-size:22px;
+
+    margin-bottom:15px;
+
+    font-weight:bold;
+}
+
+.room-button{
+    width:100%;
+
+    height:58px;
+
+    margin-bottom:10px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    color:white;
+
+    border:
+        1px solid
+        rgba(255,255,255,.22);
+
+    text-align:left;
+
+    padding:
+        0 20px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.room-button:hover{
+    border-color:
+        #35db59;
+
+    background:
+        rgba(53,219,89,.08);
+
+    transform:
+        translateX(-2px);
+}
+
+.room-button span{
+    float:right;
+
+    font-size:25px;
+}
+
+.settings{
+    margin-top:20px;
+}
+
+.setting-title{
+    font-size:20px;
+
+    padding:
+        15px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.12);
+}
+
+.label{
+    margin:
+        18px 0 10px;
+
+    color:#ddd;
+
+    font-weight:bold;
+
+    font-size:14px;
+}
+
+.map-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:6px;
+}
+
+.map{
+    height:75px;
+
+    background:#222;
+
+    border:
+        2px solid
+        transparent;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.map:hover,
+.map.selected{
+    border-color:
+        #35db59;
+}
+
+.map.selected{
+    background:
+        linear-gradient(
+            rgba(24,59,34,.9),
+            rgba(15,38,23,.9)
+        );
+
+    box-shadow:
+        inset 0 0 15px
+        rgba(53,219,89,.1);
+}
+
+.map-icon{
+    font-size:26px;
+}
+
+.map-name{
+    font-size:11px;
+
+    margin-top:4px;
+}
+
+.option-group{
+    display:flex;
+
+    gap:5px;
+}
+
+.option{
+    flex:1;
+
+    padding:
+        12px 4px;
+
+    background:#22272a;
+
+    border:
+        1px solid
+        #444;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.option:hover{
+    border-color:
+        #55e875;
+}
+
+.option.selected{
+    background:
+        #2ca946;
+
+    border-color:
+        #40e362;
+
+    box-shadow:
+        0 0 10px
+        rgba(44,169,70,.2);
+}
+
+.start-button{
+    width:100%;
+
+    height:62px;
+
+    margin-top:22px;
+
+    border:0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2ca946,
+            #238638
+        );
+
+    color:white;
+
+    font-size:23px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+
+    box-shadow:
+        0 8px 20px
+        rgba(0,0,0,.3);
+}
+
+.start-button:hover{
+    background:
+        linear-gradient(
+            135deg,
+            #36c953,
+            #2ca946
+        );
+
+    transform:
+        translateY(-2px);
+}
+
+/* =========================================================
+   ALT BAR
+========================================================= */
+
+.bottom-bar{
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:74px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-around;
+
+    background:
+        rgba(5,8,11,.97);
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.1);
+
+    font-size:15px;
+
+    color:#bbb;
+}
+
+.bottom-bar span{
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.bottom-bar span:hover{
+    color:#37df60;
+}
+
+/* =========================================================
+   ODA MODAL
+========================================================= */
+
+#roomModal{
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:2000;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        rgba(0,0,0,.78);
+
+    backdrop-filter:
+        blur(5px);
+}
+
+.room-box{
+    width:420px;
+
+    max-width:90%;
+
+    padding:30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #11181c,
+            #0c1114
+        );
+
+    border:
+        1px solid
+        #444;
+
+    box-shadow:
+        0 20px 80px
+        rgba(0,0,0,.8);
+
+    text-align:center;
+}
+
+.room-box h2{
+    margin-bottom:20px;
+
+    color:#eee;
+}
+
+.room-box input{
+    width:100%;
+
+    padding:15px;
+
+    background:#080b0f;
+
+    color:white;
+
+    border:
+        1px solid
+        #444;
+
+    text-align:center;
+
+    font-size:20px;
+
+    text-transform:uppercase;
+
+    outline:none;
+}
+
+.room-box input:focus{
+    border-color:
+        #35db59;
+
+    box-shadow:
+        0 0 10px
+        rgba(53,219,89,.15);
+}
+
+.modal-button{
+    width:100%;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    border:0;
+
+    background:#2ca946;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:
+        .2s;
+}
+
+.modal-button:hover{
+    background:#36c953;
+}
+
+.close-button{
+    background:#333;
+}
+
+.close-button:hover{
+    background:#444;
+}
+
+#roomMessage{
+    min-height:25px;
+
+    margin-top:15px;
+
+    color:#3ddd63;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+    .left-panel{
+        width:300px;
+    }
+
+    .character-area{
+        left:320px;
+        right:370px;
+    }
+
+    .right-panel{
+        width:370px;
+    }
+
+    .nav-item{
+        padding:
+            0 14px;
+
+        font-size:14px;
+    }
+
+}
+
+@media(max-width:900px){
+
+    .left-panel{
+        display:none;
+    }
+
+    .character-area{
+        left:0;
+        right:350px;
+    }
+
+    .topbar{
+        padding:
+            0 10px;
+    }
+
+    .nav-item{
+        display:none;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .right-panel{
+        width:100%;
+    }
+
+    .character-area{
+        display:none;
+    }
+
+    .bottom-bar{
+        display:none;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     ANA MENÜ
+========================================================= -->
+
+<div id="mainMenu">
+
+    <!-- ÜST BAR -->
+
+    <div class="topbar">
+
+        <div class="top-left">
+
+            <button
+                class="icon-btn"
+                title="Ana Sayfa">
+                ⌂
+            </button>
+
+            <button
+                class="icon-btn"
+                title="Envanter">
+                ▣
+            </button>
+
+            <button
+                class="icon-btn"
+                title="Ayarlar">
+                ⚙
+            </button>
+
+            <button
+                class="icon-btn"
+                title="Çıkış">
+                ⏻
+            </button>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-item">
+                ENVANTER
+            </div>
+
+            <div class="nav-item">
+                TEÇHİZAT
+            </div>
+
+            <div class="nav-item active">
+                OYNA
+            </div>
+
+            <div class="nav-item">
+                MAĞAZA
+            </div>
+
+            <div class="nav-item">
+                HABERLER
+            </div>
+
+        </div>
+
+
+        <div class="top-right">
+
+            <span class="online">
+                👥 2/2
+            </span>
+
+            <span>
+                ●
+            </span>
+
+            <span>
+                ⇥
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SOL PANEL
+    ====================================================== -->
+
+    <div class="left-panel">
+
+        <!-- GÖREV -->
+
+        <div class="menu-card">
+
+            <div class="mission">
+
+                <strong>
+                    GÖREV TAMAMLANDI
+                </strong>
+
+                <span class="check">
+                    ✓
+                </span>
+
+                <p>
+                    Sonraki Göreve: 9 Saat
+                </p>
+
+            </div>
+
+
+            <div class="daily">
+
+                <div class="daily-head">
+
+                    <span>
+                        GÜNLÜK GÖREVLER
+                    </span>
+
+                    <b>
+                        3/3
+                    </b>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ÖDÜLLER -->
+
+        <div class="menu-card">
+
+            <div class="card-title">
+                ÖDÜLLER
+            </div>
+
+
+            <div class="rewards">
+
+                <div class="reward">
+
+                    <div class="reward-icon">
+                        📦
+                    </div>
+
+                    Günlük Kasa
+
+                    <small>
+                        1/1 ✓
+                    </small>
+
+                </div>
+
+
+                <div class="reward">
+
+                    <div class="reward-icon">
+                        XP
+                    </div>
+
+                    XP Kartı
+
+                    <small>
+                        1/1 ✓
+                    </small>
+
+                </div>
+
+
+                <div class="reward">
+
+                    <div class="reward-icon">
+                        🧴
+                    </div>
+
+                    Grafiti
+
+                    <small>
+                        1/1 ✓
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- POPÜLER -->
+
+        <div class="menu-card popular">
+
+            <div class="card-title">
+                YENİ VE POPÜLER
+            </div>
+
+
+            <div class="weapon-image">
+
+                <span>
+                    🔫
+                </span>
+
+            </div>
+
+
+            <div class="popular-info">
+
+                <h3>
+                    Özgün Operasyon
+                </h3>
+
+                <div class="price">
+                    YENİ HARİTA AKTİF
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KARAKTER
+    ====================================================== -->
+
+    <div class="character-area">
+
+        <div class="character-placeholder">
+            🧍
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SAĞ PANEL
+    ====================================================== -->
+
+    <div class="right-panel">
+
+        <div class="right-title">
+            ODA
+        </div>
+
+
+        <button
+            class="room-button"
+            id="createRoomBtn">
+
+            ODA OLUŞTUR
+
+            <span>
+                ＋
+            </span>
+
+        </button>
+
+
+        <button
+            class="room-button"
+            id="joinRoomBtn">
+
+            ODAYA KATIL
+
+            <span>
+                ⇥
+            </span>
+
+        </button>
+
+
+        <div class="settings">
+
+            <div class="setting-title">
+                ⚙ OYUN AYARLARI
+            </div>
+
+
+            <!-- HARİTA -->
+
+            <div class="label">
+                HARİTA SEÇ
+            </div>
+
+
+            <div class="map-grid">
+
+                <div
+                    class="map"
+                    data-map="training">
+
+                    <div class="map-icon">
+                        🏕️
+                    </div>
+
+                    <div class="map-name">
+                        Eğitim
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="map selected"
+                    data-map="dust2">
+
+                    <div class="map-icon">
+                        🏜️
+                    </div>
+
+                    <div class="map-name">
+                        Özgün Operasyon
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DÜŞMANLAR -->
+
+            <div class="label">
+                DÜŞMANLAR
+            </div>
+
+
+            <div class="option-group">
+
+                <button
+                    class="option"
+                    id="botsOff">
+
+                    KAPALI
+
+                </button>
+
+
+                <button
+                    class="option selected"
+                    id="botsOn">
+
+                    AÇIK
+
+                </button>
+
+            </div>
+
+
+            <!-- DÜŞMAN SAYISI -->
+
+            <div class="label">
+                DÜŞMAN SAYISI
+            </div>
+
+
+            <div class="option-group">
+
+                <button class="option">
+                    1
+                </button>
+
+                <button class="option">
+                    3
+                </button>
+
+                <button class="option selected">
+                    5
+                </button>
+
+                <button class="option">
+                    10
+                </button>
+
+                <button class="option">
+                    20
+                </button>
+
+            </div>
+
+
+            <!-- ZORLUK -->
+
+            <div class="label">
+                ZORLUK
+            </div>
+
+
+            <div class="option-group">
+
+                <button class="option">
+                    KOLAY
+                </button>
+
+                <button class="option selected">
+                    NORMAL
+                </button>
+
+                <button class="option">
+                    ZOR
+                </button>
+
+            </div>
+
+
+            <!-- BAŞLAT -->
+
+            <button
+                class="start-button"
+                id="startGameBtn">
+
+                BAŞLA ▶
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ALT BAR
+    ====================================================== -->
+
+    <div class="bottom-bar">
+
+        <span>
+            ⚙ AYARLAR
+        </span>
+
+        <span>
+            👥 DOSTLUK İSTEĞİ
+        </span>
+
+        <span>
+            ➤ RÜTBE
+        </span>
+
+        <span>
+            ★ BAŞARIMLAR
+        </span>
+
+        <span>
+            ❔ YARDIM
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ODA MODAL
+========================================================= -->
+
+<div id="roomModal">
+
+    <div class="room-box">
+
+        <h2 id="modalTitle">
+            ODA OLUŞTUR
+        </h2>
+
+
+        <input
+            id="roomCodeInput"
+            maxlength="6"
+            placeholder="ODA KODU"
+        >
+
+
+        <button
+            class="modal-button"
+            id="modalAction">
+
+            ODA OLUŞTUR
+
+        </button>
+
+
+        <button
+            class="modal-button close-button"
+            id="closeModal">
+
+            GERİ
+
+        </button>
+
+
+        <div id="roomMessage"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     OYUN CANVAS
+========================================================= -->
+
+<canvas id="game"></canvas>
+
+
+<!-- =========================================================
+     OYUN HUD
+========================================================= -->
+
+<div id="hud">
+
+    <div id="fps">
+        FPS: 0
+    </div>
+
+
+    <div id="roomInfo">
+        Oda: -
+    </div>
+
+
+    <div id="mapInfo">
+        Harita: Özgün Operasyon
+    </div>
+
+
+    <div id="score">
+        Skor: 0
+    </div>
+
+
+    <div id="crosshair"></div>
+
+
+    <div id="stats">
+
+        CAN:
+        <span id="healthText">
+            100
+        </span>
+
+
+        <div id="health-bar">
+
+            <div id="health-fill"></div>
+
+        </div>
+
+    </div>
+
+
+    <div id="ammo">
+
+        <span id="ammoValue">
+            30
+        </span>
+
+        /
+
+        <span id="reserveAmmoValue">
+            120
+        </span>
+
+    </div>
+
+
+    <!-- SİLAH -->
+
+    <div id="weapon">
+
+        <div class="weapon-barrel"></div>
+
+        <div class="weapon-front"></div>
+
+        <div class="weapon-main"></div>
+
+        <div class="weapon-top"></div>
+
+        <div class="weapon-mag"></div>
+
+        <div class="weapon-handle"></div>
+
+        <div class="weapon-trigger"></div>
+
+        <div class="weapon-hand"></div>
+
+        <div class="weapon-hand-left"></div>
+
+    </div>
+
+
+    <div id="muzzle"></div>
+
+</div>
+
+
+<div id="damage"></div>
+
+
+<!-- =========================================================
+     PARÇA 2 BURAYA GELECEK
+     THREE.JS + YENİ HARİTA + WASD + BOT SİSTEMİ
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+/* =========================================================
+   TEMEL DEĞİŞKENLER
+   PARÇA 2'DE DEVAM EDECEK
+========================================================= */
+
+let scene;
+let camera;
+let renderer;
+let clock;
+
+let player;
+
+let bots = [];
+
+let obstacles = [];
+
+let health = 100;
+
+let score = 0;
+
+let ammo = 30;
+
+let reserveAmmo = 120;
+
+let canShoot = true;
+
+let reloading = false;
+
+let gameStarted = false;
+
+let yaw = 0;
+
+let pitch = 0;
+
+let fpsFrames = 0;
+
+let fpsTime = 0;
+
+const keys = {};
+
+let currentRoom = "";
+
+let selectedMap = "dust2";
+
+let botsEnabled = true;
+
+let botCount = 5;
+
+let selectedDifficulty = "normal";
+
+let initialized = false;
+
+let roomMode = "create";
+
+
+/* =========================================================
+   MENÜ ELEMANLARI
+========================================================= */
+
+const mainMenu =
+    document.getElementById(
+        "mainMenu"
+    );
+
+const roomModal =
+    document.getElementById(
+        "roomModal"
+    );
+
+const modalTitle =
+    document.getElementById(
+        "modalTitle"
+    );
+
+const modalAction =
+    document.getElementById(
+        "modalAction"
+    );
+
+const roomCodeInput =
+    document.getElementById(
+        "roomCodeInput"
+    );
+
+const roomMessage =
+    document.getElementById(
+        "roomMessage"
+    );
+
+const createRoomBtn =
+    document.getElementById(
+        "createRoomBtn"
+    );
+
+const joinRoomBtn =
+    document.getElementById(
+        "joinRoomBtn"
+    );
+
+const closeModal =
+    document.getElementById(
+        "closeModal"
+    );
+
+const startGameBtn =
+    document.getElementById(
+        "startGameBtn"
+    );
+
+
+/* =========================================================
+   HARİTA SEÇİMİ
+========================================================= */
+
+document
+    .querySelectorAll(".map")
+    .forEach(map => {
+
+        map.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(".map")
+                    .forEach(m => {
+
+                        m.classList
+                            .remove(
+                                "selected"
+                            );
+
+                    });
+
+
+                map.classList
+                    .add(
+                        "selected"
+                    );
+
+
+                selectedMap =
+                    map.dataset.map;
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   OYUN AYARLARI
+========================================================= */
+
+document
+    .querySelectorAll(".option")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const parent =
+                    button.parentElement;
+
+
+                parent
+                    .querySelectorAll(
+                        ".option"
+                    )
+                    .forEach(b => {
+
+                        b.classList
+                            .remove(
+                                "selected"
+                            );
+
+                    });
+
+
+                button.classList
+                    .add(
+                        "selected"
+                    );
+
+
+                const text =
+                    button.textContent
+                        .trim();
+
+
+                if(
+                    text === "KAPALI"
+                ){
+
+                    botsEnabled =
+                        false;
+
+                }
+
+
+                if(
+                    text === "AÇIK"
+                ){
+
+                    botsEnabled =
+                        true;
+
+                }
+
+
+                if(
+                    [
+                        "1",
+                        "3",
+                        "5",
+                        "10",
+                        "20"
+                    ].includes(text)
+                ){
+
+                    botCount =
+                        Number(text);
+
+                }
+
+
+                if(
+                    [
+                        "KOLAY",
+                        "NORMAL",
+                        "ZOR"
+                    ].includes(text)
+                ){
+
+                    selectedDifficulty =
+                        text.toLowerCase();
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   ODA OLUŞTUR
+========================================================= */
+
+createRoomBtn.onclick =
+    () => {
+
+        roomMode =
+            "create";
+
+
+        modalTitle.textContent =
+            "ODA OLUŞTUR";
+
+
+        modalAction.textContent =
+            "ODA OLUŞTUR";
+
+
+        roomCodeInput.value =
+            "";
+
+
+        roomMessage.textContent =
+            "";
+
+
+        roomCodeInput.style.display =
+            "none";
+
+
+        roomModal.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================================
+   ODAYA KATIL
+========================================================= */
+
+joinRoomBtn.onclick =
+    () => {
+
+        roomMode =
+            "join";
+
+
+        modalTitle.textContent =
+            "ODAYA KATIL";
+
+
+        modalAction.textContent =
+            "ODAYA KATIL";
+
+
+        roomCodeInput.value =
+            "";
+
+
+        roomMessage.textContent =
+            "";
+
+
+        roomCodeInput.style.display =
+            "block";
+
+
+        roomModal.style.display =
+            "flex";
+
+    };
+
+
+/* =========================================================
+   MODAL KAPAT
+========================================================= */
+
+closeModal.onclick =
+    () => {
+
+        roomModal.style.display =
+            "none";
+
+    };
+
+
+/* =========================================================
+   ODA KODU
+========================================================= */
+
+function generateRoomCode(){
+
+    const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+
+    let code =
+        "";
+
+
+    for(
+        let i = 0;
+        i < 6;
+        i++
+    ){
+
+        code +=
+            chars[
+                Math.floor(
+                    Math.random() *
+                    chars.length
+                )
+            ];
+
+    }
+
+
+    return code;
+
+}
+
+
+/* =========================================================
+   ODA İŞLEMİ
+========================================================= */
+
+modalAction.onclick =
+    () => {
+
+        if(
+            roomMode === "create"
+        ){
+
+            currentRoom =
+                generateRoomCode();
+
+
+            roomMessage.textContent =
+                "Oda kodun: " +
+                currentRoom;
+
+
+            setTimeout(
+                () => {
+
+                    roomModal.style.display =
+                        "none";
+
+                },
+                1200
+            );
+
+        }
+        else{
+
+            const code =
+                roomCodeInput.value
+                    .trim()
+                    .toUpperCase();
+
+
+            if(
+                code.length !== 6
+            ){
+
+                roomMessage.textContent =
+                    "6 haneli oda kodu gir.";
+
+                return;
+
+            }
+
+
+            currentRoom =
+                code;
+
+
+            roomMessage.textContent =
+                "Odaya katıldın: " +
+                currentRoom;
+
+
+            setTimeout(
+                () => {
+
+                    roomModal.style.display =
+                        "none";
+
+                },
+                1000
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   OYUNU BAŞLAT
+   PARÇA 2'DE init() FONKSİYONU GELECEK
+========================================================= */
+
+startGameBtn.onclick =
+    startGame;
+
+
+function startGame(){
+
+    mainMenu.style.display =
+        "none";
+
+
+    document
+        .getElementById("game")
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById("hud")
+        .style.display =
+        "block";
+
+
+    gameStarted =
+        true;
+
+
+    if(
+        !initialized
+    ){
+
+        /*
+         * PARÇA 2'DE:
+         * init();
+         * initialized = true;
+         *
+         * OLARAK TAMAMLANACAK.
+         */
+
+        initialized =
+            true;
+
+    }
+
+
+    document
+        .getElementById("game")
+        .requestPointerLock();
+
+}
+
+</script>
+
+<!-- =========================================================
+     PARÇA 1 SONU
+========================================================= -->```html
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+/* =========================================================
+   WEBSTRIKE FPS
+   PARÇA 2
+   YENİ HARİTA + WASD + ÇARPIŞMA + BOTLAR
+========================================================= */
+
+let scene;
+let camera;
+let renderer;
+let clock;
+
+let player;
+let bots = [];
+let obstacles = [];
+
+let yaw = 0;
+let pitch = 0;
+
+let health = 100;
+let score = 0;
+
+let gameStarted = false;
+let initialized = false;
+
+const keys = {};
+
+let selectedMap = "dust2";
+let botsEnabled = true;
+let botCount = 5;
+let selectedDifficulty = "normal";
+
+let fpsFrames = 0;
+let fpsTime = 0;
+
+
+/* =========================================================
+   OYUN BAŞLATMA
+========================================================= */
+
+function startGame(){
+
+    const mainMenu =
+        document.getElementById("mainMenu");
+
+    const game =
+        document.getElementById("game");
+
+    const hud =
+        document.getElementById("hud");
+
+
+    if(mainMenu){
+
+        mainMenu.style.display = "none";
+
+    }
+
+
+    if(game){
+
+        game.style.display = "block";
+
+    }
+
+
+    if(hud){
+
+        hud.style.display = "block";
+
+    }
+
+
+    gameStarted = true;
+
+
+    if(!initialized){
+
+        init();
+
+        initialized = true;
+
+    }
+
+
+    if(game){
+
+        game.requestPointerLock();
+
+    }
+
+}
+
+
+/* =========================================================
+   THREE.JS BAŞLANGIÇ
+========================================================= */
+
+function init(){
+
+    scene =
+        new THREE.Scene();
+
+
+    /* ÇÖL ATMOSFERİ */
+
+    scene.background =
+        new THREE.Color(0xc8ad83);
+
+
+    scene.fog =
+        new THREE.Fog(
+            0xc8ad83,
+            180,
+            500
+        );
+
+
+    /* KAMERA */
+
+    camera =
+        new THREE.PerspectiveCamera(
+
+            75,
+
+            window.innerWidth /
+            window.innerHeight,
+
+            0.1,
+
+            1000
+
+        );
+
+
+    /* RENDERER */
+
+    renderer =
+        new THREE.WebGLRenderer({
+
+            canvas:
+                document.getElementById("game"),
+
+            antialias: true,
+
+            powerPreference:
+                "high-performance"
+
+        });
+
+
+    renderer.setPixelRatio(
+
+        Math.min(
+
+            window.devicePixelRatio,
+
+            1.5
+
+        )
+
+    );
+
+
+    renderer.setSize(
+
+        window.innerWidth,
+
+        window.innerHeight
+
+    );
+
+
+    renderer.shadowMap.enabled = true;
+
+
+    clock =
+        new THREE.Clock();
+
+
+    /* =====================================================
+       IŞIKLAR
+    ===================================================== */
+
+    const hemisphere =
+        new THREE.HemisphereLight(
+
+            0xfff4dc,
+
+            0x574532,
+
+            1.5
+
+        );
+
+
+    scene.add(hemisphere);
+
+
+    const sun =
+        new THREE.DirectionalLight(
+
+            0xffe4b5,
+
+            2
+
+        );
+
+
+    sun.position.set(
+
+        100,
+
+        200,
+
+        100
+
+    );
+
+
+    sun.castShadow = true;
+
+
+    sun.shadow.mapSize.width = 2048;
+
+    sun.shadow.mapSize.height = 2048;
+
+
+    scene.add(sun);
+
+
+    /* =====================================================
+       OYUNCU
+    ===================================================== */
+
+    player = {
+
+        position:
+
+            new THREE.Vector3(
+
+                0,
+
+                1.7,
+
+                125
+
+            ),
+
+        speed: 8,
+
+        radius: 0.35
+
+    };
+
+
+    camera.position.copy(
+
+        player.position
+
+    );
+
+
+    camera.rotation.order = "YXZ";
+
+
+    /* =====================================================
+       HARİTA
+    ===================================================== */
+
+    createDust2Map();
+
+
+    /* =====================================================
+       BOTLAR
+    ===================================================== */
+
+    if(botsEnabled){
+
+        for(
+
+            let i = 0;
+
+            i < botCount;
+
+            i++
+
+        ){
+
+            createBot();
+
+        }
+
+    }
+
+
+    setupControls();
+
+
+    updateHUD();
+
+
+    animate();
+
+}
+
+
+/* =========================================================
+   MALZEME OLUŞTURMA
+========================================================= */
+
+function createMaterial(
+
+    color,
+
+    roughness = 0.8
+
+){
+
+    return new THREE.MeshStandardMaterial({
+
+        color: color,
+
+        roughness: roughness
+
+    });
+
+}
+
+
+/* =========================================================
+   KUTU / DUVAR OLUŞTURMA
+========================================================= */
+
+function createBox(
+
     x,
+
     y,
+
     z,
+
     width,
+
     height,
+
     depth,
-    color = 0x777777,
-    name = "object"
+
+    color,
+
+    collision = true
+
 ){
 
     const geometry =
+
         new THREE.BoxGeometry(
+
             width,
+
             height,
+
             depth
+
         );
+
 
     const material =
-        new THREE.MeshStandardMaterial({
-            color: color,
-            roughness: .8,
-            metalness: .05
+
+        createMaterial(color);
+
+
+    const mesh =
+
+        new THREE.Mesh(
+
+            geometry,
+
+            material
+
+        );
+
+
+    mesh.position.set(
+
+        x,
+
+        y,
+
+        z
+
+    );
+
+
+    mesh.castShadow = true;
+
+    mesh.receiveShadow = true;
+
+
+    scene.add(mesh);
+
+
+    if(collision){
+
+        obstacles.push({
+
+            mesh: mesh,
+
+            box:
+
+                new THREE.Box3()
+                    .setFromObject(mesh)
+
         });
 
-    const object =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
+    }
 
-    object.position.set(
-        x,
-        y,
-        z
-    );
 
-    object.castShadow = true;
-    object.receiveShadow = true;
+    return mesh;
 
-    object.userData.mapObject = true;
-    object.userData.name = name;
-
-    scene.add(object);
-
-    mapObjects.push(object);
-
-    return object;
 }
 
 
-/* -------------------------
+/* =========================================================
    ZEMİN
-------------------------- */
+========================================================= */
 
-function createGround(){
+function createFloor(){
 
-    const ground =
-        new THREE.Mesh(
+    const geometry =
 
-            new THREE.PlaneGeometry(
-                100,
-                100
-            ),
+        new THREE.PlaneGeometry(
 
-            new THREE.MeshStandardMaterial({
-                color:0x68645d,
-                roughness:1
-            })
+            420,
+
+            420
 
         );
 
-    ground.rotation.x =
+
+    const material =
+
+        new THREE.MeshStandardMaterial({
+
+            color: 0xb99a70,
+
+            roughness: 1
+
+        });
+
+
+    const floor =
+
+        new THREE.Mesh(
+
+            geometry,
+
+            material
+
+        );
+
+
+    floor.rotation.x =
+
         -Math.PI / 2;
 
-    ground.receiveShadow = true;
 
-    scene.add(ground);
+    floor.receiveShadow = true;
+
+
+    scene.add(floor);
 
 }
 
 
-/* -------------------------
-   DUVAR
-------------------------- */
+/* =========================================================
+   ÖZGÜN DUST 2 TARZI HARİTA
+========================================================= */
 
-function createMapWall(
-    x,
-    z,
-    width,
-    depth,
-    height = 3,
-    color = 0x777777
-){
+function createDust2Map(){
 
-    return createMapBox(
-        x,
-        height / 2,
-        z,
-        width,
-        height,
-        depth,
-        color,
-        "wall"
+    createFloor();
+
+
+    const wall =
+        0xd8b98b;
+
+    const darkWall =
+        0x927653;
+
+    const trim =
+        0x6f5139;
+
+    const crate =
+        0x80552d;
+
+    const metal =
+        0x343434;
+
+    const site =
+        0xc49232;
+
+
+    /* =====================================================
+       DIŞ HARİTA SINIRLARI
+    ===================================================== */
+
+    createBox(
+
+        0,
+        5,
+
+        -170,
+
+        340,
+
+        10,
+
+        5,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        0,
+        5,
+
+        170,
+
+        340,
+
+        10,
+
+        5,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        -170,
+        5,
+
+        0,
+
+        5,
+
+        10,
+
+        340,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        170,
+        5,
+
+        0,
+
+        5,
+
+        10,
+
+        340,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       T SPAWN
+    ===================================================== */
+
+    createBox(
+
+        0,
+        3,
+
+        145,
+
+        120,
+
+        6,
+
+        3,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        -55,
+        3,
+
+        115,
+
+        3,
+
+        6,
+
+        60,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        55,
+        3,
+
+        115,
+
+        3,
+
+        6,
+
+        60,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       T SPAWN SANDIKLARI
+    ===================================================== */
+
+    createBox(
+
+        -35,
+        1.5,
+
+        125,
+
+        8,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        35,
+        1.5,
+
+        125,
+
+        8,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    /* =====================================================
+       MID KORİDORU
+    ===================================================== */
+
+    createBox(
+
+        -30,
+        3,
+
+        65,
+
+        3,
+
+        6,
+
+        90,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        30,
+        3,
+
+        65,
+
+        3,
+
+        6,
+
+        90,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       MID SİPER
+    ===================================================== */
+
+    createBox(
+
+        0,
+        1.5,
+
+        65,
+
+        16,
+
+        3,
+
+        5,
+
+        darkWall
+
+    );
+
+
+    /* =====================================================
+       MID KAPILARI
+    ===================================================== */
+
+    createBox(
+
+        -9,
+        3,
+
+        5,
+
+        8,
+
+        6,
+
+        2,
+
+        metal
+
+    );
+
+
+    createBox(
+
+        9,
+        3,
+
+        5,
+
+        8,
+
+        6,
+
+        2,
+
+        metal
+
+    );
+
+
+    /* =====================================================
+       B TÜNELLERİ
+    ===================================================== */
+
+    createBox(
+
+        -100,
+        3,
+
+        60,
+
+        3,
+
+        6,
+
+        100,
+
+        darkWall
+
+    );
+
+
+    createBox(
+
+        -140,
+        3,
+
+        60,
+
+        3,
+
+        6,
+
+        100,
+
+        darkWall
+
+    );
+
+
+    createBox(
+
+        -120,
+        3,
+
+        10,
+
+        40,
+
+        6,
+
+        3,
+
+        darkWall
+
+    );
+
+
+    /* =====================================================
+       B GİRİŞ SİPERLERİ
+    ===================================================== */
+
+    createBox(
+
+        -120,
+        1.5,
+
+        -5,
+
+        12,
+
+        3,
+
+        5,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        -95,
+        1.5,
+
+        -15,
+
+        8,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    /* =====================================================
+       B BOMBA ALANI
+    ===================================================== */
+
+    createBox(
+
+        -120,
+        0.2,
+
+        -55,
+
+        45,
+
+        0.4,
+
+        45,
+
+        site,
+
+        false
+
+    );
+
+
+    createBox(
+
+        -150,
+        3,
+
+        -55,
+
+        3,
+
+        6,
+
+        55,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        -120,
+        3,
+
+        -82,
+
+        60,
+
+        6,
+
+        3,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       B KUTULARI
+    ===================================================== */
+
+    createBox(
+
+        -105,
+        2,
+
+        -45,
+
+        10,
+
+        4,
+
+        10,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        -135,
+        2,
+
+        -70,
+
+        10,
+
+        4,
+
+        10,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        -125,
+        4,
+
+        -30,
+
+        8,
+
+        8,
+
+        8,
+
+        crate
+
+    );
+
+
+    /* =====================================================
+       CATWALK
+    ===================================================== */
+
+    createBox(
+
+        70,
+        3,
+
+        45,
+
+        3,
+
+        6,
+
+        90,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        105,
+        3,
+
+        15,
+
+        3,
+
+        6,
+
+        50,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       SHORT A
+    ===================================================== */
+
+    createBox(
+
+        75,
+        3,
+
+        -20,
+
+        3,
+
+        6,
+
+        70,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        105,
+        3,
+
+        -55,
+
+        55,
+
+        6,
+
+        3,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       LONG A
+    ===================================================== */
+
+    createBox(
+
+        125,
+        3,
+
+        45,
+
+        3,
+
+        6,
+
+        130,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        155,
+        3,
+
+        45,
+
+        3,
+
+        6,
+
+        130,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       LONG SİPERLER
+    ===================================================== */
+
+    createBox(
+
+        140,
+        1.5,
+
+        90,
+
+        10,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        140,
+        1.5,
+
+        115,
+
+        10,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    /* =====================================================
+       A BOMBA ALANI
+    ===================================================== */
+
+    createBox(
+
+        105,
+        0.2,
+
+        -105,
+
+        65,
+
+        0.4,
+
+        50,
+
+        site,
+
+        false
+
+    );
+
+
+    createBox(
+
+        75,
+        3,
+
+        -105,
+
+        3,
+
+        6,
+
+        55,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        105,
+        3,
+
+        -132,
+
+        65,
+
+        6,
+
+        3,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       A KUTULARI
+    ===================================================== */
+
+    createBox(
+
+        95,
+        2,
+
+        -95,
+
+        10,
+
+        4,
+
+        10,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        125,
+        2,
+
+        -115,
+
+        10,
+
+        4,
+
+        10,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        120,
+        4,
+
+        -90,
+
+        8,
+
+        8,
+
+        8,
+
+        crate
+
+    );
+
+
+    /* =====================================================
+       CT SPAWN
+    ===================================================== */
+
+    createBox(
+
+        0,
+        3,
+
+        -145,
+
+        110,
+
+        6,
+
+        3,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        -55,
+        3,
+
+        -115,
+
+        3,
+
+        6,
+
+        55,
+
+        wall
+
+    );
+
+
+    createBox(
+
+        55,
+        3,
+
+        -115,
+
+        3,
+
+        6,
+
+        55,
+
+        wall
+
+    );
+
+
+    /* =====================================================
+       CT KUTULARI
+    ===================================================== */
+
+    createBox(
+
+        -25,
+        1.5,
+
+        -125,
+
+        8,
+
+        3,
+
+        8,
+
+        crate
+
+    );
+
+
+    createBox(
+
+        25,
+        1.5,
+
+        -125,
+
+        8,
+
+        3,
+
+        8,
+
+        crate
+
     );
 
 }
 
 
-/* -------------------------
-   KUTU
-------------------------- */
+/* =========================================================
+   BOT OLUŞTURMA
+========================================================= */
 
-function createCrate(
-    x,
-    z,
-    size = 1
-){
+function createBot(){
 
-    const colors = [
-        0x7a4b25,
-        0x8b5a2b,
-        0x6d4324
-    ];
+    const bot =
+        new THREE.Group();
 
-    const color =
-        colors[
-            Math.floor(
-                Math.random() *
-                colors.length
+
+    /* GÖVDE */
+
+    const body =
+
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                0.75,
+
+                1.1,
+
+                0.45
+
+            ),
+
+            createMaterial(
+
+                0x273b86
+
             )
-        ];
 
-    return createMapBox(
-        x,
-        size / 2,
-        z,
-        size,
-        size,
-        size,
-        color,
-        "crate"
-    );
-
-}
-
-
-/* -------------------------
-   KONTEYNER
-------------------------- */
-
-function createContainer(
-    x,
-    z,
-    color
-){
-
-    const container =
-        createMapBox(
-            x,
-            1.3,
-            z,
-            5,
-            2.6,
-            2.2,
-            color,
-            "container"
         );
 
-    /* Kapı çizgisi */
 
-    createMapBox(
-        x,
-        1.3,
-        z - 1.12,
-        3.5,
-        2.2,
-        .04,
-        0x222222,
-        "container-door"
-    );
-
-    return container;
-
-}
+    body.position.y = 0.8;
 
 
-/* -------------------------
-   ARAÇ
-------------------------- */
-
-function createVehicle(
-    x,
-    z
-){
-
-    /* Gövde */
-
-    createMapBox(
-        x,
-        .75,
-        z,
-        3.5,
-        1.1,
-        1.7,
-        0x263238,
-        "vehicle"
-    );
-
-    /* Kabin */
-
-    createMapBox(
-        x + .3,
-        1.35,
-        z,
-        1.5,
-        .8,
-        1.5,
-        0x37474f,
-        "vehicle-cabin"
-    );
-
-    /* Tekerlekler */
-
-    const wheelPositions = [
-        [-1.1,-.9],
-        [-1.1,.9],
-        [1.1,-.9],
-        [1.1,.9]
-    ];
-
-    wheelPositions.forEach(
-        pos=>{
-
-            const wheel =
-                new THREE.Mesh(
-
-                    new THREE.CylinderGeometry(
-                        .35,
-                        .35,
-                        .25,
-                        12
-                    ),
-
-                    new THREE.MeshStandardMaterial({
-                        color:0x111111
-                    })
-
-                );
-
-            wheel.rotation.z =
-                Math.PI / 2;
-
-            wheel.position.set(
-                x + pos[0],
-                .4,
-                z + pos[1]
-            );
-
-            wheel.castShadow = true;
-
-            scene.add(wheel);
-
-        }
-    );
-
-}
+    body.castShadow = true;
 
 
-/* -------------------------
-   AĞAÇ
-------------------------- */
+    bot.add(body);
 
-function createTree(
-    x,
-    z
-){
 
-    /* Gövde */
+    /* KAFA */
 
-    createMapBox(
-        x,
-        1.2,
-        z,
-        .5,
-        2.4,
-        .5,
-        0x5d3a1f,
-        "tree-trunk"
-    );
+    const head =
 
-    /* Yaprak */
-
-    const leaves =
         new THREE.Mesh(
 
             new THREE.SphereGeometry(
-                1.5,
-                12,
-                10
+
+                0.28,
+
+                16,
+
+                16
+
             ),
 
-            new THREE.MeshStandardMaterial({
-                color:0x245c32
-            })
+            createMaterial(
+
+                0xd39a72
+
+            )
 
         );
 
-    leaves.position.set(
-        x,
-        3,
-        z
+
+    head.position.y = 1.55;
+
+
+    head.castShadow = true;
+
+
+    bot.add(head);
+
+
+    /* SİLAH */
+
+    const gun =
+
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+
+                0.14,
+
+                0.14,
+
+                0.9
+
+            ),
+
+            createMaterial(
+
+                0x151515
+
+            )
+
+        );
+
+
+    gun.position.set(
+
+        0.45,
+
+        1.05,
+
+        -0.45
+
     );
 
-    leaves.castShadow = true;
 
-    scene.add(leaves);
+    bot.add(gun);
+
+
+    /* RASTGELE BAŞLANGIÇ */
+
+    let x;
+    let z;
+
+
+    let valid = false;
+
+
+    for(
+
+        let attempt = 0;
+
+        attempt < 30;
+
+        attempt++
+
+    ){
+
+        x =
+
+            Math.random() *
+
+            260 -
+
+            130;
+
+
+        z =
+
+            Math.random() *
+
+            220 -
+
+            100;
+
+
+        const testPosition =
+
+            new THREE.Vector3(
+
+                x,
+
+                0,
+
+                z
+
+            );
+
+
+        if(
+
+            !checkCollision(
+
+                testPosition
+
+            )
+
+        ){
+
+            valid = true;
+
+            break;
+
+        }
+
+    }
+
+
+    if(!valid){
+
+        x = 0;
+
+        z = -80;
+
+    }
+
+
+    bot.position.set(
+
+        x,
+
+        0,
+
+        z
+
+    );
+
+
+    /* ZORLUK */
+
+    let speed = 1.5;
+
+
+    if(
+
+        selectedDifficulty ===
+
+        "kolay"
+
+    ){
+
+        speed = 1;
+
+    }
+
+
+    if(
+
+        selectedDifficulty ===
+
+        "zor"
+
+    ){
+
+        speed = 2.5;
+
+    }
+
+
+    bot.userData = {
+
+        health: 100,
+
+        speed: speed,
+
+        shootTimer:
+
+            1 +
+
+            Math.random() * 2
+
+    };
+
+
+    scene.add(bot);
+
+
+    bots.push(bot);
 
 }
 
 
 /* =========================================================
-   BİNA
+   KONTROLLER
 ========================================================= */
 
-function createBuilding(
-    x,
-    z,
-    width,
-    depth,
-    color
+function setupControls(){
+
+    document.addEventListener(
+
+        "keydown",
+
+        event => {
+
+            keys[event.code] = true;
+
+
+            if(
+
+                event.code ===
+
+                "KeyR"
+
+            ){
+
+                reloadWeapon();
+
+            }
+
+        }
+
+    );
+
+
+    document.addEventListener(
+
+        "keyup",
+
+        event => {
+
+            keys[event.code] = false;
+
+        }
+
+    );
+
+
+    document.addEventListener(
+
+        "mousemove",
+
+        event => {
+
+            const game =
+
+                document.getElementById(
+
+                    "game"
+
+                );
+
+
+            if(
+
+                document.pointerLockElement !==
+
+                game
+
+            ){
+
+                return;
+
+            }
+
+
+            yaw -=
+
+                event.movementX *
+
+                0.002;
+
+
+            pitch -=
+
+                event.movementY *
+
+                0.002;
+
+
+            pitch =
+
+                Math.max(
+
+                    -1.4,
+
+                    Math.min(
+
+                        1.4,
+
+                        pitch
+
+                    )
+
+                );
+
+        }
+
+    );
+
+
+    document.addEventListener(
+
+        "mousedown",
+
+        event => {
+
+            if(
+
+                !gameStarted
+
+            ){
+
+                return;
+
+            }
+
+
+            if(
+
+                event.button === 0
+
+            ){
+
+                shootWeapon();
+
+            }
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   PROFESYONEL WASD HAREKET
+========================================================= */
+
+function updatePlayer(delta){
+
+    let inputX = 0;
+
+    let inputZ = 0;
+
+
+    if(keys["KeyW"]){
+
+        inputZ -= 1;
+
+    }
+
+
+    if(keys["KeyS"]){
+
+        inputZ += 1;
+
+    }
+
+
+    if(keys["KeyA"]){
+
+        inputX -= 1;
+
+    }
+
+
+    if(keys["KeyD"]){
+
+        inputX += 1;
+
+    }
+
+
+    if(
+
+        inputX === 0 &&
+
+        inputZ === 0
+
+    ){
+
+        updateCamera();
+
+        return;
+
+    }
+
+
+    /* NORMALIZE */
+
+    const length =
+
+        Math.sqrt(
+
+            inputX * inputX +
+
+            inputZ * inputZ
+
+        );
+
+
+    inputX /= length;
+
+    inputZ /= length;
+
+
+    /* KAMERANIN BAKTIĞI YÖN */
+
+    const forwardX =
+
+        -Math.sin(yaw);
+
+
+    const forwardZ =
+
+        -Math.cos(yaw);
+
+
+    const rightX =
+
+        Math.cos(yaw);
+
+
+    const rightZ =
+
+        -Math.sin(yaw);
+
+
+    /* HAREKET VEKTÖRÜ */
+
+    const moveX =
+
+        forwardX * (-inputZ) +
+
+        rightX * inputX;
+
+
+    const moveZ =
+
+        forwardZ * (-inputZ) +
+
+        rightZ * inputX;
+
+
+    /* X EKSENİ */
+
+    const nextX =
+
+        player.position.clone();
+
+
+    nextX.x +=
+
+        moveX *
+
+        player.speed *
+
+        delta;
+
+
+    if(
+
+        !checkCollision(
+
+            nextX
+
+        )
+
+    ){
+
+        player.position.x =
+
+            nextX.x;
+
+    }
+
+
+    /* Z EKSENİ */
+
+    const nextZ =
+
+        player.position.clone();
+
+
+    nextZ.z +=
+
+        moveZ *
+
+        player.speed *
+
+        delta;
+
+
+    if(
+
+        !checkCollision(
+
+            nextZ
+
+        )
+
+    ){
+
+        player.position.z =
+
+            nextZ.z;
+
+    }
+
+
+    updateCamera();
+
+}
+
+
+/* =========================================================
+   KAMERA
+========================================================= */
+
+function updateCamera(){
+
+    camera.position.copy(
+
+        player.position
+
+    );
+
+
+    camera.rotation.order =
+
+        "YXZ";
+
+
+    camera.rotation.y =
+
+        yaw;
+
+
+    camera.rotation.x =
+
+        pitch;
+
+}
+
+
+/* =========================================================
+   OYUNCU ÇARPIŞMASI
+========================================================= */
+
+function checkCollision(
+
+    position
+
 ){
 
-    /* Arka duvar */
+    const playerBox =
 
-    createMapWall(
-        x,
-        z - depth / 2,
-        width,
-        .4,
-        3,
-        color
-    );
+        new THREE.Box3(
 
-    /* Sol duvar */
+            new THREE.Vector3(
 
-    createMapWall(
-        x - width / 2,
-        z,
-        .4,
-        depth,
-        3,
-        color
-    );
+                position.x -
 
-    /* Sağ duvar */
+                player.radius,
 
-    createMapWall(
-        x + width / 2,
-        z,
-        .4,
-        depth,
-        3,
-        color
-    );
+                0,
 
-    /*
-    Ön taraf tamamen kapatılmıyor.
-    Böylece oyuncu binaya girebilir.
-    */
+                position.z -
 
-    /* İç bölme */
+                player.radius
 
-    createMapWall(
-        x,
-        z,
-        .25,
-        depth - 2,
-        2.7,
-        color
-    );
+            ),
+
+            new THREE.Vector3(
+
+                position.x +
+
+                player.radius,
+
+                1.8,
+
+                position.z +
+
+                player.radius
+
+            )
+
+        );
+
+
+    for(
+
+        let i = 0;
+
+        i < obstacles.length;
+
+        i++
+
+    ){
+
+        const obstacle =
+
+            obstacles[i];
+
+
+        obstacle.box.setFromObject(
+
+            obstacle.mesh
+
+        );
+
+
+        if(
+
+            playerBox.intersectsBox(
+
+                obstacle.box
+
+            )
+
+        ){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
 
 }
 
 
 /* =========================================================
-   ANA HARİTA
+   BOT HAREKETİ
 ========================================================= */
 
-function createMap(){
+function updateBots(delta){
 
-    /* Eski harita varsa temizle */
+    bots.forEach(bot => {
 
-    mapObjects.forEach(
-        object=>{
-            scene.remove(object);
+        if(
+
+            !bot.parent
+
+        ){
+
+            return;
+
         }
-    );
-
-    mapObjects.length = 0;
-
-
-    /* Zemin */
-
-    createGround();
-
-
-    /*
-    ========================================================
-    DIŞ SINIRLAR
-    ========================================================
-    */
-
-    createMapWall(
-        0,
-        -48,
-        96,
-        1,
-        3
-    );
-
-    createMapWall(
-        0,
-        48,
-        96,
-        1,
-        3
-    );
-
-    createMapWall(
-        -48,
-        0,
-        1,
-        96,
-        3
-    );
-
-    createMapWall(
-        48,
-        0,
-        1,
-        96,
-        3
-    );
-
-
-    /*
-    ========================================================
-    MERKEZ FABRİKA
-    ========================================================
-    */
-
-    createBuilding(
-        0,
-        -5,
-        22,
-        18,
-        0x55585a
-    );
-
-
-    /*
-    FABRİKA GİRİŞİ
-    */
-
-    createMapWall(
-        -6,
-        -14,
-        5,
-        .5,
-        3,
-        0x55585a
-    );
-
-    createMapWall(
-        6,
-        -14,
-        5,
-        .5,
-        3,
-        0x55585a
-    );
-
-
-    /*
-    FABRİKA İÇ KUTULARI
-    */
-
-    createCrate(
-        -4,
-        -5,
-        1.2
-    );
-
-    createCrate(
-        -2.7,
-        -5,
-        1.2
-    );
-
-    createCrate(
-        4,
-        -5,
-        1.2
-    );
-
-    createCrate(
-        4,
-        -3.8,
-        1.2
-    );
-
-
-    /*
-    ========================================================
-    SOL DEPO
-    ========================================================
-    */
-
-    createBuilding(
-        -30,
-        5,
-        15,
-        20,
-        0x77736c
-    );
-
-
-    /* Depo iç kasaları */
-
-    createCrate(
-        -33,
-        2
-    );
-
-    createCrate(
-        -32,
-        3
-    );
-
-    createCrate(
-        -31,
-        4
-    );
-
-    createCrate(
-        -27,
-        8
-    );
-
-    createCrate(
-        -28,
-        8
-    );
-
-
-    /*
-    ========================================================
-    SAĞ OFİS BİNASI
-    ========================================================
-    */
-
-    createBuilding(
-        30,
-        5,
-        14,
-        18,
-        0x686b6d
-    );
-
-
-    /* Ofis masası */
-
-    createMapBox(
-        30,
-        .7,
-        3,
-        4,
-        1.4,
-        1.5,
-        0x3e2723,
-        "office-table"
-    );
-
-
-    /*
-    ========================================================
-    KONTEYNER BÖLGESİ
-    ========================================================
-    */
-
-    createContainer(
-        -28,
-        -25,
-        0x263f6b
-    );
-
-    createContainer(
-        -22,
-        -25,
-        0x6b2929
-    );
-
-    createContainer(
-        -16,
-        -25,
-        0x315c3b
-    );
-
-
-    /*
-    ========================================================
-    AÇIK ALAN
-    ========================================================
-    */
-
-    createMapBox(
-        0,
-        .5,
-        20,
-        12,
-        1,
-        5,
-        0x555555,
-        "cover"
-    );
-
-
-    createCrate(
-        -5,
-        20,
-        1.2
-    );
-
-    createCrate(
-        5,
-        20,
-        1.2
-    );
-
-
-    /*
-    ========================================================
-    ARAÇLAR
-    ========================================================
-    */
-
-    createVehicle(
-        18,
-        25
-    );
-
-    createVehicle(
-        28,
-        -25
-    );
-
-
-    /*
-    ========================================================
-    KÜÇÜK KONTROL NOKTASI
-    ========================================================
-    */
-
-    createMapWall(
-        18,
-        8,
-        8,
-        .4,
-        2.5,
-        0x4b4b4b
-    );
-
-    createMapWall(
-        22,
-        12,
-        .4,
-        8,
-        2.5,
-        0x4b4b4b
-    );
-
-
-    createCrate(
-        19,
-        10
-    );
-
-    createCrate(
-        21,
-        10
-    );
-
-
-    /*
-    ========================================================
-    ORMAN / YEŞİL ALAN
-    ========================================================
-    */
-
-    createTree(
-        -38,
-        30
-    );
-
-    createTree(
-        -32,
-        35
-    );
-
-    createTree(
-        -25,
-        32
-    );
-
-    createTree(
-        38,
-        32
-    );
-
-    createTree(
-        35,
-        38
+
+
+        const distance =
+
+            bot.position.distanceTo(
+
+                player.position
+
+            );
+
+
+        /* OYUNCUYA YAKLAŞ */
+
+        if(
+
+            distance > 5
+
+        ){
+
+            const direction =
+
+                new THREE.Vector3()
+
+                    .subVectors(
+
+                        player.position,
+
+                        bot.position
+
+                    )
+
+                    .normalize();
+
+
+            const nextPosition =
+
+                bot.position.clone();
+
+
+            nextPosition.x +=
+
+                direction.x *
+
+                bot.userData.speed *
+
+                delta;
+
+
+            nextPosition.z +=
+
+                direction.z *
+
+                bot.userData.speed *
+
+                delta;
+
+
+            if(
+
+                !checkBotCollision(
+
+                    bot,
+
+                    nextPosition
+
+                )
+
+            ){
+
+                bot.position.copy(
+
+                    nextPosition
+
+                );
+
+            }
+
+        }
+
+
+        /* OYUNCUYA BAK */
+
+        bot.lookAt(
+
+            player.position.x,
+
+            1,
+
+            player.position.z
+
+        );
+
+
+        /* BOT ATEŞ ZAMANI */
+
+        bot.userData.shootTimer -=
+
+            delta;
+
+
+        if(
+
+            distance < 35 &&
+
+            bot.userData.shootTimer <= 0
+
+        ){
+
+            let chance = 0.4;
+
+
+            if(
+
+                selectedDifficulty ===
+
+                "kolay"
+
+            ){
+
+                chance = 0.2;
+
+            }
+
+
+            if(
+
+                selectedDifficulty ===
+
+                "zor"
+
+            ){
+
+                chance = 0.7;
+
+            }
+
+
+            if(
+
+                Math.random() <
+
+                chance
+
+            ){
+
+                damagePlayer(
+
+                    10
+
+                );
+
+            }
+
+
+            bot.userData.shootTimer =
+
+                1 +
+
+                Math.random() * 2;
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   BOT ÇARPIŞMA
+========================================================= */
+
+function checkBotCollision(
+
+    bot,
+
+    position
+
+){
+
+    const botBox =
+
+        new THREE.Box3(
+
+            new THREE.Vector3(
+
+                position.x - 0.4,
+
+                0,
+
+                position.z - 0.4
+
+            ),
+
+            new THREE.Vector3(
+
+                position.x + 0.4,
+
+                2,
+
+                position.z + 0.4
+
+            )
+
+        );
+
+
+    for(
+
+        let i = 0;
+
+        i < obstacles.length;
+
+        i++
+
+    ){
+
+        const obstacle =
+
+            obstacles[i];
+
+
+        obstacle.box.setFromObject(
+
+            obstacle.mesh
+
+        );
+
+
+        if(
+
+            botBox.intersectsBox(
+
+                obstacle.box
+
+            )
+
+        ){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   ATEŞ
+========================================================= */
+
+let ammo = 30;
+
+let reserveAmmo = 120;
+
+let canShoot = true;
+
+let reloading = false;
+
+
+function shootWeapon(){
+
+    if(
+
+        !canShoot ||
+
+        reloading
+
+    ){
+
+        return;
+
+    }
+
+
+    if(
+
+        ammo <= 0
+
+    ){
+
+        reloadWeapon();
+
+        return;
+
+    }
+
+
+    ammo--;
+
+
+    canShoot = false;
+
+
+    setTimeout(
+
+        () => {
+
+            canShoot = true;
+
+        },
+
+        120
+
     );
 
 
-    /*
-    ========================================================
-    DAR SOKAKLAR
-    ========================================================
-    */
+    /* RAYCAST */
 
-    createMapWall(
-        -10,
-        30,
-        .4,
-        20,
-        3,
-        0x696969
-    );
+    const raycaster =
 
-    createMapWall(
-        10,
-        30,
-        .4,
-        20,
-        3,
-        0x696969
+        new THREE.Raycaster();
+
+
+    raycaster.setFromCamera(
+
+        new THREE.Vector2(
+
+            0,
+
+            0
+
+        ),
+
+        camera
+
     );
 
 
-    /*
-    ========================================================
-    MERKEZ SİPERLER
-    ========================================================
-    */
-
-    createMapBox(
-        -12,
-        1,
-        5,
-        5,
-        2,
-        1,
-        0x5d5d5d,
-        "center-cover"
-    );
-
-    createMapBox(
-        12,
-        1,
-        5,
-        5,
-        2,
-        1,
-        0x5d5d5d,
-        "center-cover"
-    );
+    const objects = [];
 
 
-    /*
-    ========================================================
-    SPAWN ALANLARI
-    ========================================================
-    */
+    bots.forEach(bot => {
 
-    createMapBox(
-        -35,
-        .1,
-        -38,
-        10,
-        .2,
-        6,
-        0x234d35,
-        "spawn-zone"
-    );
+        bot.traverse(
 
-    createMapBox(
-        35,
-        .1,
-        38,
-        10,
-        .2,
-        6,
-        0x4d2323,
-        "spawn-zone"
+            child => {
+
+                if(
+
+                    child.isMesh
+
+                ){
+
+                    objects.push(
+
+                        child
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    });
+
+
+    const hits =
+
+        raycaster.intersectObjects(
+
+            objects,
+
+            false
+
+        );
+
+
+    if(
+
+        hits.length > 0
+
+    ){
+
+        let target =
+
+            hits[0].object;
+
+
+        while(
+
+            target.parent &&
+
+            !target.userData.health
+
+        ){
+
+            target =
+
+                target.parent;
+
+        }
+
+
+        if(
+
+            target.userData &&
+
+            target.userData.health
+
+        ){
+
+            target.userData.health -=
+
+                50;
+
+
+            if(
+
+                target.userData.health <=
+
+                0
+
+            ){
+
+                killBot(
+
+                    target
+
+                );
+
+            }
+
+        }
+
+    }
+
+
+    updateHUD();
+
+}
+
+
+/* =========================================================
+   BOT ÖLDÜRME
+========================================================= */
+
+function killBot(bot){
+
+    scene.remove(bot);
+
+
+    bots =
+
+        bots.filter(
+
+            item =>
+
+                item !== bot
+
+        );
+
+
+    score += 100;
+
+
+    updateHUD();
+
+
+    if(
+
+        botsEnabled
+
+    ){
+
+        setTimeout(
+
+            () => {
+
+                if(
+
+                    gameStarted
+
+                ){
+
+                    createBot();
+
+                }
+
+            },
+
+            2000
+
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   OYUNCU HASARI
+========================================================= */
+
+function damagePlayer(
+
+    amount
+
+){
+
+    health -= amount;
+
+
+    health =
+
+        Math.max(
+
+            0,
+
+            health
+
+        );
+
+
+    const damage =
+
+        document.getElementById(
+
+            "damage"
+
+        );
+
+
+    if(damage){
+
+        damage.style.display =
+
+            "block";
+
+
+        setTimeout(
+
+            () => {
+
+                damage.style.display =
+
+                    "none";
+
+            },
+
+            120
+
+        );
+
+    }
+
+
+    updateHUD();
+
+
+    if(
+
+        health <= 0
+
+    ){
+
+        health = 100;
+
+
+        player.position.set(
+
+            0,
+
+            1.7,
+
+            125
+
+        );
+
+
+        updateHUD();
+
+    }
+
+}
+
+
+/* =========================================================
+   RELOAD
+========================================================= */
+
+function reloadWeapon(){
+
+    if(
+
+        reloading ||
+
+        ammo >= 30 ||
+
+        reserveAmmo <= 0
+
+    ){
+
+        return;
+
+    }
+
+
+    reloading = true;
+
+
+    setTimeout(
+
+        () => {
+
+            const need =
+
+                30 - ammo;
+
+
+            const amount =
+
+                Math.min(
+
+                    need,
+
+                    reserveAmmo
+
+                );
+
+
+            ammo += amount;
+
+
+            reserveAmmo -= amount;
+
+
+            reloading = false;
+
+
+            updateHUD();
+
+        },
+
+        1200
+
     );
 
 }
 
 
 /* =========================================================
-   GELİŞTİRİLMİŞ SES SİSTEMİ
+   HUD
+========================================================= */
+
+function updateHUD(){
+
+    const healthText =
+
+        document.getElementById(
+
+            "healthText"
+
+        );
+
+
+    const healthFill =
+
+        document.getElementById(
+
+            "health-fill"
+
+        );
+
+
+    const ammoValue =
+
+        document.getElementById(
+
+            "ammoValue"
+
+        );
+
+
+    const scoreElement =
+
+        document.getElementById(
+
+            "score"
+
+        );
+
+
+    if(healthText){
+
+        healthText.textContent =
+
+            health;
+
+    }
+
+
+    if(healthFill){
+
+        healthFill.style.width =
+
+            health + "%";
+
+    }
+
+
+    if(ammoValue){
+
+        ammoValue.textContent =
+
+            ammo;
+
+    }
+
+
+    if(scoreElement){
+
+        scoreElement.textContent =
+
+            "Skor: " +
+
+            score;
+
+    }
+
+}
+
+
+/* =========================================================
+   FPS
+========================================================= */
+
+function updateFPS(delta){
+
+    fpsFrames++;
+
+    fpsTime += delta;
+
+
+    if(
+
+        fpsTime >= 0.5
+
+    ){
+
+        const fps =
+
+            Math.round(
+
+                fpsFrames /
+
+                fpsTime
+
+            );
+
+
+        const fpsElement =
+
+            document.getElementById(
+
+                "fps"
+
+            );
+
+
+        if(fpsElement){
+
+            fpsElement.textContent =
+
+                "FPS: " +
+
+                fps;
+
+        }
+
+
+        fpsFrames = 0;
+
+        fpsTime = 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   OYUN DÖNGÜSÜ
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(
+
+        animate
+
+    );
+
+
+    if(
+
+        !gameStarted
+
+    ){
+
+        return;
+
+    }
+
+
+    const delta =
+
+        Math.min(
+
+            clock.getDelta(),
+
+            0.05
+
+        );
+
+
+    updatePlayer(
+
+        delta
+
+    );
+
+
+    updateBots(
+
+        delta
+
+    );
+
+
+    updateFPS(
+
+        delta
+
+    );
+
+
+    renderer.render(
+
+        scene,
+
+        camera
+
+    );
+
+}
+
+
+/* =========================================================
+   EKRAN BOYUTU
+========================================================= */
+
+window.addEventListener(
+
+    "resize",
+
+    () => {
+
+        if(
+
+            !camera ||
+
+            !renderer
+
+        ){
+
+            return;
+
+        }
+
+
+        camera.aspect =
+
+            window.innerWidth /
+
+            window.innerHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+
+            window.innerWidth,
+
+            window.innerHeight
+
+        );
+
+    }
+
+);
+
+</script>
+```
+```javascript
+/* =========================================================
+   PARÇA 3
+   SİLAH + SES + RECOIL + OYUN DÖNGÜSÜ
+========================================================= */
+
+
+/* =========================================================
+   SİLAH DEĞİŞKENLERİ
+========================================================= */
+
+let ammo = 30;
+let maxAmmo = 30;
+
+let reserveAmmo = 120;
+
+let isReloading = false;
+let canShoot = true;
+
+let fireRate = 110;
+
+let recoilX = 0;
+let recoilY = 0;
+
+let recoilReturnSpeed = 8;
+
+let muzzleTimer = 0;
+
+let weaponBobTime = 0;
+
+let lastShotTime = 0;
+
+
+/* =========================================================
+   SES SİSTEMİ
+   Harici ses dosyası kullanmadan Web Audio API
 ========================================================= */
 
 let audioContext = null;
 
-
 function initAudio(){
 
-    if(!audioContext){
+    if(audioContext){
+        return;
+    }
+
+    try{
 
         audioContext =
             new (
@@ -842,18 +5110,27 @@ function initAudio(){
                 window.webkitAudioContext
             )();
 
+    }catch(error){
+
+        console.warn(
+            "Ses sistemi başlatılamadı:",
+            error
+        );
+
     }
 
 }
 
 
-/* -------------------------
-   ATEŞ SESİ
-------------------------- */
+/* =========================================================
+   BASİT ATEŞ SESİ
+========================================================= */
 
 function playShootSound(){
 
-    initAudio();
+    if(!audioContext){
+        return;
+    }
 
     if(
         audioContext.state ===
@@ -864,108 +5141,145 @@ function playShootSound(){
 
     }
 
+    const now =
+        audioContext.currentTime;
+
 
     const oscillator =
         audioContext.createOscillator();
 
+
     const gain =
         audioContext.createGain();
+
+
+    const filter =
+        audioContext.createBiquadFilter();
+
 
     oscillator.type =
         "sawtooth";
 
+
     oscillator.frequency.setValueAtTime(
-        150,
-        audioContext.currentTime
+        120,
+        now
     );
+
 
     oscillator.frequency.exponentialRampToValueAtTime(
         45,
-        audioContext.currentTime + .12
+        now + 0.12
     );
+
+
+    filter.type =
+        "lowpass";
+
+
+    filter.frequency.setValueAtTime(
+        1400,
+        now
+    );
+
+
+    filter.frequency.exponentialRampToValueAtTime(
+        400,
+        now + 0.12
+    );
+
 
     gain.gain.setValueAtTime(
-        .35,
-        audioContext.currentTime
+        0.0001,
+        now
     );
+
 
     gain.gain.exponentialRampToValueAtTime(
-        .001,
-        audioContext.currentTime + .12
+        0.8,
+        now + 0.005
     );
 
-    oscillator.connect(gain);
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 0.14
+    );
+
+
+    oscillator.connect(filter);
+
+    filter.connect(gain);
 
     gain.connect(
         audioContext.destination
     );
 
-    oscillator.start();
+
+    oscillator.start(now);
 
     oscillator.stop(
-        audioContext.currentTime + .12
+        now + 0.15
     );
 
 }
 
 
-/* -------------------------
-   BOŞ ŞARJÖR
-------------------------- */
-
-function playEmptySound(){
-
-    initAudio();
-
-    const oscillator =
-        audioContext.createOscillator();
-
-    const gain =
-        audioContext.createGain();
-
-    oscillator.frequency.value =
-        180;
-
-    gain.gain.value =
-        .15;
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-    oscillator.start();
-
-    oscillator.stop(
-        audioContext.currentTime + .08
-    );
-
-}
-
-
-/* -------------------------
-   YENİDEN DOLDURMA
-------------------------- */
+/* =========================================================
+   RELOAD SESİ
+========================================================= */
 
 function playReloadSound(){
 
-    initAudio();
+    if(!audioContext){
+        return;
+    }
+
+    const now =
+        audioContext.currentTime;
+
 
     const oscillator =
         audioContext.createOscillator();
 
+
     const gain =
         audioContext.createGain();
+
 
     oscillator.type =
         "square";
 
-    oscillator.frequency.value =
-        300;
 
-    gain.gain.value =
-        .08;
+    oscillator.frequency.setValueAtTime(
+        180,
+        now
+    );
+
+
+    oscillator.frequency.linearRampToValueAtTime(
+        90,
+        now + 0.08
+    );
+
+
+    gain.gain.setValueAtTime(
+        0.0001,
+        now
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.25,
+        now + 0.01
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 0.1
+    );
+
 
     oscillator.connect(gain);
 
@@ -973,65 +5287,1771 @@ function playReloadSound(){
         audioContext.destination
     );
 
-    oscillator.start();
 
-    setTimeout(
-        ()=>{
-            oscillator.stop();
-        },
-        180
+    oscillator.start(now);
+
+    oscillator.stop(
+        now + 0.11
     );
 
 }
 
 
-/* -------------------------
-   ATEŞ FONKSİYONUNA SES EKLE
-------------------------- */
+/* =========================================================
+   VURUŞ SESİ
+========================================================= */
 
-const originalShoot =
-    shoot;
+function playHitSound(){
 
-shoot=function(){
+    if(!audioContext){
+        return;
+    }
 
-    if(ammo<=0){
+    const now =
+        audioContext.currentTime;
 
-        playEmptySound();
 
-        originalShoot();
+    const oscillator =
+        audioContext.createOscillator();
+
+
+    const gain =
+        audioContext.createGain();
+
+
+    oscillator.type =
+        "triangle";
+
+
+    oscillator.frequency.setValueAtTime(
+        500,
+        now
+    );
+
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+        150,
+        now + 0.08
+    );
+
+
+    gain.gain.setValueAtTime(
+        0.35,
+        now
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 0.1
+    );
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        audioContext.destination
+    );
+
+
+    oscillator.start(now);
+
+    oscillator.stop(
+        now + 0.11
+    );
+
+}
+
+
+/* =========================================================
+   ATEŞ EFEKTİ
+========================================================= */
+
+function showMuzzleFlash(){
+
+    const muzzle =
+        document.getElementById(
+            "muzzle"
+        );
+
+
+    if(!muzzle){
+        return;
+    }
+
+
+    muzzle.style.display =
+        "block";
+
+
+    muzzle.style.transform =
+        `scale(${0.8 + Math.random() * 0.6})`;
+
+
+    muzzleTimer =
+        0.05;
+
+}
+
+
+/* =========================================================
+   RECOIL
+========================================================= */
+
+function applyRecoil(){
+
+    recoilX +=
+        (Math.random() - 0.5)
+        * 0.018;
+
+
+    recoilY +=
+        0.035 +
+        Math.random() * 0.025;
+
+
+    recoilX =
+        Math.max(
+            -0.08,
+            Math.min(
+                0.08,
+                recoilX
+            )
+        );
+
+
+    recoilY =
+        Math.min(
+            0.18,
+            recoilY
+        );
+
+}
+
+
+/* =========================================================
+   RECOIL GERİ DÖNÜŞ
+========================================================= */
+
+function updateRecoil(delta){
+
+    recoilX =
+        THREE.MathUtils.lerp(
+            recoilX,
+            0,
+            delta *
+            recoilReturnSpeed
+        );
+
+
+    recoilY =
+        THREE.MathUtils.lerp(
+            recoilY,
+            0,
+            delta *
+            recoilReturnSpeed
+        );
+
+
+    if(camera){
+
+        camera.rotation.x =
+            pitch -
+            recoilY;
+
+
+        camera.rotation.y =
+            yaw +
+            recoilX;
+
+    }
+
+}
+
+
+/* =========================================================
+   SİLAH BOB
+========================================================= */
+
+function updateWeaponBob(
+    delta
+){
+
+    const weapon =
+        document.getElementById(
+            "weapon"
+        );
+
+
+    if(!weapon){
+        return;
+    }
+
+
+    const moving =
+        keys["KeyW"] ||
+        keys["KeyA"] ||
+        keys["KeyS"] ||
+        keys["KeyD"];
+
+
+    if(moving){
+
+        weaponBobTime +=
+            delta * 9;
+
+
+        const bobX =
+            Math.sin(
+                weaponBobTime
+            ) * 3;
+
+
+        const bobY =
+            Math.abs(
+                Math.cos(
+                    weaponBobTime
+                )
+            ) * 3;
+
+
+        weapon.style.transform =
+            `translate(${bobX}px,${bobY}px) rotate(-3deg)`;
+
+    }else{
+
+        weapon.style.transform =
+            "translate(0,0) rotate(-3deg)";
+
+    }
+
+}
+
+
+/* =========================================================
+   ATEŞ ET
+========================================================= */
+
+function shoot(){
+
+    if(
+        !gameStarted ||
+        isReloading ||
+        !canShoot
+    ){
 
         return;
 
     }
 
-    playShootSound();
 
-    originalShoot();
+    if(ammo <= 0){
 
-};
+        reload();
 
-
-/* -------------------------
-   RELOAD FONKSİYONUNA SES
-------------------------- */
-
-const originalReload =
-    reload;
-
-reload=function(){
-
-    if(
-        !reloading &&
-        ammo < 30 &&
-        reserveAmmo > 0
-    ){
-
-        playReloadSound();
+        return;
 
     }
 
-    originalReload();
 
-};
+    const now =
+        performance.now();
 
-</script>
+
+    if(
+        now -
+        lastShotTime <
+        fireRate
+    ){
+
+        return;
+
+    }
+
+
+    lastShotTime =
+        now;
+
+
+    ammo--;
+
+
+    updateHUD();
+
+
+    canShoot =
+        false;
+
+
+    setTimeout(
+        ()=>{
+
+            canShoot =
+                true;
+
+        },
+        fireRate
+    );
+
+
+    initAudio();
+
+
+    playShootSound();
+
+
+    showMuzzleFlash();
+
+
+    applyRecoil();
+
+
+    const raycaster =
+        new THREE.Raycaster();
+
+
+    raycaster.setFromCamera(
+
+        new THREE.Vector2(
+            0,
+            0
+        ),
+
+        camera
+
+    );
+
+
+    const targets=[];
+
+
+    bots.forEach(
+        bot=>{
+
+            bot.traverse(
+                child=>{
+
+                    if(
+                        child.isMesh
+                    ){
+
+                        targets.push(
+                            child
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const hits =
+        raycaster.intersectObjects(
+            targets,
+            true
+        );
+
+
+    if(
+        hits.length === 0
+    ){
+
+        return;
+
+    }
+
+
+    let hitObject =
+        hits[0].object;
+
+
+    let hitBot =
+        null;
+
+
+    while(
+        hitObject
+    ){
+
+        if(
+            hitObject.userData &&
+            hitObject.userData.isBot
+        ){
+
+            hitBot =
+                hitObject;
+
+            break;
+
+        }
+
+
+        hitObject =
+            hitObject.parent;
+
+    }
+
+
+    if(
+        !hitBot
+    ){
+
+        return;
+
+    }
+
+
+    playHitSound();
+
+
+    const hitDistance =
+        hits[0].distance;
+
+
+    let damage =
+        50;
+
+
+    /* KAFADAN VURUŞ */
+
+    if(
+        hits[0].object.userData &&
+        hits[0].object.userData.hitZone ===
+        "head"
+    ){
+
+        damage =
+            100;
+
+    }
+
+
+    /* UZAKLIK HASAR AZALTMA */
+
+    if(
+        hitDistance > 35
+    ){
+
+        damage =
+            30;
+
+    }
+
+
+    hitBot.userData.health -=
+        damage;
+
+
+    showHitMarker();
+
+
+    if(
+        hitBot.userData.health <= 0
+    ){
+
+        killBot(
+            hitBot
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   HIT MARKER
+========================================================= */
+
+function showHitMarker(){
+
+    let marker =
+        document.getElementById(
+            "hitMarker"
+        );
+
+
+    if(!marker){
+
+        marker =
+            document.createElement(
+                "div"
+            );
+
+
+        marker.id =
+            "hitMarker";
+
+
+        marker.style.position =
+            "fixed";
+
+
+        marker.style.left =
+            "50%";
+
+
+        marker.style.top =
+            "50%";
+
+
+        marker.style.transform =
+            "translate(-50%,-50%)";
+
+
+        marker.style.color =
+            "white";
+
+
+        marker.style.fontSize =
+            "28px";
+
+
+        marker.style.fontWeight =
+            "bold";
+
+
+        marker.style.pointerEvents =
+            "none";
+
+
+        marker.style.zIndex =
+            "100";
+
+
+        document.body.appendChild(
+            marker
+        );
+
+    }
+
+
+    marker.textContent =
+        "✕";
+
+
+    marker.style.opacity =
+        "1";
+
+
+    setTimeout(
+        ()=>{
+
+            marker.style.opacity =
+                "0";
+
+        },
+        120
+    );
+
+}
+
+
+/* =========================================================
+   RELOAD
+========================================================= */
+
+function reload(){
+
+    if(
+        isReloading ||
+        ammo >= maxAmmo ||
+        reserveAmmo <= 0
+    ){
+
+        return;
+
+    }
+
+
+    isReloading =
+        true;
+
+
+    initAudio();
+
+
+    playReloadSound();
+
+
+    const weapon =
+        document.getElementById(
+            "weapon"
+        );
+
+
+    if(weapon){
+
+        weapon.style.transition =
+            "transform .15s";
+
+
+        weapon.style.transform =
+            "translateY(25px) rotate(-8deg)";
+
+    }
+
+
+    setTimeout(
+        ()=>{
+
+            const needed =
+                maxAmmo -
+                ammo;
+
+
+            const amount =
+                Math.min(
+                    needed,
+                    reserveAmmo
+                );
+
+
+            ammo +=
+                amount;
+
+
+            reserveAmmo -=
+                amount;
+
+
+            isReloading =
+                false;
+
+
+            if(weapon){
+
+                weapon.style.transform =
+                    "translateY(0) rotate(-3deg)";
+
+            }
+
+
+            updateHUD();
+
+        },
+        1000
+    );
+
+}
+
+
+/* =========================================================
+   BOT OLUŞTURMA
+========================================================= */
+
+function createBot(){
+
+    const bot =
+        new THREE.Group();
+
+
+    bot.userData = {
+
+        isBot:
+            true,
+
+        health:
+            100,
+
+        shootTimer:
+            1 +
+
+            Math.random() * 2
+
+    };
+
+
+    /* GÖVDE */
+
+    const body =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                0.8,
+                1.2,
+                0.5
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x243c9b
+
+            })
+
+        );
+
+
+    body.position.y =
+        0.8;
+
+
+    body.userData.isBot =
+        true;
+
+
+    bot.add(
+        body
+    );
+
+
+    /* KAFA */
+
+    const head =
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                0.3,
+                16,
+                16
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0xd69b72
+
+            })
+
+        );
+
+
+    head.position.y =
+        1.65;
+
+
+    head.userData.isBot =
+        true;
+
+
+    head.userData.hitZone =
+        "head";
+
+
+    bot.add(
+        head
+    );
+
+
+    /* SİLAH */
+
+    const gun =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                0.15,
+                0.15,
+                1.1
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x111111
+
+            })
+
+        );
+
+
+    gun.position.set(
+
+        0.55,
+        1,
+        -0.5
+
+    );
+
+
+    gun.userData.isBot =
+        true;
+
+
+    bot.add(
+        gun
+    );
+
+
+    /* RASTGELE KONUM */
+
+    let x =
+        0;
+
+
+    let z =
+        0;
+
+
+    let valid =
+        false;
+
+
+    for(
+        let i = 0;
+        i < 30;
+        i++
+    ){
+
+        x =
+            Math.random() *
+            240 -
+            120;
+
+
+        z =
+            Math.random() *
+            220 -
+            80;
+
+
+        const testPosition =
+            new THREE.Vector3(
+                x,
+                0,
+                z
+            );
+
+
+        if(
+            !checkCollision(
+                testPosition
+            )
+        ){
+
+            valid =
+                true;
+
+            break;
+
+        }
+
+    }
+
+
+    if(!valid){
+
+        x =
+            0;
+
+        z =
+            -50;
+
+    }
+
+
+    bot.position.set(
+
+        x,
+        0,
+        z
+
+    );
+
+
+    /* ZORLUK */
+
+    let speed =
+        1.5;
+
+
+    if(
+        selectedDifficulty ===
+        "kolay"
+    ){
+
+        speed =
+            1;
+
+    }
+
+
+    if(
+        selectedDifficulty ===
+        "zor"
+    ){
+
+        speed =
+            2.3;
+
+    }
+
+
+    bot.userData.speed =
+        speed;
+
+
+    scene.add(
+        bot
+    );
+
+
+    bots.push(
+        bot
+    );
+
+
+    return bot;
+
+}
+
+
+/* =========================================================
+   BOT AI
+========================================================= */
+
+function updateBots(
+    delta
+){
+
+    for(
+        let i = bots.length - 1;
+        i >= 0;
+        i--
+    ){
+
+        const bot =
+            bots[i];
+
+
+        if(
+            !bot ||
+            !bot.parent
+        ){
+
+            continue;
+
+        }
+
+
+        const distance =
+            bot.position.distanceTo(
+                player.position
+            );
+
+
+        /* OYUNCUYA DOĞRU HAREKET */
+
+        if(
+            distance > 8
+        ){
+
+            const direction =
+                new THREE.Vector3()
+                    .subVectors(
+
+                        player.position,
+
+                        bot.position
+
+                    )
+                    .normalize();
+
+
+            const next =
+                bot.position.clone();
+
+
+            next.x +=
+                direction.x *
+                bot.userData.speed *
+                delta;
+
+
+            next.z +=
+                direction.z *
+                bot.userData.speed *
+                delta;
+
+
+            if(
+                !checkBotCollision(
+                    bot,
+                    next
+                )
+            ){
+
+                bot.position.copy(
+                    next
+                );
+
+            }
+
+        }
+
+
+        /* OYUNCUYA BAK */
+
+        bot.lookAt(
+
+            player.position.x,
+
+            1,
+
+            player.position.z
+
+        );
+
+
+        /* ATEŞ ZAMANI */
+
+        bot.userData.shootTimer -=
+            delta;
+
+
+        if(
+            distance < 35 &&
+            bot.userData.shootTimer <= 0
+        ){
+
+            let chance =
+                0.35;
+
+
+            if(
+                selectedDifficulty ===
+                "kolay"
+            ){
+
+                chance =
+                    0.2;
+
+            }
+
+
+            if(
+                selectedDifficulty ===
+                "zor"
+            ){
+
+                chance =
+                    0.7;
+
+            }
+
+
+            if(
+                Math.random() <
+                chance
+            ){
+
+                damagePlayer(
+                    10
+                );
+
+            }
+
+
+            bot.userData.shootTimer =
+                1 +
+                Math.random() * 2;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   BOT ÇARPIŞMASI
+========================================================= */
+
+function checkBotCollision(
+    bot,
+    position
+){
+
+    const box =
+        new THREE.Box3(
+
+            new THREE.Vector3(
+
+                position.x -
+                0.4,
+
+                0,
+
+                position.z -
+                0.4
+
+            ),
+
+            new THREE.Vector3(
+
+                position.x +
+                0.4,
+
+                2,
+
+                position.z +
+                0.4
+
+            )
+
+        );
+
+
+    for(
+        const obstacle
+        of obstacles
+    ){
+
+        if(
+            box.intersectsBox(
+                obstacle.box
+            )
+        ){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   BOT ÖLDÜR
+========================================================= */
+
+function killBot(
+    bot
+){
+
+    if(
+        !bot ||
+        !bot.parent
+    ){
+
+        return;
+
+    }
+
+
+    scene.remove(
+        bot
+    );
+
+
+    const index =
+        bots.indexOf(
+            bot
+        );
+
+
+    if(
+        index !== -1
+    ){
+
+        bots.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    score +=
+        100;
+
+
+    updateHUD();
+
+
+    /* YENİ BOT */
+
+    if(
+        botsEnabled
+    ){
+
+        setTimeout(
+            ()=>{
+
+                if(
+                    gameStarted
+                ){
+
+                    createBot();
+
+                }
+
+            },
+            2000
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BOT ÇARPIŞMA
+========================================================= */
+
+function damagePlayer(
+    amount
+){
+
+    health -=
+        amount;
+
+
+    health =
+        Math.max(
+            0,
+            health
+        );
+
+
+    const damage =
+        document.getElementById(
+            "damage"
+        );
+
+
+    if(damage){
+
+        damage.style.display =
+            "block";
+
+
+        setTimeout(
+            ()=>{
+
+                damage.style.display =
+                    "none";
+
+            },
+            120
+        );
+
+    }
+
+
+    updateHUD();
+
+
+    if(
+        health <= 0
+    ){
+
+        respawnPlayer();
+
+    }
+
+}
+
+
+/* =========================================================
+   OYUNCU RESPAWN
+========================================================= */
+
+function respawnPlayer(){
+
+    health =
+        100;
+
+
+    ammo =
+        maxAmmo;
+
+
+    reserveAmmo =
+        120;
+
+
+    if(
+        selectedMap ===
+        "dust2"
+    ){
+
+        player.position.set(
+
+            0,
+            2,
+            140
+
+        );
+
+    }else{
+
+        player.position.set(
+
+            0,
+            2,
+            25
+
+        );
+
+    }
+
+
+    yaw =
+        0;
+
+
+    pitch =
+        0;
+
+
+    updateHUD();
+
+}
+
+
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD(){
+
+    const healthText =
+        document.getElementById(
+            "healthText"
+        );
+
+
+    const healthFill =
+        document.getElementById(
+            "health-fill"
+        );
+
+
+    const ammoValue =
+        document.getElementById(
+            "ammoValue"
+        );
+
+
+    const scoreElement =
+        document.getElementById(
+            "score"
+        );
+
+
+    if(
+        healthText
+    ){
+
+        healthText.textContent =
+            health;
+
+    }
+
+
+    if(
+        healthFill
+    ){
+
+        healthFill.style.width =
+            health +
+            "%";
+
+    }
+
+
+    if(
+        ammoValue
+    ){
+
+        ammoValue.textContent =
+            ammo;
+
+    }
+
+
+    if(
+        scoreElement
+    ){
+
+        scoreElement.textContent =
+            "Skor: " +
+            score;
+
+    }
+
+
+    const roomInfo =
+        document.getElementById(
+            "roomInfo"
+        );
+
+
+    if(
+        roomInfo
+    ){
+
+        roomInfo.textContent =
+            "Oda: " +
+            (
+                currentRoom ||
+                "-"
+            );
+
+    }
+
+
+    const mapInfo =
+        document.getElementById(
+            "mapInfo"
+        );
+
+
+    if(
+        mapInfo
+    ){
+
+        mapInfo.textContent =
+            "Harita: " +
+            (
+                selectedMap ===
+                "dust2"
+
+                ?
+
+                "Dust 2"
+
+                :
+
+                "Eğitim"
+
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   FPS SİSTEMİ
+========================================================= */
+
+let fpsCounter =
+    0;
+
+let fpsTimer =
+    0;
+
+
+function updateFPS(
+    delta
+){
+
+    fpsCounter +=
+        1;
+
+
+    fpsTimer +=
+        delta;
+
+
+    if(
+        fpsTimer >=
+        0.5
+    ){
+
+        const fps =
+            Math.round(
+
+                fpsCounter /
+                fpsTimer
+
+            );
+
+
+        const fpsElement =
+            document.getElementById(
+                "fps"
+            );
+
+
+        if(
+            fpsElement
+        ){
+
+            fpsElement.textContent =
+                "FPS: " +
+                fps;
+
+        }
+
+
+        fpsCounter =
+            0;
+
+
+        fpsTimer =
+            0;
+
+    }
+
+}
+
+
+/* =========================================================
+   OYUN DÖNGÜSÜ
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    if(
+        !gameStarted
+    ){
+
+        return;
+
+    }
+
+
+    const delta =
+        Math.min(
+
+            clock.getDelta(),
+
+            0.05
+
+        );
+
+
+    /* OYUNCU */
+
+    updatePlayer(
+        delta
+    );
+
+
+    /* BOTLAR */
+
+    updateBots(
+        delta
+    );
+
+
+    /* RECOIL */
+
+    updateRecoil(
+        delta
+    );
+
+
+    /* SİLAH HAREKETİ */
+
+    updateWeaponBob(
+        delta
+    );
+
+
+    /* MUZZLE FLASH */
+
+    if(
+        muzzleTimer > 0
+    ){
+
+        muzzleTimer -=
+            delta;
+
+
+        if(
+            muzzleTimer <= 0
+        ){
+
+            const muzzle =
+                document.getElementById(
+                    "muzzle"
+                );
+
+
+            if(muzzle){
+
+                muzzle.style.display =
+                    "none";
+
+            }
+
+        }
+
+    }
+
+
+    /* HUD */
+
+    updateHUD();
+
+
+    /* FPS */
+
+    updateFPS(
+        delta
+    );
+
+
+    /* RENDER */
+
+    renderer.render(
+
+        scene,
+
+        camera
+
+    );
+
+}
+
+
+/* =========================================================
+   OYUN BAŞLADIĞINDA SESİ HAZIRLA
+========================================================= */
+
+document.addEventListener(
+    "click",
+    ()=>{
+
+        if(
+            gameStarted
+        ){
+
+            initAudio();
+
+        }
+
+    },
+    {
+        once:false
+    }
+);
+
+
+/* =========================================================
+   FARE TIKLAMA
+========================================================= */
+
+document.addEventListener(
+
+    "mousedown",
+
+    event=>{
+
+        if(
+            !gameStarted
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            event.button ===
+            0
+        ){
+
+            const canvas =
+                document.getElementById(
+                    "game"
+                );
+
+
+            if(
+                document.pointerLockElement !==
+                canvas
+            ){
+
+                canvas.requestPointerLock();
+
+                return;
+
+            }
+
+
+            shoot();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   R TUŞU = RELOAD
+========================================================= */
+
+document.addEventListener(
+
+    "keydown",
+
+    event=>{
+
+        if(
+            event.code ===
+            "KeyR"
+        ){
+
+            if(
+                gameStarted
+            ){
+
+                reload();
+
+            }
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   BOŞLUK = KAMERA / HAZIRLIK
+========================================================= */
+
+document.addEventListener(
+
+    "keydown",
+
+    event=>{
+
+        if(
+            event.code ===
+            "Space"
+        ){
+
+            event.preventDefault();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   SAYFA KAPANIRKEN
+========================================================= */
+
+window.addEventListener(
+
+    "beforeunload",
+
+    ()=>{
+
+        gameStarted =
+            false;
+
+    }
+
+);
+```
