@@ -3,30 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>WebStrike FPS - Özgün Operasyon</title>
+<title>WebStrike FPS</title>
 
 <style>
-
-/* =========================================================
-   TEMEL
-========================================================= */
-
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
 }
 
-html,
-body{
+html,body{
     width:100%;
     height:100%;
     overflow:hidden;
     background:#080b0f;
     font-family:Arial,sans-serif;
     color:white;
-    user-select:none;
 }
 
 button{
@@ -39,12 +31,11 @@ button{
     width:100%;
     height:100%;
     display:none;
-    cursor:crosshair;
 }
 
-/* =========================================================
+/* =========================
    ANA MENÜ
-========================================================= */
+========================= */
 
 #mainMenu{
     position:fixed;
@@ -52,35 +43,25 @@ button{
     z-index:1000;
 
     background:
-        radial-gradient(
-            circle at 70% 45%,
-            rgba(75,110,65,.15),
-            transparent 35%
-        ),
         linear-gradient(
             90deg,
-            rgba(0,0,0,.92),
-            rgba(0,0,0,.25) 50%,
-            rgba(0,0,0,.9)
+            rgba(0,0,0,.72),
+            rgba(0,0,0,.08) 45%,
+            rgba(0,0,0,.72)
         ),
-        linear-gradient(
-            135deg,
-            #111912,
-            #10161c,
-            #211b12
-        );
+        url("menu-bg.png");
 
     background-size:cover;
     background-position:center;
+    background-repeat:no-repeat;
 }
 
-/* =========================================================
+/* =========================
    ÜST MENÜ
-========================================================= */
+========================= */
 
 .topbar{
     height:74px;
-
     position:absolute;
     inset:0 0 auto 0;
 
@@ -90,223 +71,133 @@ button{
 
     padding:0 30px;
 
-    background:rgba(4,7,10,.94);
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.12);
-
-    box-shadow:
-        0 5px 25px
-        rgba(0,0,0,.35);
+    background:rgba(4,7,10,.88);
+    border-bottom:1px solid rgba(255,255,255,.12);
 }
 
 .top-left{
     display:flex;
-    gap:12px;
+    gap:22px;
 }
 
 .icon-btn{
-    width:44px;
+    width:40px;
     height:45px;
-
     border:0;
-
     background:transparent;
-
-    color:#ddd;
-
-    font-size:24px;
-
+    color:white;
+    font-size:25px;
     cursor:pointer;
-
-    transition:
-        .2s;
 }
 
 .icon-btn:hover{
     color:#35df60;
-
-    transform:
-        translateY(-2px);
 }
 
 .nav{
     display:flex;
-
     height:100%;
-
     align-items:center;
 }
 
 .nav-item{
     height:100%;
-
     display:flex;
     align-items:center;
+    padding:0 28px;
 
-    padding:
-        0 26px;
-
-    font-size:18px;
-
+    font-size:19px;
     font-weight:bold;
 
-    border-right:
-        1px solid
-        rgba(255,255,255,.12);
-
+    border-right:1px solid rgba(255,255,255,.18);
     cursor:pointer;
-
-    transition:
-        .2s;
 }
 
 .nav-item:first-child{
-    border-left:
-        1px solid
-        rgba(255,255,255,.12);
-}
-
-.nav-item:hover{
-    background:
-        rgba(255,255,255,.04);
+    border-left:1px solid rgba(255,255,255,.18);
 }
 
 .nav-item.active{
-    border-bottom:
-        4px solid
-        #36dc59;
-
-    background:
-        rgba(53,220,89,.05);
-
-    color:#fff;
+    border-bottom:4px solid #36dc59;
+    background:rgba(255,255,255,.04);
 }
 
 .top-right{
     display:flex;
-
     align-items:center;
-
-    gap:20px;
-
-    font-size:19px;
+    gap:24px;
+    font-size:20px;
 }
 
 .online{
     color:#32dc58;
-
-    font-weight:bold;
 }
 
-/* =========================================================
+/* =========================
    SOL PANEL
-========================================================= */
+========================= */
 
 .left-panel{
     position:absolute;
-
     top:100px;
     left:18px;
     bottom:90px;
-
     width:355px;
-
     overflow:auto;
-
-    scrollbar-width:
-        thin;
 }
 
 .menu-card{
-    background:
-        rgba(13,17,20,.95);
-
-    border:
-        1px solid
-        rgba(255,255,255,.1);
-
+    background:rgba(13,17,20,.90);
+    border:1px solid rgba(255,255,255,.10);
     margin-bottom:18px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(0,0,0,.4);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
 .card-title{
-    padding:
-        16px 18px;
-
+    padding:16px 18px;
     font-size:19px;
-
     font-weight:bold;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.1);
+    border-bottom:1px solid rgba(255,255,255,.10);
 }
 
 .mission{
     padding:18px;
-
-    min-height:
-        100px;
 }
 
 .mission strong{
     color:#37df60;
-
     font-size:18px;
 }
 
 .mission p{
     margin-top:8px;
-
-    color:#aaa;
-
-    font-size:14px;
+    color:#bbb;
 }
 
 .check{
     float:right;
-
     color:#37df60;
-
     font-size:35px;
-
-    line-height:
-        25px;
 }
 
 .daily{
-    padding:
-        16px 18px;
+    padding:16px 18px;
 }
 
 .daily-head{
     display:flex;
-
     justify-content:space-between;
-
     margin-bottom:10px;
-
-    color:#ddd;
 }
 
 .progress{
     height:7px;
-
     background:#333;
-
-    overflow:hidden;
 }
 
 .progress div{
     width:100%;
-
     height:100%;
-
     background:#37df60;
 }
 
@@ -316,19 +207,10 @@ button{
 
 .reward{
     flex:1;
-
     min-height:135px;
-
-    padding:
-        12px 8px;
-
+    padding:12px 8px;
     text-align:center;
-
-    border-right:
-        1px solid
-        rgba(255,255,255,.08);
-
-    color:#ddd;
+    border-right:1px solid rgba(255,255,255,.08);
 }
 
 .reward:last-child{
@@ -336,17 +218,13 @@ button{
 }
 
 .reward-icon{
-    font-size:42px;
-
-    margin:
-        10px 0;
+    font-size:45px;
+    margin:10px;
 }
 
 .reward small{
     color:#37df60;
-
     display:block;
-
     margin-top:8px;
 }
 
@@ -355,38 +233,19 @@ button{
 }
 
 .weapon-image{
-    height:150px;
-
+    height:190px;
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.05),
-            transparent 65%
-        );
 }
 
 .weapon-image span{
     font-size:100px;
-
-    transform:
-        rotate(-15deg);
-
-    filter:
-        drop-shadow(
-            8px 10px 8px
-            rgba(0,0,0,.7)
-        );
+    transform:rotate(-15deg);
 }
 
 .popular-info{
-    padding:
-        0 18px;
+    padding:0 18px;
 }
 
 .popular-info h3{
@@ -395,30 +254,22 @@ button{
 
 .price{
     color:#39dc5d;
-
     margin-top:8px;
-
-    font-size:14px;
-
-    font-weight:bold;
 }
 
-/* =========================================================
-   KARAKTER ALANI
-========================================================= */
+/* =========================
+   KARAKTER
+========================= */
 
 .character-area{
     position:absolute;
-
     top:75px;
     left:380px;
     right:400px;
     bottom:90px;
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
 
     pointer-events:none;
@@ -429,105 +280,69 @@ button{
     height:480px;
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
 
     font-size:180px;
 
-    filter:
-        drop-shadow(
-            0 25px 25px
-            rgba(0,0,0,.8)
-        );
+    filter:drop-shadow(
+        0 25px 25px rgba(0,0,0,.8)
+    );
 }
 
-/* =========================================================
+/* =========================
    SAĞ PANEL
-========================================================= */
+========================= */
 
 .right-panel{
     position:absolute;
-
     top:74px;
     right:0;
     bottom:74px;
-
     width:385px;
 
-    background:
-        linear-gradient(
-            rgba(8,12,14,.97),
-            rgba(8,12,14,.9)
-        );
+    background:linear-gradient(
+        rgba(8,12,14,.92),
+        rgba(8,12,14,.80)
+    );
 
-    border-left:
-        1px solid
-        rgba(255,255,255,.1);
+    border-left:1px solid rgba(255,255,255,.1);
 
-    padding:
-        24px 18px;
-
+    padding:24px 18px;
     overflow:auto;
-
-    scrollbar-width:
-        thin;
 }
 
 .right-title{
     font-size:22px;
-
     margin-bottom:15px;
-
-    font-weight:bold;
 }
 
 .room-button{
     width:100%;
-
     height:58px;
-
     margin-bottom:10px;
 
-    background:
-        rgba(255,255,255,.04);
-
+    background:rgba(255,255,255,.04);
     color:white;
 
-    border:
-        1px solid
-        rgba(255,255,255,.22);
+    border:1px solid rgba(255,255,255,.22);
 
     text-align:left;
-
-    padding:
-        0 20px;
+    padding:0 20px;
 
     font-size:17px;
-
     font-weight:bold;
 
     cursor:pointer;
-
-    transition:
-        .2s;
 }
 
 .room-button:hover{
-    border-color:
-        #35db59;
-
-    background:
-        rgba(53,219,89,.08);
-
-    transform:
-        translateX(-2px);
+    border-color:#35db59;
+    background:rgba(53,219,89,.08);
 }
 
 .room-button span{
     float:right;
-
     font-size:25px;
 }
 
@@ -537,180 +352,100 @@ button{
 
 .setting-title{
     font-size:20px;
-
-    padding:
-        15px 0;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.12);
+    padding:15px 0;
+    border-bottom:1px solid rgba(255,255,255,.12);
 }
 
 .label{
-    margin:
-        18px 0 10px;
-
+    margin:18px 0 10px;
     color:#ddd;
-
     font-weight:bold;
-
-    font-size:14px;
 }
 
 .map-grid{
     display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
+    grid-template-columns:repeat(4,1fr);
     gap:6px;
 }
 
 .map{
-    height:75px;
-
+    height:90px;
     background:#222;
-
-    border:
-        2px solid
-        transparent;
+    border:2px solid transparent;
 
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
     justify-content:center;
 
     cursor:pointer;
-
-    transition:
-        .2s;
 }
 
 .map:hover,
 .map.selected{
-    border-color:
-        #35db59;
+    border-color:#35db59;
 }
 
 .map.selected{
-    background:
-        linear-gradient(
-            rgba(24,59,34,.9),
-            rgba(15,38,23,.9)
-        );
-
-    box-shadow:
-        inset 0 0 15px
-        rgba(53,219,89,.1);
+    background:#183b22;
 }
 
 .map-icon{
-    font-size:26px;
+    font-size:30px;
 }
 
 .map-name{
     font-size:11px;
-
-    margin-top:4px;
+    margin-top:6px;
 }
 
 .option-group{
     display:flex;
-
     gap:5px;
 }
 
 .option{
     flex:1;
-
-    padding:
-        12px 4px;
+    padding:12px 4px;
 
     background:#22272a;
-
-    border:
-        1px solid
-        #444;
-
+    border:1px solid #444;
     color:white;
 
     cursor:pointer;
-
-    transition:
-        .2s;
-}
-
-.option:hover{
-    border-color:
-        #55e875;
 }
 
 .option.selected{
-    background:
-        #2ca946;
-
-    border-color:
-        #40e362;
-
-    box-shadow:
-        0 0 10px
-        rgba(44,169,70,.2);
+    background:#2ca946;
+    border-color:#40e362;
 }
 
 .start-button{
     width:100%;
-
     height:62px;
-
     margin-top:22px;
 
     border:0;
 
-    background:
-        linear-gradient(
-            135deg,
-            #2ca946,
-            #238638
-        );
-
+    background:#2ca946;
     color:white;
 
     font-size:23px;
-
     font-weight:bold;
 
     cursor:pointer;
-
-    transition:
-        .2s;
-
-    box-shadow:
-        0 8px 20px
-        rgba(0,0,0,.3);
 }
 
 .start-button:hover{
-    background:
-        linear-gradient(
-            135deg,
-            #36c953,
-            #2ca946
-        );
-
-    transform:
-        translateY(-2px);
+    background:#36c953;
 }
 
-/* =========================================================
+/* =========================
    ALT BAR
-========================================================= */
+========================= */
 
 .bottom-bar{
     position:absolute;
-
     left:0;
     right:0;
     bottom:0;
@@ -718,190 +453,446 @@ button{
     height:74px;
 
     display:flex;
-
     align-items:center;
-
     justify-content:space-around;
 
-    background:
-        rgba(5,8,11,.97);
+    background:rgba(5,8,11,.95);
+    border-top:1px solid rgba(255,255,255,.1);
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.1);
-
-    font-size:15px;
-
-    color:#bbb;
+    font-size:16px;
 }
 
-.bottom-bar span{
-    cursor:pointer;
-
-    transition:
-        .2s;
-}
-
-.bottom-bar span:hover{
-    color:#37df60;
-}
-
-/* =========================================================
+/* =========================
    ODA MODAL
-========================================================= */
+========================= */
 
 #roomModal{
     display:none;
 
     position:fixed;
-
     inset:0;
-
     z-index:2000;
 
     align-items:center;
-
     justify-content:center;
 
-    background:
-        rgba(0,0,0,.78);
-
-    backdrop-filter:
-        blur(5px);
+    background:rgba(0,0,0,.75);
 }
 
 .room-box{
     width:420px;
-
     max-width:90%;
 
     padding:30px;
 
-    background:
-        linear-gradient(
-            145deg,
-            #11181c,
-            #0c1114
-        );
+    background:#101519;
+    border:1px solid #444;
 
-    border:
-        1px solid
-        #444;
-
-    box-shadow:
-        0 20px 80px
-        rgba(0,0,0,.8);
+    box-shadow:0 20px 80px rgba(0,0,0,.8);
 
     text-align:center;
 }
 
 .room-box h2{
     margin-bottom:20px;
-
-    color:#eee;
 }
 
 .room-box input{
     width:100%;
-
     padding:15px;
 
     background:#080b0f;
-
     color:white;
 
-    border:
-        1px solid
-        #444;
+    border:1px solid #444;
 
     text-align:center;
-
     font-size:20px;
 
     text-transform:uppercase;
-
-    outline:none;
-}
-
-.room-box input:focus{
-    border-color:
-        #35db59;
-
-    box-shadow:
-        0 0 10px
-        rgba(53,219,89,.15);
 }
 
 .modal-button{
     width:100%;
-
     padding:15px;
-
     margin-top:10px;
 
     border:0;
 
     background:#2ca946;
-
     color:white;
 
     font-weight:bold;
-
     cursor:pointer;
-
-    transition:
-        .2s;
-}
-
-.modal-button:hover{
-    background:#36c953;
 }
 
 .close-button{
     background:#333;
 }
 
-.close-button:hover{
-    background:#444;
-}
-
 #roomMessage{
     min-height:25px;
-
     margin-top:15px;
-
     color:#3ddd63;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* =========================
+   HUD
+========================= */
 
-@media(max-width:1200px){
+#hud{
+    display:none;
+
+    position:fixed;
+    inset:0;
+    z-index:10;
+
+    pointer-events:none;
+    color:white;
+}
+
+#fps{
+    position:absolute;
+    top:15px;
+    left:15px;
+
+    padding:8px 12px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#roomInfo{
+    position:absolute;
+    top:55px;
+    left:15px;
+
+    padding:7px 12px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#score{
+    position:absolute;
+    top:15px;
+    right:20px;
+
+    padding:10px 15px;
+
+    background:rgba(0,0,0,.6);
+}
+
+#crosshair{
+    position:absolute;
+    top:50%;
+    left:50%;
+
+    width:22px;
+    height:22px;
+
+    transform:translate(-50%,-50%);
+}
+
+#crosshair::before{
+    content:"";
+
+    position:absolute;
+    left:10px;
+
+    width:2px;
+    height:22px;
+
+    background:white;
+}
+
+#crosshair::after{
+    content:"";
+
+    position:absolute;
+    top:10px;
+
+    width:22px;
+    height:2px;
+
+    background:white;
+}
+
+#stats{
+    position:absolute;
+    left:20px;
+    bottom:20px;
+
+    width:220px;
+
+    padding:15px;
+
+    background:rgba(0,0,0,.65);
+}
+
+#health-bar{
+    height:12px;
+    margin-top:8px;
+
+    background:#333;
+}
+
+#health-fill{
+    width:100%;
+    height:100%;
+    background:#2ed75f;
+}
+
+#ammo{
+    position:absolute;
+    right:25px;
+    bottom:25px;
+
+    font-size:28px;
+    font-weight:bold;
+}
+
+#damage{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    z-index:20;
+
+    background:rgba(255,0,0,.25);
+}
+
+/* =========================
+   CS TARZI SİLAH
+========================= */
+
+#weapon{
+    position:absolute;
+
+    right:6%;
+    bottom:-5px;
+
+    width:390px;
+    height:230px;
+
+    transform:rotate(-3deg);
+    filter:drop-shadow(
+        8px 12px 8px rgba(0,0,0,.65)
+    );
+}
+
+.weapon-main{
+    position:absolute;
+
+    right:25px;
+    bottom:85px;
+
+    width:285px;
+    height:58px;
+
+    background:
+        linear-gradient(
+            #303030,
+            #111
+        );
+
+    border-radius:8px 14px 8px 5px;
+
+    border:2px solid #090909;
+}
+
+.weapon-top{
+    position:absolute;
+
+    right:100px;
+    bottom:140px;
+
+    width:180px;
+    height:18px;
+
+    background:#171717;
+
+    border-radius:4px;
+}
+
+.weapon-barrel{
+    position:absolute;
+
+    right:300px;
+    bottom:105px;
+
+    width:90px;
+    height:16px;
+
+    background:#080808;
+
+    border-radius:4px;
+}
+
+.weapon-front{
+    position:absolute;
+
+    right:365px;
+    bottom:99px;
+
+    width:20px;
+    height:28px;
+
+    background:#050505;
+
+    border-radius:4px;
+}
+
+.weapon-handle{
+    position:absolute;
+
+    right:75px;
+    bottom:0;
+
+    width:62px;
+    height:115px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #111,
+            #292929,
+            #111
+        );
+
+    transform:rotate(12deg);
+
+    border-radius:5px;
+}
+
+.weapon-mag{
+    position:absolute;
+
+    right:185px;
+    bottom:25px;
+
+    width:42px;
+    height:100px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #080808,
+            #222,
+            #080808
+        );
+
+    transform:rotate(10deg);
+
+    border-radius:4px;
+}
+
+.weapon-trigger{
+    position:absolute;
+
+    right:130px;
+    bottom:70px;
+
+    width:35px;
+    height:45px;
+
+    border:5px solid #080808;
+
+    border-top:0;
+
+    border-radius:0 0 15px 15px;
+}
+
+.weapon-hand{
+    position:absolute;
+
+    right:38px;
+    bottom:20px;
+
+    width:75px;
+    height:70px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #b87955,
+            #8f573d
+        );
+
+    border-radius:35px 20px 20px 30px;
+
+    transform:rotate(-15deg);
+
+    z-index:3;
+}
+
+.weapon-hand-left{
+    position:absolute;
+
+    right:205px;
+    bottom:55px;
+
+    width:75px;
+    height:55px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #b87955,
+            #8f573d
+        );
+
+    border-radius:30px;
+
+    transform:rotate(8deg);
+
+    z-index:3;
+}
+
+#muzzle{
+    display:none;
+
+    position:absolute;
+
+    right:calc(6% + 390px);
+    bottom:100px;
+
+    width:40px;
+    height:40px;
+
+    background:#ffb000;
+    border-radius:50%;
+
+    box-shadow:
+        0 0 15px #ff6600,
+        0 0 40px #ff9900;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1100px){
 
     .left-panel{
-        width:300px;
+        width:280px;
     }
 
     .character-area{
-        left:320px;
-        right:370px;
+        left:290px;
+        right:350px;
     }
 
     .right-panel{
-        width:370px;
+        width:350px;
     }
 
     .nav-item{
-        padding:
-            0 14px;
-
+        padding:0 12px;
         font-size:14px;
     }
-
 }
 
-@media(max-width:900px){
+@media(max-width:800px){
 
     .left-panel{
         display:none;
@@ -913,174 +904,69 @@ button{
     }
 
     .topbar{
-        padding:
-            0 10px;
+        padding:0 10px;
     }
 
     .nav-item{
         display:none;
     }
-
 }
-
-@media(max-width:600px){
-
-    .right-panel{
-        width:100%;
-    }
-
-    .character-area{
-        display:none;
-    }
-
-    .bottom-bar{
-        display:none;
-    }
-
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- =========================================================
-     ANA MENÜ
-========================================================= -->
-
 <div id="mainMenu">
-
-    <!-- ÜST BAR -->
 
     <div class="topbar">
 
         <div class="top-left">
-
-            <button
-                class="icon-btn"
-                title="Ana Sayfa">
-                ⌂
-            </button>
-
-            <button
-                class="icon-btn"
-                title="Envanter">
-                ▣
-            </button>
-
-            <button
-                class="icon-btn"
-                title="Ayarlar">
-                ⚙
-            </button>
-
-            <button
-                class="icon-btn"
-                title="Çıkış">
-                ⏻
-            </button>
-
+            <button class="icon-btn">⌂</button>
+            <button class="icon-btn">▣</button>
+            <button class="icon-btn">⚙</button>
+            <button class="icon-btn">⏻</button>
         </div>
-
 
         <div class="nav">
-
-            <div class="nav-item">
-                ENVANTER
-            </div>
-
-            <div class="nav-item">
-                TEÇHİZAT
-            </div>
-
-            <div class="nav-item active">
-                OYNA
-            </div>
-
-            <div class="nav-item">
-                MAĞAZA
-            </div>
-
-            <div class="nav-item">
-                HABERLER
-            </div>
-
+            <div class="nav-item">ENVANTER</div>
+            <div class="nav-item">TEÇHİZAT</div>
+            <div class="nav-item active">OYNA</div>
+            <div class="nav-item">MAĞAZA</div>
+            <div class="nav-item">HABERLER</div>
         </div>
 
-
         <div class="top-right">
-
-            <span class="online">
-                👥 2/2
-            </span>
-
-            <span>
-                ●
-            </span>
-
-            <span>
-                ⇥
-            </span>
-
+            <span class="online">👥 2/2</span>
+            <span>●</span>
+            <span>⇥</span>
         </div>
 
     </div>
 
-
-    <!-- =====================================================
-         SOL PANEL
-    ====================================================== -->
-
     <div class="left-panel">
-
-        <!-- GÖREV -->
 
         <div class="menu-card">
 
             <div class="mission">
-
-                <strong>
-                    GÖREV TAMAMLANDI
-                </strong>
-
-                <span class="check">
-                    ✓
-                </span>
-
-                <p>
-                    Sonraki Göreve: 9 Saat
-                </p>
-
+                <strong>GÖREV TAMAMLANDI</strong>
+                <span class="check">✓</span>
+                <p>Sonraki Göreve: 9 Saat</p>
             </div>
-
 
             <div class="daily">
 
                 <div class="daily-head">
-
-                    <span>
-                        GÜNLÜK GÖREVLER
-                    </span>
-
-                    <b>
-                        3/3
-                    </b>
-
+                    <span>GÜNLÜK GÖREVLER</span>
+                    <b>3/3</b>
                 </div>
 
-
                 <div class="progress">
-
                     <div></div>
-
                 </div>
 
             </div>
 
         </div>
-
-
-        <!-- ÖDÜLLER -->
 
         <div class="menu-card">
 
@@ -1088,59 +974,29 @@ button{
                 ÖDÜLLER
             </div>
 
-
             <div class="rewards">
 
                 <div class="reward">
-
-                    <div class="reward-icon">
-                        📦
-                    </div>
-
+                    <div class="reward-icon">📦</div>
                     Günlük Kasa
-
-                    <small>
-                        1/1 ✓
-                    </small>
-
+                    <small>1/1 ✓</small>
                 </div>
 
-
                 <div class="reward">
-
-                    <div class="reward-icon">
-                        XP
-                    </div>
-
+                    <div class="reward-icon">XP</div>
                     XP Kartı
-
-                    <small>
-                        1/1 ✓
-                    </small>
-
+                    <small>1/1 ✓</small>
                 </div>
 
-
                 <div class="reward">
-
-                    <div class="reward-icon">
-                        🧴
-                    </div>
-
+                    <div class="reward-icon">🧴</div>
                     Grafiti
-
-                    <small>
-                        1/1 ✓
-                    </small>
-
+                    <small>1/1 ✓</small>
                 </div>
 
             </div>
 
         </div>
-
-
-        <!-- POPÜLER -->
 
         <div class="menu-card popular">
 
@@ -1148,49 +1004,24 @@ button{
                 YENİ VE POPÜLER
             </div>
 
-
             <div class="weapon-image">
-
-                <span>
-                    🔫
-                </span>
-
+                <span>🔫</span>
             </div>
 
-
             <div class="popular-info">
-
-                <h3>
-                    Özgün Operasyon
-                </h3>
-
-                <div class="price">
-                    YENİ HARİTA AKTİF
-                </div>
-
+                <h3>Pusu Çıkartma Kapsülü</h3>
+                <div class="price">$0.99</div>
             </div>
 
         </div>
 
     </div>
 
-
-    <!-- =====================================================
-         KARAKTER
-    ====================================================== -->
-
     <div class="character-area">
-
         <div class="character-placeholder">
             🧍
         </div>
-
     </div>
-
-
-    <!-- =====================================================
-         SAĞ PANEL
-    ====================================================== -->
 
     <div class="right-panel">
 
@@ -1198,32 +1029,15 @@ button{
             ODA
         </div>
 
-
-        <button
-            class="room-button"
-            id="createRoomBtn">
-
+        <button class="room-button" id="createRoomBtn">
             ODA OLUŞTUR
-
-            <span>
-                ＋
-            </span>
-
+            <span>＋</span>
         </button>
 
-
-        <button
-            class="room-button"
-            id="joinRoomBtn">
-
+        <button class="room-button" id="joinRoomBtn">
             ODAYA KATIL
-
-            <span>
-                ⇥
-            </span>
-
+            <span>⇥</span>
         </button>
-
 
         <div class="settings">
 
@@ -1231,182 +1045,93 @@ button{
                 ⚙ OYUN AYARLARI
             </div>
 
-
-            <!-- HARİTA -->
-
             <div class="label">
                 HARİTA SEÇ
             </div>
 
-
             <div class="map-grid">
 
-                <div
-                    class="map"
-                    data-map="training">
-
-                    <div class="map-icon">
-                        🏕️
-                    </div>
-
-                    <div class="map-name">
-                        Eğitim
-                    </div>
-
+                <div class="map selected" data-map="training">
+                    <div class="map-icon">🏕️</div>
+                    <div class="map-name">Eğitim</div>
                 </div>
 
+                <div class="map" data-map="city">
+                    <div class="map-icon">🏙️</div>
+                    <div class="map-name">Şehir</div>
+                </div>
 
-                <div
-                    class="map selected"
-                    data-map="dust2">
+                <div class="map" data-map="desert">
+                    <div class="map-icon">🏜️</div>
+                    <div class="map-name">Çöl</div>
+                </div>
 
-                    <div class="map-icon">
-                        🏜️
-                    </div>
-
-                    <div class="map-name">
-                        Özgün Operasyon
-                    </div>
-
+                <div class="map" data-map="forest">
+                    <div class="map-icon">🌲</div>
+                    <div class="map-name">Orman</div>
                 </div>
 
             </div>
-
-
-            <!-- DÜŞMANLAR -->
 
             <div class="label">
                 DÜŞMANLAR
             </div>
 
-
             <div class="option-group">
 
-                <button
-                    class="option"
-                    id="botsOff">
-
+                <button class="option" id="botsOff">
                     KAPALI
-
                 </button>
 
-
-                <button
-                    class="option selected"
-                    id="botsOn">
-
+                <button class="option selected" id="botsOn">
                     AÇIK
-
                 </button>
 
             </div>
-
-
-            <!-- DÜŞMAN SAYISI -->
 
             <div class="label">
                 DÜŞMAN SAYISI
             </div>
 
-
             <div class="option-group">
 
-                <button class="option">
-                    1
-                </button>
-
-                <button class="option">
-                    3
-                </button>
-
-                <button class="option selected">
-                    5
-                </button>
-
-                <button class="option">
-                    10
-                </button>
-
-                <button class="option">
-                    20
-                </button>
+                <button class="option">1</button>
+                <button class="option">3</button>
+                <button class="option selected">5</button>
+                <button class="option">10</button>
+                <button class="option">20</button>
 
             </div>
-
-
-            <!-- ZORLUK -->
 
             <div class="label">
                 ZORLUK
             </div>
 
-
             <div class="option-group">
 
-                <button class="option">
-                    KOLAY
-                </button>
-
-                <button class="option selected">
-                    NORMAL
-                </button>
-
-                <button class="option">
-                    ZOR
-                </button>
+                <button class="option">KOLAY</button>
+                <button class="option selected">NORMAL</button>
+                <button class="option">ZOR</button>
 
             </div>
 
-
-            <!-- BAŞLAT -->
-
-            <button
-                class="start-button"
-                id="startGameBtn">
-
+            <button class="start-button" id="startGameBtn">
                 BAŞLA ▶
-
             </button>
 
         </div>
 
     </div>
 
-
-    <!-- =====================================================
-         ALT BAR
-    ====================================================== -->
-
     <div class="bottom-bar">
-
-        <span>
-            ⚙ AYARLAR
-        </span>
-
-        <span>
-            👥 DOSTLUK İSTEĞİ
-        </span>
-
-        <span>
-            ➤ RÜTBE
-        </span>
-
-        <span>
-            ★ BAŞARIMLAR
-        </span>
-
-        <span>
-            ❔ YARDIM
-        </span>
-
+        <span>⚙ AYARLAR</span>
+        <span>👥 DOSTLUK İSTEĞİ</span>
+        <span>➤ RÜTBE</span>
+        <span>★ BAŞARIMLAR</span>
+        <span>❔ YARDIM</span>
     </div>
 
 </div>
-
-
-<!-- =========================================================
-     ODA MODAL
-========================================================= -->
 
 <div id="roomModal">
 
@@ -1416,31 +1141,19 @@ button{
             ODA OLUŞTUR
         </h2>
 
-
         <input
             id="roomCodeInput"
             maxlength="6"
             placeholder="ODA KODU"
         >
 
-
-        <button
-            class="modal-button"
-            id="modalAction">
-
+        <button class="modal-button" id="modalAction">
             ODA OLUŞTUR
-
         </button>
 
-
-        <button
-            class="modal-button close-button"
-            id="closeModal">
-
+        <button class="modal-button close-button" id="closeModal">
             GERİ
-
         </button>
-
 
         <div id="roomMessage"></div>
 
@@ -1448,17 +1161,7 @@ button{
 
 </div>
 
-
-<!-- =========================================================
-     OYUN CANVAS
-========================================================= -->
-
 <canvas id="game"></canvas>
-
-
-<!-- =========================================================
-     OYUN HUD
-========================================================= -->
 
 <div id="hud">
 
@@ -1466,103 +1169,59 @@ button{
         FPS: 0
     </div>
 
-
     <div id="roomInfo">
         Oda: -
     </div>
-
-
-    <div id="mapInfo">
-        Harita: Özgün Operasyon
-    </div>
-
 
     <div id="score">
         Skor: 0
     </div>
 
-
     <div id="crosshair"></div>
-
 
     <div id="stats">
 
         CAN:
-        <span id="healthText">
-            100
-        </span>
-
+        <span id="healthText">100</span>
 
         <div id="health-bar">
-
             <div id="health-fill"></div>
-
         </div>
 
     </div>
 
-
     <div id="ammo">
-
-        <span id="ammoValue">
-            30
-        </span>
-
-        /
-
-        <span id="reserveAmmoValue">
-            120
-        </span>
-
+        <span id="ammoValue">30</span>
+        / 120
     </div>
-
-
-    <!-- SİLAH -->
 
     <div id="weapon">
 
         <div class="weapon-barrel"></div>
-
         <div class="weapon-front"></div>
-
         <div class="weapon-main"></div>
-
         <div class="weapon-top"></div>
-
         <div class="weapon-mag"></div>
-
         <div class="weapon-handle"></div>
-
         <div class="weapon-trigger"></div>
-
         <div class="weapon-hand"></div>
-
         <div class="weapon-hand-left"></div>
 
     </div>
-
 
     <div id="muzzle"></div>
 
 </div>
 
-
 <div id="damage"></div>
-
-
-<!-- =========================================================
-     PARÇA 2 BURAYA GELECEK
-     THREE.JS + YENİ HARİTA + WASD + BOT SİSTEMİ
-========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
-/* =========================================================
-   TEMEL DEĞİŞKENLER
-   PARÇA 2'DE DEVAM EDECEK
-========================================================= */
+/* =========================
+   DEĞİŞKENLER
+========================= */
 
 let scene;
 let camera;
@@ -1570,486 +1229,266 @@ let renderer;
 let clock;
 
 let player;
+let bots=[];
 
-let bots = [];
+let health=100;
+let score=0;
 
-let obstacles = [];
+let ammo=30;
+let reserveAmmo=120;
 
-let health = 100;
+let canShoot=true;
+let reloading=false;
+let gameStarted=false;
 
-let score = 0;
+let yaw=0;
+let pitch=0;
 
-let ammo = 30;
+let fpsFrames=0;
+let fpsTime=0;
 
-let reserveAmmo = 120;
+const keys={};
 
-let canShoot = true;
+let currentRoom="";
 
-let reloading = false;
+let selectedMap="training";
+let botsEnabled=true;
+let botCount=5;
 
-let gameStarted = false;
-
-let yaw = 0;
-
-let pitch = 0;
-
-let fpsFrames = 0;
-
-let fpsTime = 0;
-
-const keys = {};
-
-let currentRoom = "";
-
-let selectedMap = "dust2";
-
-let botsEnabled = true;
-
-let botCount = 5;
-
-let selectedDifficulty = "normal";
-
-let initialized = false;
-
-let roomMode = "create";
+let selectedDifficulty="normal";
+let initialized=false;
 
 
-/* =========================================================
-   MENÜ ELEMANLARI
-========================================================= */
+/* =========================
+   MENÜ
+========================= */
 
 const mainMenu =
-    document.getElementById(
-        "mainMenu"
-    );
+    document.getElementById("mainMenu");
 
 const roomModal =
-    document.getElementById(
-        "roomModal"
-    );
+    document.getElementById("roomModal");
 
 const modalTitle =
-    document.getElementById(
-        "modalTitle"
-    );
+    document.getElementById("modalTitle");
 
 const modalAction =
-    document.getElementById(
-        "modalAction"
-    );
+    document.getElementById("modalAction");
 
 const roomCodeInput =
-    document.getElementById(
-        "roomCodeInput"
-    );
+    document.getElementById("roomCodeInput");
 
 const roomMessage =
-    document.getElementById(
-        "roomMessage"
-    );
+    document.getElementById("roomMessage");
 
 const createRoomBtn =
-    document.getElementById(
-        "createRoomBtn"
-    );
+    document.getElementById("createRoomBtn");
 
 const joinRoomBtn =
-    document.getElementById(
-        "joinRoomBtn"
-    );
+    document.getElementById("joinRoomBtn");
 
 const closeModal =
-    document.getElementById(
-        "closeModal"
-    );
+    document.getElementById("closeModal");
 
 const startGameBtn =
-    document.getElementById(
-        "startGameBtn"
-    );
+    document.getElementById("startGameBtn");
+
+let roomMode="create";
 
 
-/* =========================================================
+/* =========================
    HARİTA SEÇİMİ
-========================================================= */
+========================= */
 
-document
-    .querySelectorAll(".map")
-    .forEach(map => {
+document.querySelectorAll(".map").forEach(map=>{
 
-        map.addEventListener(
-            "click",
-            () => {
+    map.addEventListener("click",()=>{
 
-                document
-                    .querySelectorAll(".map")
-                    .forEach(m => {
+        document
+            .querySelectorAll(".map")
+            .forEach(m=>m.classList.remove("selected"));
 
-                        m.classList
-                            .remove(
-                                "selected"
-                            );
+        map.classList.add("selected");
 
-                    });
-
-
-                map.classList
-                    .add(
-                        "selected"
-                    );
-
-
-                selectedMap =
-                    map.dataset.map;
-
-            }
-        );
+        selectedMap=map.dataset.map;
 
     });
 
-
-/* =========================================================
-   OYUN AYARLARI
-========================================================= */
-
-document
-    .querySelectorAll(".option")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const parent =
-                    button.parentElement;
+});
 
 
-                parent
-                    .querySelectorAll(
-                        ".option"
-                    )
-                    .forEach(b => {
+/* =========================
+   AYARLAR
+========================= */
 
-                        b.classList
-                            .remove(
-                                "selected"
-                            );
+document.querySelectorAll(".option").forEach(button=>{
 
-                    });
+    button.addEventListener("click",()=>{
 
+        const parent=button.parentElement;
 
-                button.classList
-                    .add(
-                        "selected"
-                    );
+        parent
+            .querySelectorAll(".option")
+            .forEach(b=>b.classList.remove("selected"));
 
+        button.classList.add("selected");
 
-                const text =
-                    button.textContent
-                        .trim();
+        const text=button.textContent.trim();
 
+        if(text==="KAPALI"){
+            botsEnabled=false;
+        }
 
-                if(
-                    text === "KAPALI"
-                ){
+        if(text==="AÇIK"){
+            botsEnabled=true;
+        }
 
-                    botsEnabled =
-                        false;
+        if(["1","3","5","10","20"].includes(text)){
+            botCount=Number(text);
+        }
 
-                }
-
-
-                if(
-                    text === "AÇIK"
-                ){
-
-                    botsEnabled =
-                        true;
-
-                }
-
-
-                if(
-                    [
-                        "1",
-                        "3",
-                        "5",
-                        "10",
-                        "20"
-                    ].includes(text)
-                ){
-
-                    botCount =
-                        Number(text);
-
-                }
-
-
-                if(
-                    [
-                        "KOLAY",
-                        "NORMAL",
-                        "ZOR"
-                    ].includes(text)
-                ){
-
-                    selectedDifficulty =
-                        text.toLowerCase();
-
-                }
-
-            }
-        );
+        if(["KOLAY","NORMAL","ZOR"].includes(text)){
+            selectedDifficulty=text.toLowerCase();
+        }
 
     });
 
-
-/* =========================================================
-   ODA OLUŞTUR
-========================================================= */
-
-createRoomBtn.onclick =
-    () => {
-
-        roomMode =
-            "create";
+});
 
 
-        modalTitle.textContent =
-            "ODA OLUŞTUR";
+/* =========================
+   ODA
+========================= */
+
+createRoomBtn.onclick=()=>{
+
+    roomMode="create";
+
+    modalTitle.textContent="ODA OLUŞTUR";
+    modalAction.textContent="ODA OLUŞTUR";
+
+    roomCodeInput.value="";
+    roomMessage.textContent="";
+
+    roomCodeInput.style.display="none";
+    roomModal.style.display="flex";
+
+};
 
 
-        modalAction.textContent =
-            "ODA OLUŞTUR";
+joinRoomBtn.onclick=()=>{
+
+    roomMode="join";
+
+    modalTitle.textContent="ODAYA KATIL";
+    modalAction.textContent="ODAYA KATIL";
+
+    roomCodeInput.value="";
+    roomMessage.textContent="";
+
+    roomCodeInput.style.display="block";
+    roomModal.style.display="flex";
+
+};
 
 
-        roomCodeInput.value =
-            "";
+closeModal.onclick=()=>{
 
+    roomModal.style.display="none";
 
-        roomMessage.textContent =
-            "";
+};
 
-
-        roomCodeInput.style.display =
-            "none";
-
-
-        roomModal.style.display =
-            "flex";
-
-    };
-
-
-/* =========================================================
-   ODAYA KATIL
-========================================================= */
-
-joinRoomBtn.onclick =
-    () => {
-
-        roomMode =
-            "join";
-
-
-        modalTitle.textContent =
-            "ODAYA KATIL";
-
-
-        modalAction.textContent =
-            "ODAYA KATIL";
-
-
-        roomCodeInput.value =
-            "";
-
-
-        roomMessage.textContent =
-            "";
-
-
-        roomCodeInput.style.display =
-            "block";
-
-
-        roomModal.style.display =
-            "flex";
-
-    };
-
-
-/* =========================================================
-   MODAL KAPAT
-========================================================= */
-
-closeModal.onclick =
-    () => {
-
-        roomModal.style.display =
-            "none";
-
-    };
-
-
-/* =========================================================
-   ODA KODU
-========================================================= */
 
 function generateRoomCode(){
 
-    const chars =
+    const chars=
         "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
+    let code="";
 
-    let code =
-        "";
+    for(let i=0;i<6;i++){
 
-
-    for(
-        let i = 0;
-        i < 6;
-        i++
-    ){
-
-        code +=
-            chars[
-                Math.floor(
-                    Math.random() *
-                    chars.length
-                )
-            ];
+        code+=chars[
+            Math.floor(
+                Math.random()*chars.length
+            )
+        ];
 
     }
-
 
     return code;
 
 }
 
 
-/* =========================================================
-   ODA İŞLEMİ
-========================================================= */
+modalAction.onclick=()=>{
 
-modalAction.onclick =
-    () => {
+    if(roomMode==="create"){
 
-        if(
-            roomMode === "create"
-        ){
+        currentRoom=generateRoomCode();
 
-            currentRoom =
-                generateRoomCode();
+        roomMessage.textContent=
+            "Oda kodun: "+currentRoom;
 
+        setTimeout(()=>{
+            roomModal.style.display="none";
+        },1200);
 
-            roomMessage.textContent =
-                "Oda kodun: " +
-                currentRoom;
+    }else{
 
+        const code=
+            roomCodeInput.value
+            .trim()
+            .toUpperCase();
 
-            setTimeout(
-                () => {
+        if(code.length!==6){
 
-                    roomModal.style.display =
-                        "none";
+            roomMessage.textContent=
+                "6 haneli oda kodu gir.";
 
-                },
-                1200
-            );
-
-        }
-        else{
-
-            const code =
-                roomCodeInput.value
-                    .trim()
-                    .toUpperCase();
-
-
-            if(
-                code.length !== 6
-            ){
-
-                roomMessage.textContent =
-                    "6 haneli oda kodu gir.";
-
-                return;
-
-            }
-
-
-            currentRoom =
-                code;
-
-
-            roomMessage.textContent =
-                "Odaya katıldın: " +
-                currentRoom;
-
-
-            setTimeout(
-                () => {
-
-                    roomModal.style.display =
-                        "none";
-
-                },
-                1000
-            );
+            return;
 
         }
 
-    };
+        currentRoom=code;
+
+        roomMessage.textContent=
+            "Odaya katıldın: "+currentRoom;
+
+        setTimeout(()=>{
+            roomModal.style.display="none";
+        },1000);
+
+    }
+
+};
 
 
-/* =========================================================
+/* =========================
    OYUNU BAŞLAT
-   PARÇA 2'DE init() FONKSİYONU GELECEK
-========================================================= */
+========================= */
 
-startGameBtn.onclick =
-    startGame;
+startGameBtn.onclick=startGame;
 
 
 function startGame(){
 
-    mainMenu.style.display =
-        "none";
+    mainMenu.style.display="none";
 
+    document.getElementById("game")
+        .style.display="block";
 
-    document
-        .getElementById("game")
-        .style.display =
-        "block";
+    document.getElementById("hud")
+        .style.display="block";
 
+    gameStarted=true;
 
-    document
-        .getElementById("hud")
-        .style.display =
-        "block";
+    if(!initialized){
 
-
-    gameStarted =
-        true;
-
-
-    if(
-        !initialized
-    ){
-
-        /*
-         * PARÇA 2'DE:
-         * init();
-         * initialized = true;
-         *
-         * OLARAK TAMAMLANACAK.
-         */
-
-        initialized =
-            true;
+        init();
+        initialized=true;
 
     }
-
 
     document
         .getElementById("game")
@@ -2057,158 +1496,43 @@ function startGame(){
 
 }
 
-</script>
 
-<!-- =========================================================
-     PARÇA 1 SONU
-========================================================= -->```html
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-<script>
-
-/* =========================================================
-   WEBSTRIKE FPS
-   PARÇA 2
-   YENİ HARİTA + WASD + ÇARPIŞMA + BOTLAR
-========================================================= */
-
-let scene;
-let camera;
-let renderer;
-let clock;
-
-let player;
-let bots = [];
-let obstacles = [];
-
-let yaw = 0;
-let pitch = 0;
-
-let health = 100;
-let score = 0;
-
-let gameStarted = false;
-let initialized = false;
-
-const keys = {};
-
-let selectedMap = "dust2";
-let botsEnabled = true;
-let botCount = 5;
-let selectedDifficulty = "normal";
-
-let fpsFrames = 0;
-let fpsTime = 0;
-
-
-/* =========================================================
-   OYUN BAŞLATMA
-========================================================= */
-
-function startGame(){
-
-    const mainMenu =
-        document.getElementById("mainMenu");
-
-    const game =
-        document.getElementById("game");
-
-    const hud =
-        document.getElementById("hud");
-
-
-    if(mainMenu){
-
-        mainMenu.style.display = "none";
-
-    }
-
-
-    if(game){
-
-        game.style.display = "block";
-
-    }
-
-
-    if(hud){
-
-        hud.style.display = "block";
-
-    }
-
-
-    gameStarted = true;
-
-
-    if(!initialized){
-
-        init();
-
-        initialized = true;
-
-    }
-
-
-    if(game){
-
-        game.requestPointerLock();
-
-    }
-
-}
-
-
-/* =========================================================
-   THREE.JS BAŞLANGIÇ
-========================================================= */
+/* =========================
+   THREE.JS
+========================= */
 
 function init(){
 
-    scene =
-        new THREE.Scene();
+    scene=new THREE.Scene();
 
+    scene.background=
+        new THREE.Color(0x87a9c7);
 
-    /* ÇÖL ATMOSFERİ */
-
-    scene.background =
-        new THREE.Color(0xc8ad83);
-
-
-    scene.fog =
+    scene.fog=
         new THREE.Fog(
-            0xc8ad83,
-            180,
-            500
+            0x87a9c7,
+            30,
+            120
         );
 
 
-    /* KAMERA */
-
-    camera =
+    camera=
         new THREE.PerspectiveCamera(
-
             75,
-
-            window.innerWidth /
+            window.innerWidth/
             window.innerHeight,
-
-            0.1,
-
-            1000
-
+            .1,
+            300
         );
 
 
-    /* RENDERER */
-
-    renderer =
+    renderer=
         new THREE.WebGLRenderer({
 
             canvas:
                 document.getElementById("game"),
 
-            antialias: true,
+            antialias:true,
 
             powerPreference:
                 "high-performance"
@@ -2217,141 +1541,73 @@ function init(){
 
 
     renderer.setPixelRatio(
-
         Math.min(
-
             window.devicePixelRatio,
-
             1.5
-
         )
-
     );
-
 
     renderer.setSize(
-
         window.innerWidth,
-
         window.innerHeight
-
     );
 
 
-    renderer.shadowMap.enabled = true;
+    clock=new THREE.Clock();
 
 
-    clock =
-        new THREE.Clock();
-
-
-    /* =====================================================
-       IŞIKLAR
-    ===================================================== */
-
-    const hemisphere =
+    scene.add(
         new THREE.HemisphereLight(
-
-            0xfff4dc,
-
-            0x574532,
-
-            1.5
-
-        );
+            0xffffff,
+            0x444444,
+            1.2
+        )
+    );
 
 
-    scene.add(hemisphere);
-
-
-    const sun =
+    const sun=
         new THREE.DirectionalLight(
-
-            0xffe4b5,
-
-            2
-
+            0xffffff,
+            1.5
         );
-
 
     sun.position.set(
-
-        100,
-
-        200,
-
-        100
-
+        30,
+        50,
+        20
     );
-
-
-    sun.castShadow = true;
-
-
-    sun.shadow.mapSize.width = 2048;
-
-    sun.shadow.mapSize.height = 2048;
-
 
     scene.add(sun);
 
 
-    /* =====================================================
-       OYUNCU
-    ===================================================== */
-
-    player = {
+    player={
 
         position:
-
             new THREE.Vector3(
-
                 0,
-
-                1.7,
-
-                125
-
+                1.6,
+                25
             ),
 
-        speed: 8,
-
-        radius: 0.35
+        speed:7
 
     };
 
 
     camera.position.copy(
-
         player.position
-
     );
 
 
-    camera.rotation.order = "YXZ";
+    createMap();
 
-
-    /* =====================================================
-       HARİTA
-    ===================================================== */
-
-    createDust2Map();
-
-
-    /* =====================================================
-       BOTLAR
-    ===================================================== */
 
     if(botsEnabled){
 
         for(
-
-            let i = 0;
-
-            i < botCount;
-
+            let i=0;
+            i<botCount;
             i++
-
         ){
 
             createBot();
@@ -2363,3189 +1619,572 @@ function init(){
 
     setupControls();
 
-
     updateHUD();
-
 
     animate();
 
 }
 
 
-/* =========================================================
-   MALZEME OLUŞTURMA
-========================================================= */
+/* =========================
+   HARİTA
+========================= */
 
-function createMaterial(
+function createMap(){
 
-    color,
+    let floorColor=0x555b60;
 
-    roughness = 0.8
+    if(selectedMap==="desert")
+        floorColor=0x9a815b;
 
-){
+    if(selectedMap==="forest")
+        floorColor=0x3d6844;
 
-    return new THREE.MeshStandardMaterial({
-
-        color: color,
-
-        roughness: roughness
-
-    });
-
-}
+    if(selectedMap==="city")
+        floorColor=0x55575b;
 
 
-/* =========================================================
-   KUTU / DUVAR OLUŞTURMA
-========================================================= */
-
-function createBox(
-
-    x,
-
-    y,
-
-    z,
-
-    width,
-
-    height,
-
-    depth,
-
-    color,
-
-    collision = true
-
-){
-
-    const geometry =
-
-        new THREE.BoxGeometry(
-
-            width,
-
-            height,
-
-            depth
-
-        );
-
-
-    const material =
-
-        createMaterial(color);
-
-
-    const mesh =
-
+    const floor=
         new THREE.Mesh(
 
-            geometry,
+            new THREE.PlaneGeometry(
+                100,
+                100
+            ),
 
-            material
+            new THREE.MeshStandardMaterial({
+                color:floorColor
+            })
 
         );
 
 
-    mesh.position.set(
+    floor.rotation.x=
+        -Math.PI/2;
 
-        x,
-
-        y,
-
-        z
-
-    );
+    scene.add(floor);
 
 
-    mesh.castShadow = true;
+    if(selectedMap==="training"){
 
-    mesh.receiveShadow = true;
+        createZone(
+            -25,
+            0,
+            20,
+            25,
+            0x286090
+        );
 
+        createZone(
+            25,
+            0,
+            20,
+            25,
+            0x904040
+        );
 
-    scene.add(mesh);
-
-
-    if(collision){
-
-        obstacles.push({
-
-            mesh: mesh,
-
-            box:
-
-                new THREE.Box3()
-                    .setFromObject(mesh)
-
-        });
+        createZone(
+            0,
+            -25,
+            35,
+            20,
+            0x3d8050
+        );
 
     }
 
 
-    return mesh;
+    createWall(0,2,-45,90,4,2);
+    createWall(0,2,45,90,4,2);
+    createWall(-45,2,0,2,4,90);
+    createWall(45,2,0,2,4,90);
+
+    createWall(
+        0,
+        2,
+        10,
+        2,
+        4,
+        25
+    );
 
 }
 
 
-/* =========================================================
-   ZEMİN
-========================================================= */
+function createZone(
+    x,
+    z,
+    width,
+    depth,
+    color
+){
 
-function createFloor(){
-
-    const geometry =
-
-        new THREE.PlaneGeometry(
-
-            420,
-
-            420
-
-        );
-
-
-    const material =
-
-        new THREE.MeshStandardMaterial({
-
-            color: 0xb99a70,
-
-            roughness: 1
-
-        });
-
-
-    const floor =
-
+    const zone=
         new THREE.Mesh(
 
-            geometry,
+            new THREE.PlaneGeometry(
+                width,
+                depth
+            ),
 
-            material
+            new THREE.MeshBasicMaterial({
+
+                color:color,
+                transparent:true,
+                opacity:.25
+
+            })
 
         );
 
 
-    floor.rotation.x =
+    zone.rotation.x=
+        -Math.PI/2;
 
-        -Math.PI / 2;
+    zone.position.set(
+        x,
+        .01,
+        z
+    );
 
-
-    floor.receiveShadow = true;
-
-
-    scene.add(floor);
+    scene.add(zone);
 
 }
 
 
-/* =========================================================
-   ÖZGÜN DUST 2 TARZI HARİTA
-========================================================= */
-
-function createDust2Map(){
-
-    createFloor();
-
-
-    const wall =
-        0xd8b98b;
-
-    const darkWall =
-        0x927653;
-
-    const trim =
-        0x6f5139;
-
-    const crate =
-        0x80552d;
-
-    const metal =
-        0x343434;
-
-    const site =
-        0xc49232;
-
-
-    /* =====================================================
-       DIŞ HARİTA SINIRLARI
-    ===================================================== */
-
-    createBox(
-
-        0,
-        5,
-
-        -170,
-
-        340,
-
-        10,
-
-        5,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        0,
-        5,
-
-        170,
-
-        340,
-
-        10,
-
-        5,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        -170,
-        5,
-
-        0,
-
-        5,
-
-        10,
-
-        340,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        170,
-        5,
-
-        0,
-
-        5,
-
-        10,
-
-        340,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       T SPAWN
-    ===================================================== */
-
-    createBox(
-
-        0,
-        3,
-
-        145,
-
-        120,
-
-        6,
-
-        3,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        -55,
-        3,
-
-        115,
-
-        3,
-
-        6,
-
-        60,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        55,
-        3,
-
-        115,
-
-        3,
-
-        6,
-
-        60,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       T SPAWN SANDIKLARI
-    ===================================================== */
-
-    createBox(
-
-        -35,
-        1.5,
-
-        125,
-
-        8,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        35,
-        1.5,
-
-        125,
-
-        8,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    /* =====================================================
-       MID KORİDORU
-    ===================================================== */
-
-    createBox(
-
-        -30,
-        3,
-
-        65,
-
-        3,
-
-        6,
-
-        90,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        30,
-        3,
-
-        65,
-
-        3,
-
-        6,
-
-        90,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       MID SİPER
-    ===================================================== */
-
-    createBox(
-
-        0,
-        1.5,
-
-        65,
-
-        16,
-
-        3,
-
-        5,
-
-        darkWall
-
-    );
-
-
-    /* =====================================================
-       MID KAPILARI
-    ===================================================== */
-
-    createBox(
-
-        -9,
-        3,
-
-        5,
-
-        8,
-
-        6,
-
-        2,
-
-        metal
-
-    );
-
-
-    createBox(
-
-        9,
-        3,
-
-        5,
-
-        8,
-
-        6,
-
-        2,
-
-        metal
-
-    );
-
-
-    /* =====================================================
-       B TÜNELLERİ
-    ===================================================== */
-
-    createBox(
-
-        -100,
-        3,
-
-        60,
-
-        3,
-
-        6,
-
-        100,
-
-        darkWall
-
-    );
-
-
-    createBox(
-
-        -140,
-        3,
-
-        60,
-
-        3,
-
-        6,
-
-        100,
-
-        darkWall
-
-    );
-
-
-    createBox(
-
-        -120,
-        3,
-
-        10,
-
-        40,
-
-        6,
-
-        3,
-
-        darkWall
-
-    );
-
-
-    /* =====================================================
-       B GİRİŞ SİPERLERİ
-    ===================================================== */
-
-    createBox(
-
-        -120,
-        1.5,
-
-        -5,
-
-        12,
-
-        3,
-
-        5,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        -95,
-        1.5,
-
-        -15,
-
-        8,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    /* =====================================================
-       B BOMBA ALANI
-    ===================================================== */
-
-    createBox(
-
-        -120,
-        0.2,
-
-        -55,
-
-        45,
-
-        0.4,
-
-        45,
-
-        site,
-
-        false
-
-    );
-
-
-    createBox(
-
-        -150,
-        3,
-
-        -55,
-
-        3,
-
-        6,
-
-        55,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        -120,
-        3,
-
-        -82,
-
-        60,
-
-        6,
-
-        3,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       B KUTULARI
-    ===================================================== */
-
-    createBox(
-
-        -105,
-        2,
-
-        -45,
-
-        10,
-
-        4,
-
-        10,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        -135,
-        2,
-
-        -70,
-
-        10,
-
-        4,
-
-        10,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        -125,
-        4,
-
-        -30,
-
-        8,
-
-        8,
-
-        8,
-
-        crate
-
-    );
-
-
-    /* =====================================================
-       CATWALK
-    ===================================================== */
-
-    createBox(
-
-        70,
-        3,
-
-        45,
-
-        3,
-
-        6,
-
-        90,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        105,
-        3,
-
-        15,
-
-        3,
-
-        6,
-
-        50,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       SHORT A
-    ===================================================== */
-
-    createBox(
-
-        75,
-        3,
-
-        -20,
-
-        3,
-
-        6,
-
-        70,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        105,
-        3,
-
-        -55,
-
-        55,
-
-        6,
-
-        3,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       LONG A
-    ===================================================== */
-
-    createBox(
-
-        125,
-        3,
-
-        45,
-
-        3,
-
-        6,
-
-        130,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        155,
-        3,
-
-        45,
-
-        3,
-
-        6,
-
-        130,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       LONG SİPERLER
-    ===================================================== */
-
-    createBox(
-
-        140,
-        1.5,
-
-        90,
-
-        10,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        140,
-        1.5,
-
-        115,
-
-        10,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    /* =====================================================
-       A BOMBA ALANI
-    ===================================================== */
-
-    createBox(
-
-        105,
-        0.2,
-
-        -105,
-
-        65,
-
-        0.4,
-
-        50,
-
-        site,
-
-        false
-
-    );
-
-
-    createBox(
-
-        75,
-        3,
-
-        -105,
-
-        3,
-
-        6,
-
-        55,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        105,
-        3,
-
-        -132,
-
-        65,
-
-        6,
-
-        3,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       A KUTULARI
-    ===================================================== */
-
-    createBox(
-
-        95,
-        2,
-
-        -95,
-
-        10,
-
-        4,
-
-        10,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        125,
-        2,
-
-        -115,
-
-        10,
-
-        4,
-
-        10,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        120,
-        4,
-
-        -90,
-
-        8,
-
-        8,
-
-        8,
-
-        crate
-
-    );
-
-
-    /* =====================================================
-       CT SPAWN
-    ===================================================== */
-
-    createBox(
-
-        0,
-        3,
-
-        -145,
-
-        110,
-
-        6,
-
-        3,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        -55,
-        3,
-
-        -115,
-
-        3,
-
-        6,
-
-        55,
-
-        wall
-
-    );
-
-
-    createBox(
-
-        55,
-        3,
-
-        -115,
-
-        3,
-
-        6,
-
-        55,
-
-        wall
-
-    );
-
-
-    /* =====================================================
-       CT KUTULARI
-    ===================================================== */
-
-    createBox(
-
-        -25,
-        1.5,
-
-        -125,
-
-        8,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-
-    createBox(
-
-        25,
-        1.5,
-
-        -125,
-
-        8,
-
-        3,
-
-        8,
-
-        crate
-
-    );
-
-}
-
-
-/* =========================================================
-   BOT OLUŞTURMA
-========================================================= */
-
-function createBot(){
-
-    const bot =
-        new THREE.Group();
-
-
-    /* GÖVDE */
-
-    const body =
-
+function createWall(
+    x,
+    y,
+    z,
+    width,
+    height,
+    depth
+){
+
+    const wall=
         new THREE.Mesh(
 
             new THREE.BoxGeometry(
-
-                0.75,
-
-                1.1,
-
-                0.45
-
+                width,
+                height,
+                depth
             ),
 
-            createMaterial(
-
-                0x273b86
-
-            )
+            new THREE.MeshStandardMaterial({
+                color:0x777b80
+            })
 
         );
 
 
-    body.position.y = 0.8;
+    wall.position.set(
+        x,
+        y,
+        z
+    );
+
+    scene.add(wall);
+
+}
 
 
-    body.castShadow = true;
+/* =========================
+   BOT
+========================= */
 
+function createBot(){
+
+    const bot=
+        new THREE.Group();
+
+
+    const body=
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                .8,
+                1.2,
+                .5
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0x263d9c
+            })
+
+        );
+
+    body.position.y=.8;
 
     bot.add(body);
 
 
-    /* KAFA */
-
-    const head =
-
+    const head=
         new THREE.Mesh(
 
             new THREE.SphereGeometry(
-
-                0.28,
-
-                16,
-
-                16
-
+                .3,
+                12,
+                12
             ),
 
-            createMaterial(
-
-                0xd39a72
-
-            )
+            new THREE.MeshStandardMaterial({
+                color:0xffc49b
+            })
 
         );
 
-
-    head.position.y = 1.55;
-
-
-    head.castShadow = true;
-
+    head.position.y=1.65;
 
     bot.add(head);
 
 
-    /* SİLAH */
-
-    const gun =
-
+    const gun=
         new THREE.Mesh(
 
             new THREE.BoxGeometry(
-
-                0.14,
-
-                0.14,
-
-                0.9
-
+                .15,
+                .15,
+                1
             ),
 
-            createMaterial(
-
-                0x151515
-
-            )
+            new THREE.MeshStandardMaterial({
+                color:0x111111
+            })
 
         );
 
-
     gun.position.set(
-
-        0.45,
-
-        1.05,
-
-        -0.45
-
+        .55,
+        1,
+        -.5
     );
-
 
     bot.add(gun);
 
 
-    /* RASTGELE BAŞLANGIÇ */
-
-    let x;
-    let z;
-
-
-    let valid = false;
-
-
-    for(
-
-        let attempt = 0;
-
-        attempt < 30;
-
-        attempt++
-
-    ){
-
-        x =
-
-            Math.random() *
-
-            260 -
-
-            130;
-
-
-        z =
-
-            Math.random() *
-
-            220 -
-
-            100;
-
-
-        const testPosition =
-
-            new THREE.Vector3(
-
-                x,
-
-                0,
-
-                z
-
-            );
-
-
-        if(
-
-            !checkCollision(
-
-                testPosition
-
-            )
-
-        ){
-
-            valid = true;
-
-            break;
-
-        }
-
-    }
-
-
-    if(!valid){
-
-        x = 0;
-
-        z = -80;
-
-    }
-
-
     bot.position.set(
 
-        x,
-
+        Math.random()*65-32,
         0,
-
-        z
+        Math.random()*65-25
 
     );
 
 
-    /* ZORLUK */
+    let speed=1.5;
 
-    let speed = 1.5;
+    if(selectedDifficulty==="easy")
+        speed=1;
 
-
-    if(
-
-        selectedDifficulty ===
-
-        "kolay"
-
-    ){
-
-        speed = 1;
-
-    }
+    if(selectedDifficulty==="hard")
+        speed=2.3;
 
 
-    if(
+    bot.userData={
 
-        selectedDifficulty ===
-
-        "zor"
-
-    ){
-
-        speed = 2.5;
-
-    }
-
-
-    bot.userData = {
-
-        health: 100,
-
-        speed: speed,
-
-        shootTimer:
-
-            1 +
-
-            Math.random() * 2
+        health:100,
+        speed:speed,
+        shootTimer:1
 
     };
 
 
     scene.add(bot);
 
-
     bots.push(bot);
 
 }
 
 
-/* =========================================================
+/* =========================
    KONTROLLER
-========================================================= */
+========================= */
 
 function setupControls(){
 
     document.addEventListener(
-
         "keydown",
+        e=>{
 
-        event => {
+            keys[e.code]=true;
 
-            keys[event.code] = true;
-
-
-            if(
-
-                event.code ===
-
-                "KeyR"
-
-            ){
-
-                reloadWeapon();
-
+            if(e.code==="KeyR"){
+                reload();
             }
 
         }
-
     );
 
 
     document.addEventListener(
-
         "keyup",
+        e=>{
 
-        event => {
-
-            keys[event.code] = false;
+            keys[e.code]=false;
 
         }
-
     );
 
 
     document.addEventListener(
-
         "mousemove",
-
-        event => {
-
-            const game =
-
-                document.getElementById(
-
-                    "game"
-
-                );
-
+        e=>{
 
             if(
-
-                document.pointerLockElement !==
-
-                game
-
-            ){
-
+                document.pointerLockElement!==
+                document.getElementById("game")
+            )
                 return;
 
-            }
+
+            yaw-=e.movementX*.002;
+
+            pitch-=e.movementY*.002;
 
 
-            yaw -=
-
-                event.movementX *
-
-                0.002;
-
-
-            pitch -=
-
-                event.movementY *
-
-                0.002;
-
-
-            pitch =
-
+            pitch=
                 Math.max(
-
                     -1.4,
-
                     Math.min(
-
                         1.4,
-
                         pitch
-
                     )
-
                 );
 
         }
-
     );
 
 
     document.addEventListener(
-
         "mousedown",
+        e=>{
 
-        event => {
-
-            if(
-
-                !gameStarted
-
-            ){
-
+            if(!gameStarted)
                 return;
 
-            }
+
+            if(e.button===0){
+
+                const canvas=
+                    document.getElementById("game");
 
 
-            if(
+                if(
+                    document.pointerLockElement!==canvas
+                ){
 
-                event.button === 0
+                    canvas.requestPointerLock();
 
-            ){
+                    return;
 
-                shootWeapon();
+                }
+
+                shoot();
 
             }
 
         }
-
     );
 
 }
 
 
-/* =========================================================
-   PROFESYONEL WASD HAREKET
-========================================================= */
+/* =========================
+   PROFESYONEL WASD SİSTEMİ
+========================= */
 
 function updatePlayer(delta){
 
-    let inputX = 0;
+    let moveX=0;
+    let moveZ=0;
 
-    let inputZ = 0;
 
-
+    // W - İLERİ
     if(keys["KeyW"]){
-
-        inputZ -= 1;
-
+        moveZ-=1;
     }
 
 
+    // S - GERİ
     if(keys["KeyS"]){
-
-        inputZ += 1;
-
+        moveZ+=1;
     }
 
 
+    // A - SOL
     if(keys["KeyA"]){
-
-        inputX -= 1;
-
+        moveX-=1;
     }
 
 
+    // D - SAĞ
     if(keys["KeyD"]){
+        moveX+=1;
+    }
 
-        inputX += 1;
+
+    // Hareket varsa
+    if(moveX!==0 || moveZ!==0){
+
+        /*
+        Çapraz hareket hızını sabit tutar.
+        Böylece W+A, W veya D'den daha hızlı olmaz.
+        */
+
+        const length=
+            Math.sqrt(
+                moveX*moveX+
+                moveZ*moveZ
+            );
+
+
+        moveX/=length;
+        moveZ/=length;
+
+
+        /*
+        Kameranın baktığı ileri yön.
+        W her zaman kameranın baktığı yöne gider.
+        */
+
+        const forwardX=
+            -Math.sin(yaw);
+
+        const forwardZ=
+            -Math.cos(yaw);
+
+
+        /*
+        Kameranın sağ yönü.
+        A ve D hareketleri buna göre hesaplanır.
+        */
+
+        const rightX=
+            Math.cos(yaw);
+
+        const rightZ=
+            -Math.sin(yaw);
+
+
+        /*
+        İleri / geri hareket
+        */
+
+        const forwardMoveX=
+            forwardX*
+            (-moveZ);
+
+        const forwardMoveZ=
+            forwardZ*
+            (-moveZ);
+
+
+        /*
+        Sağ / sol hareket
+        */
+
+        const rightMoveX=
+            rightX*
+            moveX;
+
+        const rightMoveZ=
+            rightZ*
+            moveX;
+
+
+        /*
+        Nihai hareket yönü
+        */
+
+        const finalX=
+            forwardMoveX+
+            rightMoveX;
+
+        const finalZ=
+            forwardMoveZ+
+            rightMoveZ;
+
+
+        /*
+        Oyuncuyu hareket ettir
+        */
+
+        player.position.x+=
+            finalX*
+            player.speed*
+            delta;
+
+        player.position.z+=
+            finalZ*
+            player.speed*
+            delta;
 
     }
 
 
-    if(
+    /*
+    Harita sınırları
+    */
 
-        inputX === 0 &&
-
-        inputZ === 0
-
-    ){
-
-        updateCamera();
-
-        return;
-
-    }
-
-
-    /* NORMALIZE */
-
-    const length =
-
-        Math.sqrt(
-
-            inputX * inputX +
-
-            inputZ * inputZ
-
+    player.position.x=
+        Math.max(
+            -42,
+            Math.min(
+                42,
+                player.position.x
+            )
         );
 
 
-    inputX /= length;
-
-    inputZ /= length;
-
-
-    /* KAMERANIN BAKTIĞI YÖN */
-
-    const forwardX =
-
-        -Math.sin(yaw);
-
-
-    const forwardZ =
-
-        -Math.cos(yaw);
-
-
-    const rightX =
-
-        Math.cos(yaw);
-
-
-    const rightZ =
-
-        -Math.sin(yaw);
-
-
-    /* HAREKET VEKTÖRÜ */
-
-    const moveX =
-
-        forwardX * (-inputZ) +
-
-        rightX * inputX;
-
-
-    const moveZ =
-
-        forwardZ * (-inputZ) +
-
-        rightZ * inputX;
-
-
-    /* X EKSENİ */
-
-    const nextX =
-
-        player.position.clone();
-
-
-    nextX.x +=
-
-        moveX *
-
-        player.speed *
-
-        delta;
-
-
-    if(
-
-        !checkCollision(
-
-            nextX
-
-        )
-
-    ){
-
-        player.position.x =
-
-            nextX.x;
-
-    }
-
-
-    /* Z EKSENİ */
-
-    const nextZ =
-
-        player.position.clone();
-
-
-    nextZ.z +=
-
-        moveZ *
-
-        player.speed *
-
-        delta;
-
-
-    if(
-
-        !checkCollision(
-
-            nextZ
-
-        )
-
-    ){
-
-        player.position.z =
-
-            nextZ.z;
-
-    }
-
-
-    updateCamera();
-
-}
-
-
-/* =========================================================
-   KAMERA
-========================================================= */
-
-function updateCamera(){
+    player.position.z=
+        Math.max(
+            -42,
+            Math.min(
+                42,
+                player.position.z
+            )
+        );
+
+
+    /*
+    Kamerayı oyuncuya bağla
+    */
 
     camera.position.copy(
-
         player.position
-
     );
 
 
-    camera.rotation.order =
+    /*
+    FPS kamera sistemi
+    */
 
+    camera.rotation.order=
         "YXZ";
 
-
-    camera.rotation.y =
-
+    camera.rotation.y=
         yaw;
 
-
-    camera.rotation.x =
-
+    camera.rotation.x=
         pitch;
 
 }
 
 
-/* =========================================================
-   OYUNCU ÇARPIŞMASI
-========================================================= */
-
-function checkCollision(
-
-    position
-
-){
-
-    const playerBox =
-
-        new THREE.Box3(
-
-            new THREE.Vector3(
-
-                position.x -
-
-                player.radius,
-
-                0,
-
-                position.z -
-
-                player.radius
-
-            ),
-
-            new THREE.Vector3(
-
-                position.x +
-
-                player.radius,
-
-                1.8,
-
-                position.z +
-
-                player.radius
-
-            )
-
-        );
-
-
-    for(
-
-        let i = 0;
-
-        i < obstacles.length;
-
-        i++
-
-    ){
-
-        const obstacle =
-
-            obstacles[i];
-
-
-        obstacle.box.setFromObject(
-
-            obstacle.mesh
-
-        );
-
-
-        if(
-
-            playerBox.intersectsBox(
-
-                obstacle.box
-
-            )
-
-        ){
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================================
-   BOT HAREKETİ
-========================================================= */
-
-function updateBots(delta){
-
-    bots.forEach(bot => {
-
-        if(
-
-            !bot.parent
-
-        ){
-
-            return;
-
-        }
-
-
-        const distance =
-
-            bot.position.distanceTo(
-
-                player.position
-
-            );
-
-
-        /* OYUNCUYA YAKLAŞ */
-
-        if(
-
-            distance > 5
-
-        ){
-
-            const direction =
-
-                new THREE.Vector3()
-
-                    .subVectors(
-
-                        player.position,
-
-                        bot.position
-
-                    )
-
-                    .normalize();
-
-
-            const nextPosition =
-
-                bot.position.clone();
-
-
-            nextPosition.x +=
-
-                direction.x *
-
-                bot.userData.speed *
-
-                delta;
-
-
-            nextPosition.z +=
-
-                direction.z *
-
-                bot.userData.speed *
-
-                delta;
-
-
-            if(
-
-                !checkBotCollision(
-
-                    bot,
-
-                    nextPosition
-
-                )
-
-            ){
-
-                bot.position.copy(
-
-                    nextPosition
-
-                );
-
-            }
-
-        }
-
-
-        /* OYUNCUYA BAK */
-
-        bot.lookAt(
-
-            player.position.x,
-
-            1,
-
-            player.position.z
-
-        );
-
-
-        /* BOT ATEŞ ZAMANI */
-
-        bot.userData.shootTimer -=
-
-            delta;
-
-
-        if(
-
-            distance < 35 &&
-
-            bot.userData.shootTimer <= 0
-
-        ){
-
-            let chance = 0.4;
-
-
-            if(
-
-                selectedDifficulty ===
-
-                "kolay"
-
-            ){
-
-                chance = 0.2;
-
-            }
-
-
-            if(
-
-                selectedDifficulty ===
-
-                "zor"
-
-            ){
-
-                chance = 0.7;
-
-            }
-
-
-            if(
-
-                Math.random() <
-
-                chance
-
-            ){
-
-                damagePlayer(
-
-                    10
-
-                );
-
-            }
-
-
-            bot.userData.shootTimer =
-
-                1 +
-
-                Math.random() * 2;
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
-   BOT ÇARPIŞMA
-========================================================= */
-
-function checkBotCollision(
-
-    bot,
-
-    position
-
-){
-
-    const botBox =
-
-        new THREE.Box3(
-
-            new THREE.Vector3(
-
-                position.x - 0.4,
-
-                0,
-
-                position.z - 0.4
-
-            ),
-
-            new THREE.Vector3(
-
-                position.x + 0.4,
-
-                2,
-
-                position.z + 0.4
-
-            )
-
-        );
-
-
-    for(
-
-        let i = 0;
-
-        i < obstacles.length;
-
-        i++
-
-    ){
-
-        const obstacle =
-
-            obstacles[i];
-
-
-        obstacle.box.setFromObject(
-
-            obstacle.mesh
-
-        );
-
-
-        if(
-
-            botBox.intersectsBox(
-
-                obstacle.box
-
-            )
-
-        ){
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================================
+/* =========================
    ATEŞ
-========================================================= */
-
-let ammo = 30;
-
-let reserveAmmo = 120;
-
-let canShoot = true;
-
-let reloading = false;
-
-
-function shootWeapon(){
-
-    if(
-
-        !canShoot ||
-
-        reloading
-
-    ){
-
-        return;
-
-    }
-
-
-    if(
-
-        ammo <= 0
-
-    ){
-
-        reloadWeapon();
-
-        return;
-
-    }
-
-
-    ammo--;
-
-
-    canShoot = false;
-
-
-    setTimeout(
-
-        () => {
-
-            canShoot = true;
-
-        },
-
-        120
-
-    );
-
-
-    /* RAYCAST */
-
-    const raycaster =
-
-        new THREE.Raycaster();
-
-
-    raycaster.setFromCamera(
-
-        new THREE.Vector2(
-
-            0,
-
-            0
-
-        ),
-
-        camera
-
-    );
-
-
-    const objects = [];
-
-
-    bots.forEach(bot => {
-
-        bot.traverse(
-
-            child => {
-
-                if(
-
-                    child.isMesh
-
-                ){
-
-                    objects.push(
-
-                        child
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    });
-
-
-    const hits =
-
-        raycaster.intersectObjects(
-
-            objects,
-
-            false
-
-        );
-
-
-    if(
-
-        hits.length > 0
-
-    ){
-
-        let target =
-
-            hits[0].object;
-
-
-        while(
-
-            target.parent &&
-
-            !target.userData.health
-
-        ){
-
-            target =
-
-                target.parent;
-
-        }
-
-
-        if(
-
-            target.userData &&
-
-            target.userData.health
-
-        ){
-
-            target.userData.health -=
-
-                50;
-
-
-            if(
-
-                target.userData.health <=
-
-                0
-
-            ){
-
-                killBot(
-
-                    target
-
-                );
-
-            }
-
-        }
-
-    }
-
-
-    updateHUD();
-
-}
-
-
-/* =========================================================
-   BOT ÖLDÜRME
-========================================================= */
-
-function killBot(bot){
-
-    scene.remove(bot);
-
-
-    bots =
-
-        bots.filter(
-
-            item =>
-
-                item !== bot
-
-        );
-
-
-    score += 100;
-
-
-    updateHUD();
-
-
-    if(
-
-        botsEnabled
-
-    ){
-
-        setTimeout(
-
-            () => {
-
-                if(
-
-                    gameStarted
-
-                ){
-
-                    createBot();
-
-                }
-
-            },
-
-            2000
-
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   OYUNCU HASARI
-========================================================= */
-
-function damagePlayer(
-
-    amount
-
-){
-
-    health -= amount;
-
-
-    health =
-
-        Math.max(
-
-            0,
-
-            health
-
-        );
-
-
-    const damage =
-
-        document.getElementById(
-
-            "damage"
-
-        );
-
-
-    if(damage){
-
-        damage.style.display =
-
-            "block";
-
-
-        setTimeout(
-
-            () => {
-
-                damage.style.display =
-
-                    "none";
-
-            },
-
-            120
-
-        );
-
-    }
-
-
-    updateHUD();
-
-
-    if(
-
-        health <= 0
-
-    ){
-
-        health = 100;
-
-
-        player.position.set(
-
-            0,
-
-            1.7,
-
-            125
-
-        );
-
-
-        updateHUD();
-
-    }
-
-}
-
-
-/* =========================================================
-   RELOAD
-========================================================= */
-
-function reloadWeapon(){
-
-    if(
-
-        reloading ||
-
-        ammo >= 30 ||
-
-        reserveAmmo <= 0
-
-    ){
-
-        return;
-
-    }
-
-
-    reloading = true;
-
-
-    setTimeout(
-
-        () => {
-
-            const need =
-
-                30 - ammo;
-
-
-            const amount =
-
-                Math.min(
-
-                    need,
-
-                    reserveAmmo
-
-                );
-
-
-            ammo += amount;
-
-
-            reserveAmmo -= amount;
-
-
-            reloading = false;
-
-
-            updateHUD();
-
-        },
-
-        1200
-
-    );
-
-}
-
-
-/* =========================================================
-   HUD
-========================================================= */
-
-function updateHUD(){
-
-    const healthText =
-
-        document.getElementById(
-
-            "healthText"
-
-        );
-
-
-    const healthFill =
-
-        document.getElementById(
-
-            "health-fill"
-
-        );
-
-
-    const ammoValue =
-
-        document.getElementById(
-
-            "ammoValue"
-
-        );
-
-
-    const scoreElement =
-
-        document.getElementById(
-
-            "score"
-
-        );
-
-
-    if(healthText){
-
-        healthText.textContent =
-
-            health;
-
-    }
-
-
-    if(healthFill){
-
-        healthFill.style.width =
-
-            health + "%";
-
-    }
-
-
-    if(ammoValue){
-
-        ammoValue.textContent =
-
-            ammo;
-
-    }
-
-
-    if(scoreElement){
-
-        scoreElement.textContent =
-
-            "Skor: " +
-
-            score;
-
-    }
-
-}
-
-
-/* =========================================================
-   FPS
-========================================================= */
-
-function updateFPS(delta){
-
-    fpsFrames++;
-
-    fpsTime += delta;
-
-
-    if(
-
-        fpsTime >= 0.5
-
-    ){
-
-        const fps =
-
-            Math.round(
-
-                fpsFrames /
-
-                fpsTime
-
-            );
-
-
-        const fpsElement =
-
-            document.getElementById(
-
-                "fps"
-
-            );
-
-
-        if(fpsElement){
-
-            fpsElement.textContent =
-
-                "FPS: " +
-
-                fps;
-
-        }
-
-
-        fpsFrames = 0;
-
-        fpsTime = 0;
-
-    }
-
-}
-
-
-/* =========================================================
-   OYUN DÖNGÜSÜ
-========================================================= */
-
-function animate(){
-
-    requestAnimationFrame(
-
-        animate
-
-    );
-
-
-    if(
-
-        !gameStarted
-
-    ){
-
-        return;
-
-    }
-
-
-    const delta =
-
-        Math.min(
-
-            clock.getDelta(),
-
-            0.05
-
-        );
-
-
-    updatePlayer(
-
-        delta
-
-    );
-
-
-    updateBots(
-
-        delta
-
-    );
-
-
-    updateFPS(
-
-        delta
-
-    );
-
-
-    renderer.render(
-
-        scene,
-
-        camera
-
-    );
-
-}
-
-
-/* =========================================================
-   EKRAN BOYUTU
-========================================================= */
-
-window.addEventListener(
-
-    "resize",
-
-    () => {
-
-        if(
-
-            !camera ||
-
-            !renderer
-
-        ){
-
-            return;
-
-        }
-
-
-        camera.aspect =
-
-            window.innerWidth /
-
-            window.innerHeight;
-
-
-        camera.updateProjectionMatrix();
-
-
-        renderer.setSize(
-
-            window.innerWidth,
-
-            window.innerHeight
-
-        );
-
-    }
-
-);
-
-</script>
-```
-```javascript
-/* =========================================================
-   PARÇA 3
-   SİLAH + SES + RECOIL + OYUN DÖNGÜSÜ
-========================================================= */
-
-
-/* =========================================================
-   SİLAH DEĞİŞKENLERİ
-========================================================= */
-
-let ammo = 30;
-let maxAmmo = 30;
-
-let reserveAmmo = 120;
-
-let isReloading = false;
-let canShoot = true;
-
-let fireRate = 110;
-
-let recoilX = 0;
-let recoilY = 0;
-
-let recoilReturnSpeed = 8;
-
-let muzzleTimer = 0;
-
-let weaponBobTime = 0;
-
-let lastShotTime = 0;
-
-
-/* =========================================================
-   SES SİSTEMİ
-   Harici ses dosyası kullanmadan Web Audio API
-========================================================= */
-
-let audioContext = null;
-
-function initAudio(){
-
-    if(audioContext){
-        return;
-    }
-
-    try{
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-    }catch(error){
-
-        console.warn(
-            "Ses sistemi başlatılamadı:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   BASİT ATEŞ SESİ
-========================================================= */
-
-function playShootSound(){
-
-    if(!audioContext){
-        return;
-    }
-
-    if(
-        audioContext.state ===
-        "suspended"
-    ){
-
-        audioContext.resume();
-
-    }
-
-    const now =
-        audioContext.currentTime;
-
-
-    const oscillator =
-        audioContext.createOscillator();
-
-
-    const gain =
-        audioContext.createGain();
-
-
-    const filter =
-        audioContext.createBiquadFilter();
-
-
-    oscillator.type =
-        "sawtooth";
-
-
-    oscillator.frequency.setValueAtTime(
-        120,
-        now
-    );
-
-
-    oscillator.frequency.exponentialRampToValueAtTime(
-        45,
-        now + 0.12
-    );
-
-
-    filter.type =
-        "lowpass";
-
-
-    filter.frequency.setValueAtTime(
-        1400,
-        now
-    );
-
-
-    filter.frequency.exponentialRampToValueAtTime(
-        400,
-        now + 0.12
-    );
-
-
-    gain.gain.setValueAtTime(
-        0.0001,
-        now
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.8,
-        now + 0.005
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 0.14
-    );
-
-
-    oscillator.connect(filter);
-
-    filter.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start(now);
-
-    oscillator.stop(
-        now + 0.15
-    );
-
-}
-
-
-/* =========================================================
-   RELOAD SESİ
-========================================================= */
-
-function playReloadSound(){
-
-    if(!audioContext){
-        return;
-    }
-
-    const now =
-        audioContext.currentTime;
-
-
-    const oscillator =
-        audioContext.createOscillator();
-
-
-    const gain =
-        audioContext.createGain();
-
-
-    oscillator.type =
-        "square";
-
-
-    oscillator.frequency.setValueAtTime(
-        180,
-        now
-    );
-
-
-    oscillator.frequency.linearRampToValueAtTime(
-        90,
-        now + 0.08
-    );
-
-
-    gain.gain.setValueAtTime(
-        0.0001,
-        now
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.25,
-        now + 0.01
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 0.1
-    );
-
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start(now);
-
-    oscillator.stop(
-        now + 0.11
-    );
-
-}
-
-
-/* =========================================================
-   VURUŞ SESİ
-========================================================= */
-
-function playHitSound(){
-
-    if(!audioContext){
-        return;
-    }
-
-    const now =
-        audioContext.currentTime;
-
-
-    const oscillator =
-        audioContext.createOscillator();
-
-
-    const gain =
-        audioContext.createGain();
-
-
-    oscillator.type =
-        "triangle";
-
-
-    oscillator.frequency.setValueAtTime(
-        500,
-        now
-    );
-
-
-    oscillator.frequency.exponentialRampToValueAtTime(
-        150,
-        now + 0.08
-    );
-
-
-    gain.gain.setValueAtTime(
-        0.35,
-        now
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 0.1
-    );
-
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start(now);
-
-    oscillator.stop(
-        now + 0.11
-    );
-
-}
-
-
-/* =========================================================
-   ATEŞ EFEKTİ
-========================================================= */
-
-function showMuzzleFlash(){
-
-    const muzzle =
-        document.getElementById(
-            "muzzle"
-        );
-
-
-    if(!muzzle){
-        return;
-    }
-
-
-    muzzle.style.display =
-        "block";
-
-
-    muzzle.style.transform =
-        `scale(${0.8 + Math.random() * 0.6})`;
-
-
-    muzzleTimer =
-        0.05;
-
-}
-
-
-/* =========================================================
-   RECOIL
-========================================================= */
-
-function applyRecoil(){
-
-    recoilX +=
-        (Math.random() - 0.5)
-        * 0.018;
-
-
-    recoilY +=
-        0.035 +
-        Math.random() * 0.025;
-
-
-    recoilX =
-        Math.max(
-            -0.08,
-            Math.min(
-                0.08,
-                recoilX
-            )
-        );
-
-
-    recoilY =
-        Math.min(
-            0.18,
-            recoilY
-        );
-
-}
-
-
-/* =========================================================
-   RECOIL GERİ DÖNÜŞ
-========================================================= */
-
-function updateRecoil(delta){
-
-    recoilX =
-        THREE.MathUtils.lerp(
-            recoilX,
-            0,
-            delta *
-            recoilReturnSpeed
-        );
-
-
-    recoilY =
-        THREE.MathUtils.lerp(
-            recoilY,
-            0,
-            delta *
-            recoilReturnSpeed
-        );
-
-
-    if(camera){
-
-        camera.rotation.x =
-            pitch -
-            recoilY;
-
-
-        camera.rotation.y =
-            yaw +
-            recoilX;
-
-    }
-
-}
-
-
-/* =========================================================
-   SİLAH BOB
-========================================================= */
-
-function updateWeaponBob(
-    delta
-){
-
-    const weapon =
-        document.getElementById(
-            "weapon"
-        );
-
-
-    if(!weapon){
-        return;
-    }
-
-
-    const moving =
-        keys["KeyW"] ||
-        keys["KeyA"] ||
-        keys["KeyS"] ||
-        keys["KeyD"];
-
-
-    if(moving){
-
-        weaponBobTime +=
-            delta * 9;
-
-
-        const bobX =
-            Math.sin(
-                weaponBobTime
-            ) * 3;
-
-
-        const bobY =
-            Math.abs(
-                Math.cos(
-                    weaponBobTime
-                )
-            ) * 3;
-
-
-        weapon.style.transform =
-            `translate(${bobX}px,${bobY}px) rotate(-3deg)`;
-
-    }else{
-
-        weapon.style.transform =
-            "translate(0,0) rotate(-3deg)";
-
-    }
-
-}
-
-
-/* =========================================================
-   ATEŞ ET
-========================================================= */
+========================= */
 
 function shoot(){
 
     if(
-        !gameStarted ||
-        isReloading ||
-        !canShoot
-    ){
-
+        !canShoot||
+        reloading
+    )
         return;
 
-    }
 
-
-    if(ammo <= 0){
+    if(ammo<=0){
 
         reload();
 
@@ -5554,932 +2193,219 @@ function shoot(){
     }
 
 
-    const now =
-        performance.now();
-
-
-    if(
-        now -
-        lastShotTime <
-        fireRate
-    ){
-
-        return;
-
-    }
-
-
-    lastShotTime =
-        now;
-
-
     ammo--;
-
 
     updateHUD();
 
-
-    canShoot =
-        false;
+    canShoot=false;
 
 
     setTimeout(
         ()=>{
-
-            canShoot =
-                true;
-
-        },
-        fireRate
-    );
-
-
-    initAudio();
-
-
-    playShootSound();
-
-
-    showMuzzleFlash();
-
-
-    applyRecoil();
-
-
-    const raycaster =
-        new THREE.Raycaster();
-
-
-    raycaster.setFromCamera(
-
-        new THREE.Vector2(
-            0,
-            0
-        ),
-
-        camera
-
-    );
-
-
-    const targets=[];
-
-
-    bots.forEach(
-        bot=>{
-
-            bot.traverse(
-                child=>{
-
-                    if(
-                        child.isMesh
-                    ){
-
-                        targets.push(
-                            child
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    const hits =
-        raycaster.intersectObjects(
-            targets,
-            true
-        );
-
-
-    if(
-        hits.length === 0
-    ){
-
-        return;
-
-    }
-
-
-    let hitObject =
-        hits[0].object;
-
-
-    let hitBot =
-        null;
-
-
-    while(
-        hitObject
-    ){
-
-        if(
-            hitObject.userData &&
-            hitObject.userData.isBot
-        ){
-
-            hitBot =
-                hitObject;
-
-            break;
-
-        }
-
-
-        hitObject =
-            hitObject.parent;
-
-    }
-
-
-    if(
-        !hitBot
-    ){
-
-        return;
-
-    }
-
-
-    playHitSound();
-
-
-    const hitDistance =
-        hits[0].distance;
-
-
-    let damage =
-        50;
-
-
-    /* KAFADAN VURUŞ */
-
-    if(
-        hits[0].object.userData &&
-        hits[0].object.userData.hitZone ===
-        "head"
-    ){
-
-        damage =
-            100;
-
-    }
-
-
-    /* UZAKLIK HASAR AZALTMA */
-
-    if(
-        hitDistance > 35
-    ){
-
-        damage =
-            30;
-
-    }
-
-
-    hitBot.userData.health -=
-        damage;
-
-
-    showHitMarker();
-
-
-    if(
-        hitBot.userData.health <= 0
-    ){
-
-        killBot(
-            hitBot
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   HIT MARKER
-========================================================= */
-
-function showHitMarker(){
-
-    let marker =
-        document.getElementById(
-            "hitMarker"
-        );
-
-
-    if(!marker){
-
-        marker =
-            document.createElement(
-                "div"
-            );
-
-
-        marker.id =
-            "hitMarker";
-
-
-        marker.style.position =
-            "fixed";
-
-
-        marker.style.left =
-            "50%";
-
-
-        marker.style.top =
-            "50%";
-
-
-        marker.style.transform =
-            "translate(-50%,-50%)";
-
-
-        marker.style.color =
-            "white";
-
-
-        marker.style.fontSize =
-            "28px";
-
-
-        marker.style.fontWeight =
-            "bold";
-
-
-        marker.style.pointerEvents =
-            "none";
-
-
-        marker.style.zIndex =
-            "100";
-
-
-        document.body.appendChild(
-            marker
-        );
-
-    }
-
-
-    marker.textContent =
-        "✕";
-
-
-    marker.style.opacity =
-        "1";
-
-
-    setTimeout(
-        ()=>{
-
-            marker.style.opacity =
-                "0";
-
+            canShoot=true;
         },
         120
     );
 
-}
 
-
-/* =========================================================
-   RELOAD
-========================================================= */
-
-function reload(){
-
-    if(
-        isReloading ||
-        ammo >= maxAmmo ||
-        reserveAmmo <= 0
-    ){
-
-        return;
-
-    }
-
-
-    isReloading =
-        true;
-
-
-    initAudio();
-
-
-    playReloadSound();
-
-
-    const weapon =
+    const muzzle=
         document.getElementById(
-            "weapon"
+            "muzzle"
         );
 
 
-    if(weapon){
-
-        weapon.style.transition =
-            "transform .15s";
-
-
-        weapon.style.transform =
-            "translateY(25px) rotate(-8deg)";
-
-    }
+    muzzle.style.display="block";
 
 
     setTimeout(
         ()=>{
-
-            const needed =
-                maxAmmo -
-                ammo;
-
-
-            const amount =
-                Math.min(
-                    needed,
-                    reserveAmmo
-                );
+            muzzle.style.display="none";
+        },
+        60
+    );
 
 
-            ammo +=
-                amount;
+    const raycaster=
+        new THREE.Raycaster();
 
 
-            reserveAmmo -=
-                amount;
+    raycaster.setFromCamera(
+        new THREE.Vector2(0,0),
+        camera
+    );
 
 
-            isReloading =
-                false;
+    const objects=[];
 
 
-            if(weapon){
+    bots.forEach(bot=>{
 
-                weapon.style.transform =
-                    "translateY(0) rotate(-3deg)";
+        bot.traverse(child=>{
+
+            if(child.isMesh){
+                objects.push(child);
+            }
+
+        });
+
+    });
+
+
+    const hits=
+        raycaster.intersectObjects(
+            objects
+        );
+
+
+    if(hits.length>0){
+
+        let bot=
+            hits[0].object;
+
+
+        while(
+            bot.parent&&
+            !bot.userData.health
+        ){
+
+            bot=bot.parent;
+
+        }
+
+
+        if(
+            bot.userData&&
+            bot.userData.health
+        ){
+
+            bot.userData.health-=50;
+
+
+            if(
+                bot.userData.health<=0
+            ){
+
+                killBot(bot);
 
             }
 
-
-            updateHUD();
-
-        },
-        1000
-    );
-
-}
-
-
-/* =========================================================
-   BOT OLUŞTURMA
-========================================================= */
-
-function createBot(){
-
-    const bot =
-        new THREE.Group();
-
-
-    bot.userData = {
-
-        isBot:
-            true,
-
-        health:
-            100,
-
-        shootTimer:
-            1 +
-
-            Math.random() * 2
-
-    };
-
-
-    /* GÖVDE */
-
-    const body =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-                0.8,
-                1.2,
-                0.5
-            ),
-
-            new THREE.MeshStandardMaterial({
-
-                color:
-                    0x243c9b
-
-            })
-
-        );
-
-
-    body.position.y =
-        0.8;
-
-
-    body.userData.isBot =
-        true;
-
-
-    bot.add(
-        body
-    );
-
-
-    /* KAFA */
-
-    const head =
-        new THREE.Mesh(
-
-            new THREE.SphereGeometry(
-                0.3,
-                16,
-                16
-            ),
-
-            new THREE.MeshStandardMaterial({
-
-                color:
-                    0xd69b72
-
-            })
-
-        );
-
-
-    head.position.y =
-        1.65;
-
-
-    head.userData.isBot =
-        true;
-
-
-    head.userData.hitZone =
-        "head";
-
-
-    bot.add(
-        head
-    );
-
-
-    /* SİLAH */
-
-    const gun =
-        new THREE.Mesh(
-
-            new THREE.BoxGeometry(
-                0.15,
-                0.15,
-                1.1
-            ),
-
-            new THREE.MeshStandardMaterial({
-
-                color:
-                    0x111111
-
-            })
-
-        );
-
-
-    gun.position.set(
-
-        0.55,
-        1,
-        -0.5
-
-    );
-
-
-    gun.userData.isBot =
-        true;
-
-
-    bot.add(
-        gun
-    );
-
-
-    /* RASTGELE KONUM */
-
-    let x =
-        0;
-
-
-    let z =
-        0;
-
-
-    let valid =
-        false;
-
-
-    for(
-        let i = 0;
-        i < 30;
-        i++
-    ){
-
-        x =
-            Math.random() *
-            240 -
-            120;
-
-
-        z =
-            Math.random() *
-            220 -
-            80;
-
-
-        const testPosition =
-            new THREE.Vector3(
-                x,
-                0,
-                z
-            );
-
-
-        if(
-            !checkCollision(
-                testPosition
-            )
-        ){
-
-            valid =
-                true;
-
-            break;
-
         }
 
     }
 
-
-    if(!valid){
-
-        x =
-            0;
-
-        z =
-            -50;
-
-    }
-
-
-    bot.position.set(
-
-        x,
-        0,
-        z
-
-    );
-
-
-    /* ZORLUK */
-
-    let speed =
-        1.5;
-
-
-    if(
-        selectedDifficulty ===
-        "kolay"
-    ){
-
-        speed =
-            1;
-
-    }
-
-
-    if(
-        selectedDifficulty ===
-        "zor"
-    ){
-
-        speed =
-            2.3;
-
-    }
-
-
-    bot.userData.speed =
-        speed;
-
-
-    scene.add(
-        bot
-    );
-
-
-    bots.push(
-        bot
-    );
-
-
-    return bot;
-
 }
 
 
-/* =========================================================
+/* =========================
    BOT AI
-========================================================= */
+========================= */
 
-function updateBots(
-    delta
-){
+function updateBots(delta){
 
-    for(
-        let i = bots.length - 1;
-        i >= 0;
-        i--
-    ){
+    bots.forEach(bot=>{
 
-        const bot =
-            bots[i];
-
-
-        if(
-            !bot ||
-            !bot.parent
-        ){
-
-            continue;
-
-        }
-
-
-        const distance =
+        const distance=
             bot.position.distanceTo(
                 player.position
             );
 
 
-        /* OYUNCUYA DOĞRU HAREKET */
+        if(distance>5){
 
-        if(
-            distance > 8
-        ){
-
-            const direction =
+            const direction=
                 new THREE.Vector3()
-                    .subVectors(
-
-                        player.position,
-
-                        bot.position
-
-                    )
-                    .normalize();
-
-
-            const next =
-                bot.position.clone();
-
-
-            next.x +=
-                direction.x *
-                bot.userData.speed *
-                delta;
-
-
-            next.z +=
-                direction.z *
-                bot.userData.speed *
-                delta;
-
-
-            if(
-                !checkBotCollision(
-                    bot,
-                    next
+                .subVectors(
+                    player.position,
+                    bot.position
                 )
-            ){
+                .normalize();
 
-                bot.position.copy(
-                    next
-                );
 
-            }
+            bot.position.add(
+
+                direction.multiplyScalar(
+
+                    bot.userData.speed*
+                    delta
+
+                )
+
+            );
 
         }
 
-
-        /* OYUNCUYA BAK */
 
         bot.lookAt(
-
             player.position.x,
-
             1,
-
             player.position.z
-
         );
 
 
-        /* ATEŞ ZAMANI */
-
-        bot.userData.shootTimer -=
-            delta;
+        bot.userData.shootTimer-=delta;
 
 
         if(
-            distance < 35 &&
-            bot.userData.shootTimer <= 0
+            distance<25&&
+            bot.userData.shootTimer<=0
         ){
 
-            let chance =
-                0.35;
-
+            let chance=.4;
 
             if(
-                selectedDifficulty ===
-                "kolay"
-            ){
+                selectedDifficulty==="easy"
+            )
+                chance=.2;
 
-                chance =
-                    0.2;
+            if(
+                selectedDifficulty==="hard"
+            )
+                chance=.7;
+
+
+            if(Math.random()<chance){
+
+                damagePlayer(10);
 
             }
 
 
-            if(
-                selectedDifficulty ===
-                "zor"
-            ){
-
-                chance =
-                    0.7;
-
-            }
-
-
-            if(
-                Math.random() <
-                chance
-            ){
-
-                damagePlayer(
-                    10
-                );
-
-            }
-
-
-            bot.userData.shootTimer =
-                1 +
-                Math.random() * 2;
+            bot.userData.shootTimer=
+                1+
+                Math.random()*2;
 
         }
 
-    }
+    });
 
 }
 
 
-/* =========================================================
-   BOT ÇARPIŞMASI
-========================================================= */
-
-function checkBotCollision(
-    bot,
-    position
-){
-
-    const box =
-        new THREE.Box3(
-
-            new THREE.Vector3(
-
-                position.x -
-                0.4,
-
-                0,
-
-                position.z -
-                0.4
-
-            ),
-
-            new THREE.Vector3(
-
-                position.x +
-                0.4,
-
-                2,
-
-                position.z +
-                0.4
-
-            )
-
-        );
-
-
-    for(
-        const obstacle
-        of obstacles
-    ){
-
-        if(
-            box.intersectsBox(
-                obstacle.box
-            )
-        ){
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================================
+/* =========================
    BOT ÖLDÜR
-========================================================= */
+========================= */
 
-function killBot(
-    bot
-){
+function killBot(bot){
 
-    if(
-        !bot ||
-        !bot.parent
-    ){
+    scene.remove(bot);
 
-        return;
-
-    }
-
-
-    scene.remove(
-        bot
-    );
-
-
-    const index =
-        bots.indexOf(
-            bot
+    bots=
+        bots.filter(
+            b=>b!==bot
         );
 
-
-    if(
-        index !== -1
-    ){
-
-        bots.splice(
-            index,
-            1
-        );
-
-    }
-
-
-    score +=
-        100;
-
+    score+=100;
 
     updateHUD();
 
 
-    /* YENİ BOT */
-
-    if(
-        botsEnabled
-    ){
+    if(botsEnabled){
 
         setTimeout(
             ()=>{
 
-                if(
-                    gameStarted
-                ){
-
+                if(gameStarted){
                     createBot();
-
                 }
 
             },
@@ -6491,313 +2417,178 @@ function killBot(
 }
 
 
-/* =========================================================
-   BOT ÇARPIŞMA
-========================================================= */
+/* =========================
+   HASAR
+========================= */
 
-function damagePlayer(
-    amount
-){
+function damagePlayer(amount){
 
-    health -=
-        amount;
+    health-=amount;
 
-
-    health =
+    health=
         Math.max(
             0,
             health
         );
 
 
-    const damage =
+    const damage=
         document.getElementById(
             "damage"
         );
 
 
-    if(damage){
-
-        damage.style.display =
-            "block";
+    damage.style.display="block";
 
 
-        setTimeout(
-            ()=>{
-
-                damage.style.display =
-                    "none";
-
-            },
-            120
-        );
-
-    }
+    setTimeout(
+        ()=>{
+            damage.style.display="none";
+        },
+        120
+    );
 
 
     updateHUD();
 
 
-    if(
-        health <= 0
-    ){
+    if(health<=0){
 
-        respawnPlayer();
-
-    }
-
-}
-
-
-/* =========================================================
-   OYUNCU RESPAWN
-========================================================= */
-
-function respawnPlayer(){
-
-    health =
-        100;
-
-
-    ammo =
-        maxAmmo;
-
-
-    reserveAmmo =
-        120;
-
-
-    if(
-        selectedMap ===
-        "dust2"
-    ){
+        health=100;
 
         player.position.set(
-
             0,
-            2,
-            140
-
-        );
-
-    }else{
-
-        player.position.set(
-
-            0,
-            2,
+            1.6,
             25
-
         );
 
+        updateHUD();
+
     }
-
-
-    yaw =
-        0;
-
-
-    pitch =
-        0;
-
-
-    updateHUD();
 
 }
 
 
-/* =========================================================
+/* =========================
+   RELOAD
+========================= */
+
+function reload(){
+
+    if(
+        reloading||
+        ammo>=30||
+        reserveAmmo<=0
+    )
+        return;
+
+
+    reloading=true;
+
+
+    setTimeout(
+        ()=>{
+
+            const need=
+                30-ammo;
+
+
+            const amount=
+                Math.min(
+                    need,
+                    reserveAmmo
+                );
+
+
+            ammo+=amount;
+
+            reserveAmmo-=amount;
+
+            reloading=false;
+
+            updateHUD();
+
+        },
+        1200
+    );
+
+}
+
+
+/* =========================
    HUD
-========================================================= */
+========================= */
 
 function updateHUD(){
 
-    const healthText =
-        document.getElementById(
-            "healthText"
-        );
+    document.getElementById(
+        "healthText"
+    ).textContent=health;
 
 
-    const healthFill =
-        document.getElementById(
-            "health-fill"
-        );
+    document.getElementById(
+        "health-fill"
+    ).style.width=
+        health+"%";
 
 
-    const ammoValue =
-        document.getElementById(
-            "ammoValue"
-        );
+    document.getElementById(
+        "ammoValue"
+    ).textContent=ammo;
 
 
-    const scoreElement =
-        document.getElementById(
-            "score"
-        );
+    document.getElementById(
+        "score"
+    ).textContent=
+        "Skor: "+score;
 
 
-    if(
-        healthText
-    ){
-
-        healthText.textContent =
-            health;
-
-    }
-
-
-    if(
-        healthFill
-    ){
-
-        healthFill.style.width =
-            health +
-            "%";
-
-    }
-
-
-    if(
-        ammoValue
-    ){
-
-        ammoValue.textContent =
-            ammo;
-
-    }
-
-
-    if(
-        scoreElement
-    ){
-
-        scoreElement.textContent =
-            "Skor: " +
-            score;
-
-    }
-
-
-    const roomInfo =
-        document.getElementById(
-            "roomInfo"
-        );
-
-
-    if(
-        roomInfo
-    ){
-
-        roomInfo.textContent =
-            "Oda: " +
-            (
-                currentRoom ||
-                "-"
-            );
-
-    }
-
-
-    const mapInfo =
-        document.getElementById(
-            "mapInfo"
-        );
-
-
-    if(
-        mapInfo
-    ){
-
-        mapInfo.textContent =
-            "Harita: " +
-            (
-                selectedMap ===
-                "dust2"
-
-                ?
-
-                "Dust 2"
-
-                :
-
-                "Eğitim"
-
-            );
-
-    }
+    document.getElementById(
+        "roomInfo"
+    ).textContent=
+        "Oda: "+
+        (currentRoom||"-");
 
 }
 
 
-/* =========================================================
-   FPS SİSTEMİ
-========================================================= */
+/* =========================
+   FPS
+========================= */
 
-let fpsCounter =
-    0;
+function updateFPS(delta){
 
-let fpsTimer =
-    0;
+    fpsFrames++;
 
-
-function updateFPS(
-    delta
-){
-
-    fpsCounter +=
-        1;
+    fpsTime+=delta;
 
 
-    fpsTimer +=
-        delta;
+    if(fpsTime>=.5){
 
-
-    if(
-        fpsTimer >=
-        0.5
-    ){
-
-        const fps =
+        const fps=
             Math.round(
-
-                fpsCounter /
-                fpsTimer
-
+                fpsFrames/
+                fpsTime
             );
 
 
-        const fpsElement =
-            document.getElementById(
-                "fps"
-            );
+        document.getElementById(
+            "fps"
+        ).textContent=
+            "FPS: "+fps;
 
 
-        if(
-            fpsElement
-        ){
-
-            fpsElement.textContent =
-                "FPS: " +
-                fps;
-
-        }
-
-
-        fpsCounter =
-            0;
-
-
-        fpsTimer =
-            0;
+        fpsFrames=0;
+        fpsTime=0;
 
     }
 
 }
 
 
-/* =========================================================
+/* =========================
    OYUN DÖNGÜSÜ
-========================================================= */
+========================= */
 
 function animate(){
 
@@ -6806,253 +2597,64 @@ function animate(){
     );
 
 
-    if(
-        !gameStarted
-    ){
-
+    if(!gameStarted)
         return;
 
-    }
 
-
-    const delta =
+    const delta=
         Math.min(
-
             clock.getDelta(),
-
-            0.05
-
+            .05
         );
 
 
-    /* OYUNCU */
+    updatePlayer(delta);
 
-    updatePlayer(
-        delta
-    );
+    updateBots(delta);
 
+    updateFPS(delta);
 
-    /* BOTLAR */
-
-    updateBots(
-        delta
-    );
-
-
-    /* RECOIL */
-
-    updateRecoil(
-        delta
-    );
-
-
-    /* SİLAH HAREKETİ */
-
-    updateWeaponBob(
-        delta
-    );
-
-
-    /* MUZZLE FLASH */
-
-    if(
-        muzzleTimer > 0
-    ){
-
-        muzzleTimer -=
-            delta;
-
-
-        if(
-            muzzleTimer <= 0
-        ){
-
-            const muzzle =
-                document.getElementById(
-                    "muzzle"
-                );
-
-
-            if(muzzle){
-
-                muzzle.style.display =
-                    "none";
-
-            }
-
-        }
-
-    }
-
-
-    /* HUD */
-
-    updateHUD();
-
-
-    /* FPS */
-
-    updateFPS(
-        delta
-    );
-
-
-    /* RENDER */
 
     renderer.render(
-
         scene,
-
         camera
-
     );
 
 }
 
 
-/* =========================================================
-   OYUN BAŞLADIĞINDA SESİ HAZIRLA
-========================================================= */
-
-document.addEventListener(
-    "click",
-    ()=>{
-
-        if(
-            gameStarted
-        ){
-
-            initAudio();
-
-        }
-
-    },
-    {
-        once:false
-    }
-);
-
-
-/* =========================================================
-   FARE TIKLAMA
-========================================================= */
-
-document.addEventListener(
-
-    "mousedown",
-
-    event=>{
-
-        if(
-            !gameStarted
-        ){
-
-            return;
-
-        }
-
-
-        if(
-            event.button ===
-            0
-        ){
-
-            const canvas =
-                document.getElementById(
-                    "game"
-                );
-
-
-            if(
-                document.pointerLockElement !==
-                canvas
-            ){
-
-                canvas.requestPointerLock();
-
-                return;
-
-            }
-
-
-            shoot();
-
-        }
-
-    }
-
-);
-
-
-/* =========================================================
-   R TUŞU = RELOAD
-========================================================= */
-
-document.addEventListener(
-
-    "keydown",
-
-    event=>{
-
-        if(
-            event.code ===
-            "KeyR"
-        ){
-
-            if(
-                gameStarted
-            ){
-
-                reload();
-
-            }
-
-        }
-
-    }
-
-);
-
-
-/* =========================================================
-   BOŞLUK = KAMERA / HAZIRLIK
-========================================================= */
-
-document.addEventListener(
-
-    "keydown",
-
-    event=>{
-
-        if(
-            event.code ===
-            "Space"
-        ){
-
-            event.preventDefault();
-
-        }
-
-    }
-
-);
-
-
-/* =========================================================
-   SAYFA KAPANIRKEN
-========================================================= */
+/* =========================
+   EKRAN BOYUTU
+========================= */
 
 window.addEventListener(
-
-    "beforeunload",
-
+    "resize",
     ()=>{
 
-        gameStarted =
-            false;
+        if(
+            !camera||
+            !renderer
+        )
+            return;
+
+
+        camera.aspect=
+            window.innerWidth/
+            window.innerHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
 
     }
-
 );
-```
-</body></html>
+
+</script>
+
+</body>
+</html>
